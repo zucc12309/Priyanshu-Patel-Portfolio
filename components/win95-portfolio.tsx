@@ -316,11 +316,42 @@ function HomeScreen({ nav }: { nav: (s: Screen) => void }) {
 
       {/* Main hero — redesigned */}
       <div className="flex flex-1 flex-col justify-center">
-        <p className="text-lg text-[#00d4ff]">Hello!</p>
-        <p className="mt-1 text-xl text-white/60">I&apos;m</p>
-        <h1 className="font-[family-name:var(--font-pixel)] text-3xl leading-relaxed text-white sm:text-4xl lg:text-5xl" style={{ textShadow: "0 0 40px rgba(168,85,247,0.3), 3px 3px 0 rgba(168,85,247,0.4)" }}>
-          Priyanshu<br />Patel
-        </h1>
+        <div className="flex flex-col-reverse items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
+          <div>
+            <p className="text-lg text-[#00d4ff]">Hello!</p>
+            <p className="mt-1 text-xl text-white/60">I&apos;m</p>
+            <h1 className="font-[family-name:var(--font-pixel)] text-3xl leading-relaxed text-white sm:text-4xl lg:text-5xl" style={{ textShadow: "0 0 40px rgba(168,85,247,0.3), 3px 3px 0 rgba(168,85,247,0.4)" }}>
+              Priyanshu<br />Patel
+            </h1>
+          </div>
+          {/* Retro computer icon */}
+          <div className="shrink-0">
+            <div className="relative">
+              {/* Monitor */}
+              <div className="h-28 w-36 rounded-t-lg border-2 border-[#39ff14]/30 bg-[#0a0020] sm:h-32 sm:w-40" style={{ boxShadow: "0 0 20px rgba(57,255,20,0.08), inset 0 0 30px rgba(57,255,20,0.05)" }}>
+                {/* Screen content */}
+                <div className="mx-2 mt-2 h-[76px] overflow-hidden rounded-sm border border-[#39ff14]/15 bg-black p-1.5 sm:h-[88px]">
+                  <p className="font-[family-name:var(--font-pixel)] text-[6px] text-[#39ff14]/60">C:\&gt; portfolio.exe</p>
+                  <p className="mt-0.5 font-[family-name:var(--font-pixel)] text-[5px] text-[#00d4ff]/50">Loading modules...</p>
+                  <p className="mt-0.5 font-[family-name:var(--font-pixel)] text-[5px] text-[#ff6b9d]/50">▓▓▓▓▓▓▓▓░░ 80%</p>
+                  <div className="mt-1 flex gap-[2px]">
+                    {["#ff6b9d", "#39ff14", "#00d4ff", "#ffd700", "#a855f7"].map(c => (
+                      <motion.div key={c} animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity, delay: Math.random() }} className="h-1.5 w-1.5 rounded-sm" style={{ background: c }} />
+                    ))}
+                  </div>
+                  <p className="mt-1 font-[family-name:var(--font-pixel)] text-[5px] text-[#39ff14]/40">Ready.</p>
+                </div>
+                {/* Monitor LED */}
+                <div className="mx-auto mt-1 flex items-center justify-center gap-1">
+                  <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }} className="h-1 w-1 rounded-full bg-[#39ff14]" />
+                </div>
+              </div>
+              {/* Stand */}
+              <div className="mx-auto h-3 w-12 border-x-2 border-[#39ff14]/20 bg-[#0a0020]" />
+              <div className="mx-auto h-1.5 w-20 rounded-b border-2 border-t-0 border-[#39ff14]/20 bg-[#0a0020]" />
+            </div>
+          </div>
+        </div>
         <p className="mt-2 text-base text-white/50">Business Analyst at <span className="text-[#39ff14]">Digit Life Insurance</span></p>
         <p className="mt-1 text-sm text-white/30">Building AI-native products and workflow systems independently.</p>
         <p className="mt-1 text-sm text-white/25">MBA Finance + B.Tech CSE</p>
