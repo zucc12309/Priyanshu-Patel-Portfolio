@@ -16,22 +16,22 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://priyanshupatel.dev"),
   title: {
-    default: "Priyanshu Patel | Business Analyst · Product & Data Systems",
+    default: "Priyanshu Patel — Business Analyst & AI Product Builder",
     template: "%s | Priyanshu Patel",
   },
   description:
-    "I am Priyanshu Patel, a product and data-focused Business Analyst working across requirements, API-driven systems, SQL analysis, workflow automation, UAT, and AI product prototypes.",
+    "Business Analyst at Digit Insurance, building AI products and transitioning to Product Management. Portfolio featuring Memory Router, RideCompare, and more.",
   openGraph: {
-    title: "Priyanshu Patel | Business Analyst · Product & Data Systems",
-    description: "I work across requirements, API-driven workflows, data analysis, UAT, automation, and AI product prototypes.",
+    title: "Priyanshu Patel — Business Analyst & AI Product Builder",
+    description: "Business Analyst at Digit Insurance. Building AI products, targeting PM roles. Tech Titan Award recipient.",
     type: "website",
-    images: ["/projects/lifeadmin-os.png"],
+    images: ["/projects/memory-router.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Priyanshu Patel | Business Analyst · Product & Data Systems",
-    description: "I am a product and data-focused Business Analyst.",
-    images: ["/projects/lifeadmin-os.png"],
+    title: "Priyanshu Patel — Business Analyst & AI Product Builder",
+    description: "Business Analyst at Digit Insurance. Building AI products, targeting PM roles.",
+    images: ["/projects/memory-router.png"],
   },
 };
 

@@ -52,26 +52,26 @@ export default async function ProjectPage({ params }: Props) {
   const projectIndex = projects.findIndex((item) => item.slug === project.slug) + 1;
 
   return (
-    <main className="retro-scanlines min-h-screen px-3 py-3 pb-20 font-mono text-[13px] text-[#fff3d6] sm:px-5 sm:py-5">
+    <main className="retro-scanlines min-h-screen px-3 py-3 pb-20 font-mono text-[13px] text-retro-text sm:px-5 sm:py-5">
       <div className="mx-auto grid max-w-[1600px] gap-5">
-        <Link href="/#projects" className="retro-button inline-flex h-10 w-fit items-center gap-2 px-4 uppercase">
+        <Link href="/#projects" className="retro-button inline-flex h-10 w-fit items-center gap-2 px-4 text-xs uppercase">
           <ArrowLeft className="size-4" /> Back to projects
         </Link>
 
         <RetroWindow title="project.exe">
-          <div className="grid gap-0 lg:grid-cols-[230px_1fr]">
-            <aside className="border-b border-[#efe7d1]/40 p-4 lg:border-b-0 lg:border-r">
+          <div className="grid gap-0 lg:grid-cols-[220px_1fr]">
+            <aside className="border-b border-retro-text/10 p-4 lg:border-b-0 lg:border-r">
               <Prompt command="project_detail" />
-              <div className="mt-8 space-y-3 uppercase">
+              <div className="mt-8 space-y-2 uppercase">
                 {["Overview", "Features", "Tech Stack", "Demo", "Gallery", "Source Code"].map((item, index) => (
                   <a
                     key={item}
                     href={index === 0 ? "#overview" : index === 4 ? "#gallery" : "#details"}
-                    className={`flex h-11 items-center gap-3 border px-3 transition ${
-                      index === 0 ? "border-[#ff2aa8] bg-[#7d155c]/80 text-white" : "border-transparent text-[#fff3d6]/75 hover:border-[#ff2aa8] hover:bg-[#7d155c]/65"
+                    className={`flex h-10 items-center gap-3 border px-3 text-xs transition ${
+                      index === 0 ? "border-retro-green/40 bg-retro-green/8 text-retro-green" : "border-transparent text-retro-text/50 hover:border-retro-green/20 hover:text-retro-text"
                     }`}
                   >
-                    {index === 0 ? <FolderOpen className="size-4 text-[#ff78d4]" /> : <Code2 className="size-4 text-[#a97cff]" />}
+                    {index === 0 ? <FolderOpen className="size-3.5 text-retro-green" /> : <Code2 className="size-3.5 text-accent-purple/60" />}
                     {item}
                   </a>
                 ))}
@@ -80,36 +80,36 @@ export default async function ProjectPage({ params }: Props) {
 
             <section id="overview" className="grid gap-8 p-5 md:p-8 xl:grid-cols-[1fr_.95fr]">
               <Reveal>
-                <div className="flex items-center justify-between gap-3 text-[#fff3d6]/65">
+                <div className="flex items-center justify-between gap-3 text-retro-text/40">
                   <Prompt command={project.slug} />
-                  <span>{String(projectIndex).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+                  <span className="text-xs">{String(projectIndex).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
                 </div>
-                <h1 className="pixel-heading mt-10 text-5xl font-black leading-tight md:text-6xl">{project.title}</h1>
-                <p className="mt-4 text-base uppercase tracking-[0.18em] text-[#5fc3ff]">
-                  {project.type} * {project.status}
+                <h1 className="pixel-heading mt-8 text-4xl font-black leading-tight md:text-5xl">{project.title}</h1>
+                <p className="mt-3 text-sm uppercase tracking-[0.14em] text-retro-amber">
+                  {project.type} · {project.status}
                 </p>
-                <p className="mt-7 max-w-3xl text-base leading-8 text-[#fff3d6]/72">{project.description}</p>
-                <div className="mt-8 flex flex-wrap gap-3">
+                <p className="mt-5 max-w-3xl text-sm leading-7 text-retro-text/65">{project.description}</p>
+                <div className="mt-6 flex flex-wrap gap-3">
                   {project.repo ? (
-                    <Link href={project.repo} className="retro-button inline-flex h-11 items-center gap-2 px-4 uppercase">
+                    <Link href={project.repo} className="retro-button inline-flex h-10 items-center gap-2 px-4 text-xs uppercase">
                       <Github className="size-4" /> View Code
                     </Link>
                   ) : (
-                    <span className="retro-button inline-flex h-11 items-center gap-2 px-4 uppercase text-[#fff3d6]/60">
+                    <span className="retro-button inline-flex h-10 items-center gap-2 px-4 text-xs uppercase text-retro-text/40">
                       <Lock className="size-4" /> Private Repository
                     </span>
                   )}
                   {project.live ? (
-                    <Link href={project.live} className="retro-button inline-flex h-11 items-center gap-2 border-[#ff2aa8] bg-[#7d155c]/90 px-4 uppercase text-white">
+                    <Link href={project.live} className="retro-button inline-flex h-10 items-center gap-2 border-retro-green/40 bg-retro-green/8 px-4 text-xs uppercase text-retro-green">
                       <ExternalLink className="size-4" /> Live Demo
                     </Link>
                   ) : null}
                   {project.slug === "memory-router" ? (
-                    <Link href="/projects/memory-router/playground" className="retro-button inline-flex h-11 items-center gap-2 border-[#77ff5f] bg-[#173415] px-4 uppercase text-white">
+                    <Link href="/projects/memory-router/playground" className="retro-button inline-flex h-10 items-center gap-2 border-retro-green/40 bg-retro-green/8 px-4 text-xs uppercase text-retro-green">
                       <Play className="size-4" /> Try Playground
                     </Link>
                   ) : null}
-                  <Link href={project.caseStudy} className="retro-button inline-flex h-11 items-center gap-2 px-4 uppercase">
+                  <Link href={project.caseStudy} className="retro-button inline-flex h-10 items-center gap-2 px-4 text-xs uppercase">
                     <Download className="size-4" /> Case Study
                   </Link>
                 </div>
@@ -117,12 +117,12 @@ export default async function ProjectPage({ params }: Props) {
 
               <Reveal delay={0.08}>
                 <div className="retro-panel p-4">
-                  <div className="relative aspect-[16/10] overflow-hidden border border-[#efe7d1]/45 bg-black">
-                    <Image src={project.image} alt={`${project.title} cover`} fill sizes="(max-width: 1280px) 100vw, 640px" className="object-cover opacity-90" priority />
+                  <div className="relative aspect-[16/10] overflow-hidden border border-retro-text/10 bg-black">
+                    <Image src={project.image} alt={`${project.title} cover`} fill sizes="(max-width: 1280px) 100vw, 640px" className="object-cover opacity-85" priority />
                   </div>
-                  <div className="mt-4 grid grid-cols-2 gap-2">
+                  <div className="mt-3 grid grid-cols-2 gap-1.5">
                     {project.stack.slice(0, 6).map((tech) => (
-                      <span key={tech} className="border border-[#efe7d1]/25 bg-black/45 px-3 py-2 text-[#fff3d6]/70">
+                      <span key={tech} className="border border-retro-text/10 bg-black/40 px-2 py-1.5 text-[11px] text-retro-text/55">
                         {tech}
                       </span>
                     ))}
@@ -193,7 +193,7 @@ export default async function ProjectPage({ params }: Props) {
           </RetroWindow>
         </section>
 
-        <Link href="/#projects" className="retro-button inline-flex h-11 w-fit items-center gap-2 px-4 uppercase">
+        <Link href="/#projects" className="retro-button inline-flex h-10 w-fit items-center gap-2 px-4 text-xs uppercase">
           More projects <ArrowRight className="size-4" />
         </Link>
       </div>
@@ -206,12 +206,10 @@ function RetroWindow({ title, children, className }: WindowProps) {
     <section className={`retro-window overflow-hidden ${className ?? ""}`}>
       <div className="retro-titlebar flex h-8 items-center justify-between px-3 text-xs">
         <span>{title}</span>
-        <div className="flex items-center gap-1">
-          {["_", "□", "×"].map((item) => (
-            <span key={item} className="grid size-5 place-items-center border border-[#ded6bf] bg-[#b9b3ba] text-[11px] leading-none text-black shadow-[inset_1px_1px_0_white,inset_-1px_-1px_0_#4a4650]">
-              {item}
-            </span>
-          ))}
+        <div className="flex items-center gap-1.5">
+          <span className="size-3 rounded-full bg-red-400/70" />
+          <span className="size-3 rounded-full bg-retro-amber/70" />
+          <span className="size-3 rounded-full bg-retro-green/70" />
         </div>
       </div>
       {children}
@@ -222,7 +220,7 @@ function RetroWindow({ title, children, className }: WindowProps) {
 function Prompt({ command }: { command: string }) {
   return (
     <p className="retro-terminal text-sm">
-      C:\&gt; <span>{command}</span>
+      <span className="text-retro-text/40">$</span> {command}
     </p>
   );
 }
@@ -232,8 +230,8 @@ function GridSection({ items }: { items: [string, string][] }) {
     <div className="grid gap-5 p-5 md:grid-cols-2">
       {items.map(([label, value]) => (
         <Reveal key={label} className="retro-panel p-5">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-[#77ff5f]">{label}</p>
-          <p className="mt-4 leading-8 text-[#fff3d6]/70">{value}</p>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-retro-green">{label}</p>
+          <p className="mt-3 text-sm leading-7 text-retro-text/60">{value}</p>
         </Reveal>
       ))}
     </div>
@@ -243,11 +241,11 @@ function GridSection({ items }: { items: [string, string][] }) {
 function ListCard({ title, items }: { title: string; items: string[] }) {
   return (
     <Reveal className="p-5">
-      <h3 className="text-xl font-black text-[#ff78d4]">{title}</h3>
-      <div className="mt-5 space-y-3">
+      <h3 className="text-lg font-bold text-accent-purple">{title}</h3>
+      <div className="mt-4 space-y-2">
         {items.map((item) => (
-          <div key={item} className="flex gap-3 text-sm leading-6 text-[#fff3d6]/70">
-            <Sparkles className="mt-1 size-4 shrink-0 text-[#77ff5f]" />
+          <div key={item} className="flex gap-2 text-xs leading-5 text-retro-text/55">
+            <Sparkles className="mt-0.5 size-3 shrink-0 text-retro-green" />
             {item}
           </div>
         ))}

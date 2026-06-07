@@ -30,13 +30,13 @@ export function ArchitectureDiagram({ project }: { project: Project }) {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.06 }}
-              className="relative border border-[#efe7d1]/30 bg-black/45 p-4"
+              className="relative border border-retro-text/10 bg-black/40 p-4"
             >
-              <div className="mb-4 flex size-10 items-center justify-center border border-[#77ff5f]/70 bg-[#113016]">
-                <Icon className="size-5 text-[#77ff5f]" />
+              <div className="mb-4 flex size-10 items-center justify-center border border-retro-green/40 bg-retro-green/8">
+                <Icon className="size-5 text-retro-green" />
               </div>
-              <p className="text-sm font-medium text-[#fff3d6]">{node}</p>
-              <p className="mt-2 text-xs leading-5 text-[#fff3d6]/50">Layer {index + 1} in the product system.</p>
+              <p className="text-sm font-medium text-retro-text">{node}</p>
+              <p className="mt-2 text-xs leading-5 text-retro-text/40">Layer {index + 1} in the product system.</p>
               {index < project.architecture.length - 1 ? (
                 <div className="absolute -right-4 top-1/2 hidden h-px w-4 bg-[#efe7d1]/35 md:block" />
               ) : null}
@@ -53,10 +53,10 @@ export function WorkflowVisualization({ flows }: { flows: string[]; accent: Proj
     <div className="grid gap-3 md:grid-cols-6">
       {flows.map((flow, index) => (
         <div key={flow} className="retro-panel relative p-4">
-          <div className="mb-3 flex size-9 items-center justify-center border border-[#ffc767]/70 bg-[#2a2112] text-xs font-semibold text-[#ffc767]">
+          <div className="mb-3 flex size-9 items-center justify-center border border-retro-amber/40 bg-retro-amber/8 text-xs font-semibold text-retro-amber">
             {index + 1}
           </div>
-          <p className="text-sm font-medium text-[#fff3d6]">{flow}</p>
+          <p className="text-sm font-medium text-retro-text">{flow}</p>
           {index < flows.length - 1 ? <div className="absolute -right-3 top-8 hidden h-px w-3 bg-[#efe7d1]/35 md:block" /> : null}
         </div>
       ))}
@@ -90,7 +90,7 @@ export function MemoryTerminal() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.16 }}
-            className={line.startsWith("$") ? "text-[#77ff5f]" : "text-[#fff3d6]/58"}
+            className={line.startsWith("$") ? "text-retro-green" : "text-retro-text/58"}
           >
             {line}
           </motion.p>
@@ -149,13 +149,13 @@ export function LifeAdminDashboard() {
         <Panel title="Tasks" icon={CheckCircle2} items={["Review contract", "Pay broadband", "Upload tax file"]} />
         <Panel title="Subscriptions" icon={CircleDollarSign} items={["12 active", "₹18,400/month", "2 anomalies"]} />
       </div>
-      <div className="mt-4 border border-[#a97cff]/40 bg-[#1a1028] p-4">
+      <div className="mt-4 border border-accent-purple/30 bg-accent-purple/8 p-4">
         <div className="mb-3 flex items-center gap-2 text-sm font-medium text-white">
           <Sparkles className="size-4 text-blue" /> Agent orchestration
         </div>
         <div className="grid gap-3 md:grid-cols-3">
           {["Inbox triage", "Document intelligence", "Payment manager"].map((agent) => (
-            <div key={agent} className="border border-[#efe7d1]/25 bg-black/45 p-3 text-sm text-[#fff3d6]/70">
+            <div key={agent} className="border border-retro-text/25 bg-black/45 p-3 text-sm text-retro-text/70">
               {agent}
             </div>
           ))}
@@ -167,13 +167,13 @@ export function LifeAdminDashboard() {
 
 function Panel({ title, icon: Icon, items }: { title: string; icon: typeof Inbox; items: string[] }) {
   return (
-    <div className="border border-[#efe7d1]/25 bg-black/45 p-4">
+    <div className="border border-retro-text/25 bg-black/45 p-4">
       <div className="mb-4 flex items-center gap-2 text-sm font-medium text-white">
         <Icon className="size-4 text-cyan" /> {title}
       </div>
       <div className="space-y-2">
         {items.map((item) => (
-          <div key={item} className="border border-[#efe7d1]/15 bg-black/45 px-3 py-2 text-sm text-[#fff3d6]/62">
+          <div key={item} className="border border-retro-text/15 bg-black/45 px-3 py-2 text-sm text-retro-text/62">
             {item}
           </div>
         ))}
@@ -228,7 +228,7 @@ export function ScreenshotGallery({ project }: { project: Project }) {
   if (project.slug === "memory-router") {
     return (
       <div className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
-        <div className="relative aspect-[16/10] overflow-hidden border border-[#efe7d1]/35 bg-black/30">
+        <div className="relative aspect-[16/10] overflow-hidden border border-retro-text/35 bg-black/30">
           <Image src="/projects/memory-router-playground-screen.png" alt="Memory Router playground screenshot" fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover object-top" />
         </div>
         <MemoryTerminal />
@@ -239,7 +239,7 @@ export function ScreenshotGallery({ project }: { project: Project }) {
   if (project.slug === "crm-workflow-automation") {
     return (
       <div className="grid gap-6">
-        <div className="relative aspect-[16/9] overflow-hidden border border-[#efe7d1]/35 bg-black/30">
+        <div className="relative aspect-[16/9] overflow-hidden border border-retro-text/35 bg-black/30">
           <Image src="/projects/crm-n8n-workflow.png" alt="CRM workflow automation n8n workflow canvas" fill sizes="100vw" className="object-cover" />
         </div>
         <WorkflowVisualization flows={project.flows} accent={project.accent} />
@@ -264,8 +264,8 @@ function Metric({ icon: Icon, label, value }: { icon: typeof Car; label: string;
   return (
     <div className="retro-panel p-5">
       <Icon className="mb-4 size-5 text-mint" />
-      <p className="text-sm text-[#fff3d6]/50">{label}</p>
-      <p className="mt-1 font-medium text-[#fff3d6]">{value}</p>
+      <p className="text-sm text-retro-text/50">{label}</p>
+      <p className="mt-1 font-medium text-retro-text">{value}</p>
     </div>
   );
 }

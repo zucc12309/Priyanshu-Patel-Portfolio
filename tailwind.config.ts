@@ -5,6 +5,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        bg: "#0B0F14",
+        surface: "#151A21",
+        "retro-green": "#8BE78B",
+        "retro-amber": "#F5B14C",
+        "accent-purple": "#A970FF",
+        "retro-text": "#F5F1E8",
         night: "#05060a",
         ink: "#0a0d14",
         glass: "rgba(255,255,255,0.075)",
@@ -15,16 +21,12 @@ const config: Config = {
         amber: "#ffc767",
       },
       boxShadow: {
-        glow: "0 0 80px rgba(70,233,255,0.18)",
+        glow: "0 0 80px rgba(139,231,139,0.12)",
         card: "0 24px 80px rgba(0,0,0,0.38)",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", "Inter", "system-ui", "sans-serif"],
         mono: ["var(--font-geist-mono)", "SFMono-Regular", "monospace"],
-      },
-      backgroundImage: {
-        "radial-grid":
-          "radial-gradient(circle at 20% 10%, rgba(70,233,255,0.16), transparent 30%), radial-gradient(circle at 85% 15%, rgba(107,140,255,0.18), transparent 34%), radial-gradient(circle at 52% 85%, rgba(88,255,200,0.12), transparent 35%)",
       },
     },
   },
