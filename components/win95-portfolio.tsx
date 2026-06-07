@@ -1,24 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Mail, Linkedin, Github, Figma, Database, BarChart3,
+  Code2, GitBranch, FileSpreadsheet, MessageSquare, Workflow,
+  Terminal, PenTool, Send, Pause, Play,
+  SkipBack, SkipForward, Volume2, VolumeX,
+} from "lucide-react";
 
 type Screen = "home" | "about" | "projects" | "skills" | "experience" | "contact";
 
-/* ═══ DATA (all from existing portfolio) ═══════════════ */
+/* ═══ DATA ════════════════════════════════════════════════ */
 
 const projects = [
-  { id: "01", title: "MEMORY ROUTER", status: "Local-first AI infrastructure", desc: "Local-first intelligent model routing system with structured memory, semantic retrieval, context optimization, adaptive provider routing, and MCP integration.", tags: ["Python", "SQLite", "MCP", "AI"], color: "#00d4ff", repo: "https://github.com/zucc12309/memory-router" },
-  { id: "02", title: "RIDECOMPARE", status: "Functional MVP", desc: "Mobile product that compares ride fares across multiple providers and helps users choose the best route, price, and booking option.", tags: ["Flutter", "Node.js", "PostgreSQL", "Maps"], color: "#ff6b9d", repo: undefined },
-  { id: "03", title: "AI LIFEADMIN OS", status: "Personal AI operations system", desc: "Personal AI operating system to manage tasks, subscriptions, documents, reminders, payments, and life administration through intelligent agents.", tags: ["React", "Node.js", "Redis", "LLM"], color: "#39ff14", repo: undefined },
-  { id: "04", title: "CRM WORKFLOW", status: "CRM analytics automation", desc: "Workflow automation system focused on streamlining CRM operations, routing work, improving reporting, and reducing manual effort.", tags: ["n8n", "Python", "Power BI"], color: "#ffd700", repo: "https://github.com/zucc12309/CRM-workflow-automation" },
-];
-
-const skillCategories = [
-  { title: "Business Analysis", color: "#00d4ff", skills: ["Requirements Gathering", "BRD/SRS", "GAP Analysis", "Stakeholder Management", "User Stories", "SDLC"] },
-  { title: "Agile & Delivery", color: "#39ff14", skills: ["Sprint Planning", "Backlog Grooming", "Scrum", "UAT", "Test Cases", "RCA"] },
-  { title: "Technical", color: "#ff6b9d", skills: ["SQL", "Python", "API & System Integration", "Data Analysis", "PostgreSQL", "Database Concepts"] },
-  { title: "Tools", color: "#ffd700", skills: ["Jira", "Confluence", "Postman", "Camunda", "DBeaver", "Figma", "Excel", "n8n"] },
+  { id: "01", title: "MEMORY ROUTER", desc: "Local-first intelligent model routing system with structured memory, semantic retrieval, and MCP integration.", tags: ["Python", "SQLite", "MCP", "AI"], color: "#ff6b9d", repo: "https://github.com/zucc12309/memory-router" },
+  { id: "02", title: "RIDECOMPARE", desc: "Mobile product that compares ride fares across multiple providers and helps users choose the best option.", tags: ["Flutter", "Node.js", "PostgreSQL"], color: "#39ff14", repo: undefined },
+  { id: "03", title: "AI LIFEADMIN OS", desc: "Personal AI operating system to manage tasks, subscriptions, documents, and life administration.", tags: ["React", "Node.js", "Redis", "LLM"], color: "#00d4ff", repo: undefined },
+  { id: "04", title: "CRM WORKFLOW", desc: "Workflow automation system focused on streamlining CRM operations, routing work, and reducing manual effort.", tags: ["n8n", "Python", "Power BI"], color: "#ffd700", repo: "https://github.com/zucc12309/CRM-workflow-automation" },
 ];
 
 const skillBars = [
@@ -29,10 +28,19 @@ const skillBars = [
   { name: "Problem Solving", pct: 92 },
 ];
 
-const toolsList = [
-  { name: "Jira", abbr: "Ji" }, { name: "Postman", abbr: "Pm" }, { name: "SQL Server", abbr: "SQ" }, { name: "Power BI", abbr: "PB" },
-  { name: "Python", abbr: "Py" }, { name: "Figma", abbr: "Fi" }, { name: "n8n", abbr: "n8" }, { name: "Git", abbr: "Gt" },
-  { name: "Excel", abbr: "Ex" }, { name: "Confluence", abbr: "Co" }, { name: "DBeaver", abbr: "DB" }, { name: "Camunda", abbr: "Ca" },
+const tools = [
+  { name: "Jira", icon: BarChart3, color: "#0052CC" },
+  { name: "Postman", icon: Send, color: "#FF6C37" },
+  { name: "SQL Server", icon: Database, color: "#CC2927" },
+  { name: "Power BI", icon: BarChart3, color: "#F2C811" },
+  { name: "Python", icon: Terminal, color: "#3776AB" },
+  { name: "Figma", icon: Figma, color: "#F24E1E" },
+  { name: "n8n", icon: Workflow, color: "#EA4B71" },
+  { name: "Git", icon: GitBranch, color: "#F05032" },
+  { name: "VS Code", icon: Code2, color: "#007ACC" },
+  { name: "Excel", icon: FileSpreadsheet, color: "#217346" },
+  { name: "DBeaver", icon: Database, color: "#382923" },
+  { name: "Confluence", icon: MessageSquare, color: "#172B4D" },
 ];
 
 const jobs = [
@@ -41,12 +49,12 @@ const jobs = [
     bullets: [
       "Led end-to-end SDLC for Group Life products — 1,500+ Cr premium portfolio, 2L+ monthly transactions",
       "Collaborated with 10-12 cross-functional stakeholders across sprint planning and release cycles",
-      "Analysed high-volume transaction data using SQL to identify inefficiencies, edge cases, and failure patterns",
-      "Designed scalable solutions through GAP analysis — API integrations, API contracts, database schemas, and UI workflows",
+      "Analysed high-volume transaction data using SQL to identify inefficiencies and failure patterns",
+      "Designed scalable solutions through GAP analysis — API integrations, database schemas, UI workflows",
       "Authored BRDs, SRS, and user stories ensuring clear requirement translation across modules",
-      "Automated workflows by implementing 10+ business rules, improving accuracy by 18% and reducing manual effort by 30%",
+      "Automated workflows implementing 10+ business rules, improving accuracy by 18%, reducing effort by 30%",
       "Led UAT with 80+ test cases, reducing post-release defects by 40%",
-      "Performed RCA using API logs and database analysis, collaborating with engineering and cloud/infra teams",
+      "Performed RCA using API logs and database analysis with engineering and cloud/infra teams",
     ],
     award: "Tech Titan Award",
   },
@@ -81,185 +89,246 @@ const education = [
   { deg: "12th CBSE — PCM", school: "", gpa: "85.4%", year: "2020" },
 ];
 
-const screenMeta: Record<Screen, { title: string; color: string }> = {
-  home: { title: "portfolio.exe", color: "#00d4ff" },
-  about: { title: "about.exe", color: "#ff6b9d" },
-  projects: { title: "projects.exe", color: "#39ff14" },
-  skills: { title: "skills.exe", color: "#4ecdc4" },
-  experience: { title: "experience.exe", color: "#ffd700" },
-  contact: { title: "contact.exe", color: "#a855f7" },
-};
+/* ═══ MUSIC PLAYER HOOK ══════════════════════════════════ */
 
-/* ═══ MAIN ═════════════════════════════════════════════ */
+function useSynthPlayer() {
+  const ctxRef = useRef<AudioContext | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const gainRef = useRef<GainNode | null>(null);
+
+  const playNote = useCallback((ctx: AudioContext, freq: number, start: number, dur: number, gain: GainNode) => {
+    const osc = ctx.createOscillator();
+    const env = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, start);
+    env.gain.setValueAtTime(0, start);
+    env.gain.linearRampToValueAtTime(0.08, start + 0.05);
+    env.gain.linearRampToValueAtTime(0, start + dur);
+    osc.connect(env).connect(gain);
+    osc.start(start);
+    osc.stop(start + dur);
+  }, []);
+
+  const start = useCallback(() => {
+    if (ctxRef.current) { ctxRef.current.resume(); setPlaying(true); return; }
+    const ctx = new AudioContext();
+    const gain = ctx.createGain();
+    gain.gain.value = 0.3;
+    gain.connect(ctx.destination);
+    ctxRef.current = ctx;
+    gainRef.current = gain;
+
+    const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+    const melody = [0, 2, 4, 5, 4, 2, 3, 1, 0, 4, 7, 5, 4, 2, 0, 3];
+    let step = 0;
+
+    const loop = () => {
+      const now = ctx.currentTime;
+      const note = notes[melody[step % melody.length]];
+      playNote(ctx, note, now, 0.4, gain);
+      playNote(ctx, note * 0.5, now, 0.6, gain); // bass
+      step++;
+    };
+    loop();
+    intervalRef.current = setInterval(loop, 500);
+    setPlaying(true);
+  }, [playNote]);
+
+  const pause = useCallback(() => {
+    ctxRef.current?.suspend();
+    setPlaying(false);
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    if (gainRef.current) {
+      gainRef.current.gain.value = muted ? 0.3 : 0;
+      setMuted(!muted);
+    }
+  }, [muted]);
+
+  useEffect(() => () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    ctxRef.current?.close();
+  }, []);
+
+  return { playing, muted, start, pause, toggleMute };
+}
+
+/* ═══ MAIN ═══════════════════════════════════════════════ */
 
 export function Win95Portfolio() {
   const [screen, setScreen] = useState<Screen>("home");
   const [booted, setBooted] = useState(false);
-  const [time, setTime] = useState("--:--");
+  const [time, setTime] = useState("--:-- --");
 
   useEffect(() => { const t = setTimeout(() => setBooted(true), 2800); return () => clearTimeout(t); }, []);
   useEffect(() => {
-    const tick = () => setTime(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+    const tick = () => setTime(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true }));
     tick(); const id = setInterval(tick, 30_000); return () => clearInterval(id);
   }, []);
 
   if (!booted) return <BootScreen />;
 
-  const m = screenMeta[screen];
-  return (
-    <div className="flex h-[100dvh] flex-col bg-[#080812] font-mono selection:bg-[#39ff14]/20">
-      {/* Scanlines */}
-      <div className="pointer-events-none fixed inset-0 z-50 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.1)_2px,rgba(0,0,0,0.1)_4px)] opacity-30" />
-      {/* Grid */}
-      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:28px_28px]" />
-      {/* Ambient glow */}
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_15%_15%,rgba(169,112,255,0.07),transparent_50%),radial-gradient(ellipse_at_85%_85%,rgba(0,212,255,0.05),transparent_50%),radial-gradient(ellipse_at_50%_50%,rgba(57,255,20,0.02),transparent_60%)]" />
+  const titles: Record<Screen, string> = {
+    home: "portfolio.exe", about: "about.exe", projects: "projects.exe",
+    skills: "skills.exe", experience: "experience.exe", contact: "contact.exe",
+  };
 
-      {/* Window */}
-      <div className="relative flex-1 overflow-hidden p-1.5 pb-0 sm:p-2.5 sm:pb-0">
+  return (
+    <div className="flex h-[100dvh] flex-col font-[family-name:var(--font-vt)] text-white" style={{ background: "linear-gradient(135deg, #0a0010 0%, #0d0020 30%, #080018 60%, #050010 100%)" }}>
+      {/* Scanlines */}
+      <div className="pointer-events-none fixed inset-0 z-50 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px)" }} />
+      {/* CRT vignette */}
+      <div className="pointer-events-none fixed inset-0 z-40" style={{ background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%)" }} />
+
+      {/* Window area */}
+      <div className="relative flex-1 overflow-hidden p-1 sm:p-2">
         <AnimatePresence mode="wait">
-          <motion.div key={screen} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.14 }} className="flex h-full flex-col">
-            <WinFrame title={m.title} color={m.color} time={time}>
+          <motion.div key={screen} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.12 }} className="flex h-full flex-col">
+            {/* Title bar */}
+            <div className="flex shrink-0 items-center justify-between border border-white/10 px-3 py-1" style={{ background: "linear-gradient(90deg, #1a0a3a, #2d1560 50%, #1a0a3a)" }}>
+              <span className="font-[family-name:var(--font-pixel)] text-[10px] text-white/80">{titles[screen]}</span>
+              <div className="flex gap-1">
+                {["─", "□", "×"].map((c, i) => (
+                  <span key={c} className={`flex h-4 w-5 items-center justify-center border text-[10px] leading-none ${i === 2 ? "border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/30" : "border-white/10 bg-white/5 text-white/30 hover:bg-white/10"}`}>{c}</span>
+                ))}
+              </div>
+            </div>
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto border-x border-white/10 p-4 sm:p-5" style={{ background: "linear-gradient(180deg, rgba(15,5,40,0.97), rgba(10,3,25,0.98))" }}>
               {screen === "home" && <HomeScreen nav={setScreen} active={screen} />}
               {screen === "about" && <AboutScreen />}
               {screen === "projects" && <ProjectsScreen />}
               {screen === "skills" && <SkillsScreen />}
               {screen === "experience" && <ExperienceScreen />}
               {screen === "contact" && <ContactScreen />}
-            </WinFrame>
+            </div>
+            {/* Status bar */}
+            <div className="flex shrink-0 items-center justify-between border border-white/10 px-3 py-0.5" style={{ background: "linear-gradient(90deg, #1a0a3a, #2d1560 50%, #1a0a3a)" }}>
+              <span className="text-sm text-[#39ff14]/60">C:\&gt;</span>
+              <span className="text-sm text-white/30">{time}</span>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
+      {/* Taskbar */}
       <Taskbar screen={screen} nav={setScreen} time={time} />
     </div>
   );
 }
 
-/* ═══ BOOT ═════════════════════════════════════════════ */
+/* ═══ BOOT ═══════════════════════════════════════════════ */
 
 function BootScreen() {
   const [p, setP] = useState(0);
-  useEffect(() => { const id = setInterval(() => setP(v => Math.min(v + 4, 100)), 75); return () => clearInterval(id); }, []);
+  useEffect(() => { const id = setInterval(() => setP(v => Math.min(v + 3, 100)), 65); return () => clearInterval(id); }, []);
   const lines = [
     "BIOS v3.1.0 — Priyanshu Patel Portfolio System",
     "Memory test... 4096 MB OK",
     "Loading portfolio.exe...",
     "Mounting projects... 4 found",
     "Initializing AI subsystems... OK",
-    "Loading career modules... Business Analyst at Digit Life Insurance",
+    "Loading career modules... Business Analyst @ Digit Life Insurance",
   ];
   return (
-    <div className="flex h-[100dvh] items-center justify-center bg-[#080812] font-mono">
-      <div className="w-full max-w-xl space-y-1.5 px-6 text-sm text-[#39ff14]">
-        {lines.filter((_, i) => p > i * 13).map(l => <p key={l}>{l}</p>)}
-        <div className="mt-6 h-5 border border-[#39ff14]/30 p-[2px]">
-          <div style={{ width: `${p}%`, backgroundImage: "repeating-linear-gradient(90deg,#39ff14 0 7px,transparent 7px 10px)" }} className="h-full transition-[width] duration-75" />
+    <div className="flex h-[100dvh] items-center justify-center font-[family-name:var(--font-vt)]" style={{ background: "#050010" }}>
+      <div className="w-full max-w-xl space-y-2 px-6 text-lg text-[#39ff14]">
+        {lines.filter((_, i) => p > i * 14).map(l => <p key={l}>{l}</p>)}
+        <div className="mt-6 h-6 border border-[#39ff14]/30 p-[3px]">
+          <div style={{ width: `${p}%`, backgroundImage: "repeating-linear-gradient(90deg,#39ff14 0 8px,transparent 8px 11px)" }} className="h-full transition-[width] duration-100" />
         </div>
-        <p className="text-xs text-[#39ff14]/40">{p}% loaded</p>
+        <p className="text-base text-[#39ff14]/40">{p}% loaded</p>
       </div>
     </div>
   );
 }
 
-/* ═══ WINDOW FRAME ═════════════════════════════════════ */
-
-function WinFrame({ title, color, time, children }: { title: string; color: string; time: string; children: React.ReactNode }) {
-  return (
-    <div className="flex h-full flex-col overflow-hidden border border-white/[0.07]" style={{ borderTopColor: color, borderTopWidth: 3, background: "linear-gradient(180deg, #0e0e1f 0%, #0a0a18 100%)" }}>
-      {/* Title bar */}
-      <div className="flex shrink-0 items-center justify-between border-b border-white/[0.07] px-3 py-1.5" style={{ background: "linear-gradient(90deg, #12122a, #1a1a35 50%, #12122a)" }}>
-        <span className="text-xs text-white/60">{title}</span>
-        <div className="flex gap-[3px]">
-          <span className="flex h-[16px] w-[20px] items-center justify-center border border-white/[0.12] bg-white/[0.03] text-[9px] leading-none text-white/25 hover:bg-white/[0.08]">─</span>
-          <span className="flex h-[16px] w-[20px] items-center justify-center border border-white/[0.12] bg-white/[0.03] text-[9px] leading-none text-white/25 hover:bg-white/[0.08]">□</span>
-          <span className="flex h-[16px] w-[20px] items-center justify-center border border-white/[0.12] bg-white/[0.03] text-[9px] leading-none text-white/25 hover:bg-red-500/50 hover:text-white">×</span>
-        </div>
-      </div>
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6">{children}</div>
-      {/* Status bar */}
-      <div className="flex shrink-0 items-center justify-between border-t border-white/[0.06] px-3 py-1" style={{ background: "linear-gradient(90deg, #12122a, #1a1a35 50%, #12122a)" }}>
-        <span className="text-[11px] text-[#39ff14]/40">C:\&gt;</span>
-        <span className="text-[11px] text-white/20">{time}</span>
-      </div>
-    </div>
-  );
-}
-
-/* ═══ HOME ═════════════════════════════════════════════ */
+/* ═══ HOME ═══════════════════════════════════════════════ */
 
 function HomeScreen({ nav, active }: { nav: (s: Screen) => void; active: Screen }) {
+  const music = useSynthPlayer();
   const links: { id: Screen; label: string }[] = [
     { id: "home", label: "HOME" }, { id: "about", label: "ABOUT" }, { id: "projects", label: "PROJECTS" },
     { id: "skills", label: "SKILLS" }, { id: "experience", label: "EXPERIENCE" }, { id: "contact", label: "CONTACT" },
   ];
+
   return (
-    <div className="flex h-full flex-col gap-4 md:flex-row md:gap-8">
-      {/* Sidebar */}
-      <div className="flex shrink-0 flex-row gap-1 overflow-x-auto md:w-44 md:flex-col md:justify-between md:overflow-visible">
+    <div className="flex h-full flex-col gap-4 md:flex-row md:gap-6">
+      {/* Left sidebar */}
+      <div className="flex shrink-0 flex-row gap-1 overflow-x-auto md:w-40 md:flex-col md:justify-between md:overflow-visible">
         <div>
-          <p className="mb-4 hidden text-xl text-[#39ff14] md:block">&gt;_</p>
-          <nav className="flex gap-0.5 md:flex-col md:gap-1.5">
+          <p className="mb-3 hidden font-[family-name:var(--font-pixel)] text-lg text-[#39ff14] md:block">&gt;_</p>
+          <nav className="flex gap-0.5 md:flex-col md:gap-1">
             {links.map(l => (
-              <button key={l.id} onClick={() => nav(l.id)} className={`whitespace-nowrap px-2 py-1 text-left text-xs transition-colors md:px-0 md:py-1.5 ${active === l.id ? "text-[#39ff14]" : "text-white/20 hover:text-white/40"}`}>
-                <span className="hidden md:inline">{active === l.id ? "> " : "  "}</span>{l.label}
+              <button key={l.id} onClick={() => nav(l.id)} className={`whitespace-nowrap px-2 py-1 text-left text-base transition md:px-0 md:py-1 ${active === l.id ? "font-[family-name:var(--font-pixel)] text-[10px] text-[#39ff14]" : "text-white/25 hover:text-white/50"}`}>
+                {l.label}
               </button>
             ))}
           </nav>
         </div>
-        {/* Now playing widget */}
-        <div className="hidden border border-white/[0.06] bg-black/30 p-3 md:block">
-          <p className="mb-1.5 text-[9px] uppercase tracking-widest text-white/20">Now Playing</p>
-          <p className="text-[11px] text-white/45">Lo-fi Focus</p>
-          <p className="text-[10px] text-white/20">Deep Work Mix</p>
-          <div className="mt-2.5 flex items-end gap-[3px]">
-            {[5, 9, 3, 11, 7, 14, 5, 9, 4, 10, 6, 12].map((h, i) => (
-              <motion.div key={i} animate={{ height: [h, 2, h] }} transition={{ duration: 0.5 + i * 0.06, repeat: Infinity, repeatType: "mirror" }} className="w-[3px] bg-[#39ff14]/40" style={{ height: h }} />
+
+        {/* Now Playing */}
+        <div className="hidden shrink-0 border border-white/10 bg-black/50 p-3 md:block">
+          <p className="font-[family-name:var(--font-pixel)] text-[8px] uppercase tracking-widest text-white/25">Now Playing</p>
+          <p className="mt-1 text-base text-white/50">Synthwave Dreams</p>
+          <p className="text-sm text-white/25">Lo-fi Focus Mix</p>
+          {/* Visualizer */}
+          <div className="mt-2 flex items-end gap-[3px]">
+            {Array.from({ length: 14 }).map((_, i) => (
+              <motion.div key={i} animate={music.playing ? { height: [4, 2 + Math.random() * 14, 4] } : { height: 3 }}
+                transition={music.playing ? { duration: 0.3 + Math.random() * 0.3, repeat: Infinity, repeatType: "mirror" } : {}}
+                className="w-[3px] rounded-sm" style={{ background: `linear-gradient(180deg, #ff6b9d, #a855f7)`, height: 3 }} />
             ))}
           </div>
-          <div className="mt-2 flex items-center justify-center gap-3 text-[10px] text-white/15">
-            <span>◄◄</span><span>◄</span><span className="text-sm text-[#39ff14]/50">▶</span><span>►</span><span>►►</span>
+          {/* Controls */}
+          <div className="mt-2 flex items-center justify-center gap-2">
+            <button className="text-white/20 hover:text-white/50"><SkipBack size={12} /></button>
+            <button onClick={music.playing ? music.pause : music.start} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#a855f7]/30 bg-[#a855f7]/10 text-[#a855f7] hover:bg-[#a855f7]/20">
+              {music.playing ? <Pause size={10} /> : <Play size={10} />}
+            </button>
+            <button className="text-white/20 hover:text-white/50"><SkipForward size={12} /></button>
+            <button onClick={music.toggleMute} className="ml-1 text-white/20 hover:text-white/50">
+              {music.muted ? <VolumeX size={12} /> : <Volume2 size={12} />}
+            </button>
           </div>
         </div>
       </div>
 
       {/* Main hero */}
       <div className="flex flex-1 flex-col justify-center">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-xl">
-            <p className="text-sm text-[#00d4ff]">Hello!</p>
-            <p className="mt-1 text-lg text-white/60">I&apos;m</p>
-            <h1 className="text-5xl font-bold leading-[1.05] text-white sm:text-6xl lg:text-7xl" style={{ textShadow: "0 0 50px rgba(0,212,255,0.12), 3px 3px 0 rgba(169,112,255,0.3)" }}>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
+          <div className="max-w-xl flex-1">
+            <p className="text-lg text-[#00d4ff]">Hello!</p>
+            <p className="mt-1 text-xl text-white/60">I&apos;m</p>
+            <h1 className="font-[family-name:var(--font-pixel)] text-3xl leading-relaxed text-white sm:text-4xl lg:text-5xl" style={{ textShadow: "0 0 40px rgba(168,85,247,0.3), 3px 3px 0 rgba(168,85,247,0.4)" }}>
               Priyanshu<br />Patel
             </h1>
-            <p className="mt-4 text-[11px] tracking-[0.2em] text-[#ffd700]">BUSINESS ANALYST &bull; DATA DRIVEN &bull; PROBLEM SOLVER</p>
-            <p className="mt-4 text-xs leading-relaxed text-white/35">
-              Product &amp; data-focused Business Analyst experienced in building and optimising API-driven systems and workflows. Currently at Digit Life Insurance, leading end-to-end SDLC for Group Life products supporting a 1,500+ Cr premium portfolio and 2L+ monthly transactions.
+            <p className="mt-3 font-[family-name:var(--font-pixel)] text-[8px] tracking-[0.15em] text-[#ffd700]">
+              BUSINESS ANALYST &bull; DATA DRIVEN &bull; PROBLEM SOLVER
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-white/40">
+              Product &amp; data-focused Business Analyst building and optimising API-driven systems and workflows.
+              Currently at Digit Life Insurance, leading end-to-end SDLC for Group Life products supporting 1,500+ Cr premium portfolio.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <button onClick={() => nav("projects")} className="border border-[#00d4ff]/30 bg-[#00d4ff]/[0.08] px-5 py-2 text-xs text-[#00d4ff] transition hover:bg-[#00d4ff]/[0.15]">▶ VIEW MY WORK</button>
-              <button onClick={() => nav("contact")} className="border border-white/10 px-5 py-2 text-xs text-white/30 transition hover:border-white/20 hover:text-white/50">&gt; LET&apos;S CONNECT</button>
+              <button onClick={() => nav("projects")} className="border border-[#00d4ff]/30 bg-[#00d4ff]/10 px-5 py-2 font-[family-name:var(--font-pixel)] text-[9px] text-[#00d4ff] transition hover:bg-[#00d4ff]/20">▶ VIEW MY WORK</button>
+              <button onClick={() => nav("contact")} className="border border-white/15 px-5 py-2 font-[family-name:var(--font-pixel)] text-[9px] text-white/40 transition hover:border-white/30 hover:text-white/60">&gt; LET&apos;S CONNECT</button>
             </div>
           </div>
-          {/* Right info box */}
-          <div className="hidden w-56 shrink-0 space-y-3 border border-white/[0.06] bg-black/30 p-4 lg:block">
-            <p className="text-[10px] uppercase tracking-wider text-[#39ff14]/60">Quick Stats</p>
-            <div className="grid grid-cols-2 gap-2">
-              {[["Premium Systems", "1,500+ Cr"], ["Monthly Txns", "2L+"], ["Projects Shipped", "4"], ["Recognition", "Tech Titan"]].map(([l, v]) => (
-                <div key={l} className="border border-white/[0.06] bg-black/40 p-2">
-                  <p className="text-[9px] text-white/25">{l}</p>
-                  <p className="mt-0.5 text-[11px] font-bold text-[#39ff14]/70">{v}</p>
+
+          {/* Right info card */}
+          <div className="hidden w-52 shrink-0 space-y-2 border border-white/10 bg-black/40 p-4 lg:block">
+            <p className="text-sm text-white/30">Building smart systems &amp; automating workflows since undergrad.</p>
+            <div className="my-3 h-px bg-gradient-to-r from-transparent via-[#a855f7]/30 to-transparent" />
+            <div className="grid grid-cols-2 gap-1.5">
+              {[["Portfolio", "1,500+ Cr"], ["Txns/mo", "2L+"], ["Projects", "4"], ["Award", "Tech Titan"]].map(([k, v]) => (
+                <div key={k} className="border border-white/5 bg-white/[0.02] p-1.5">
+                  <p className="text-[10px] text-white/20">{k}</p>
+                  <p className="text-sm font-bold text-[#39ff14]">{v}</p>
                 </div>
-              ))}
-            </div>
-            <div className="border border-[#ffd700]/15 bg-[#ffd700]/[0.04] p-2">
-              <p className="text-[10px] text-[#ffd700]/60">🏆 Tech Titan Award</p>
-              <p className="text-[9px] text-white/25">Digit Life Insurance</p>
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {["SQL", "APIs", "UAT", "Automation", "AI", "Agile"].map(t => (
-                <span key={t} className="border border-white/[0.05] px-1.5 py-0.5 text-[8px] text-white/20">{t}</span>
               ))}
             </div>
           </div>
@@ -269,63 +338,66 @@ function HomeScreen({ nav, active }: { nav: (s: Screen) => void; active: Screen 
   );
 }
 
-/* ═══ ABOUT ════════════════════════════════════════════ */
+/* ═══ ABOUT ══════════════════════════════════════════════ */
 
 function AboutScreen() {
   return (
     <div>
       <Cmd text="about me" />
-      <div className="mt-5 flex flex-col gap-6 md:flex-row">
-        <div className="shrink-0 space-y-4 md:w-60">
-          {/* Retro terminal */}
-          <div className="border border-white/[0.07] bg-black/40 p-3">
-            <div className="border border-white/[0.05] bg-black p-3 text-xs">
-              <p className="text-[#39ff14]">&gt;_ me.txt</p>
-              <p className="mt-1 text-white/20">loading personality...</p>
-              <p className="mt-1 text-[#00d4ff]">ready.</p>
-              <p className="mt-2 text-white/[0.08]">───────────────────</p>
-              <p className="text-white/30">MBA Finance + B.Tech CSE</p>
-              <p className="text-white/30">Business Analyst</p>
-              <p className="text-white/30">Digit Life Insurance</p>
-              <p className="text-white/30">Bengaluru, India</p>
-            </div>
-            <div className="mt-2 flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-[#39ff14]" />
-              <div className="h-px flex-1 bg-white/[0.06]" />
+      <div className="mt-4 flex flex-col gap-6 md:flex-row">
+        {/* Left column */}
+        <div className="shrink-0 space-y-4 md:w-56">
+          {/* Terminal card */}
+          <div className="border border-white/10 bg-black/50 p-3">
+            <div className="border border-[#39ff14]/10 bg-black p-3">
+              <p className="text-base text-[#39ff14]">&gt;_ me.txt</p>
+              <p className="text-sm text-white/20">loading personality...</p>
+              <p className="text-sm text-[#00d4ff]">ready.</p>
+              <p className="my-1 text-white/10">───────────────</p>
+              <p className="text-sm text-white/35">MBA Finance + B.Tech CSE</p>
+              <p className="text-sm text-white/35">Business Analyst</p>
+              <p className="text-sm text-white/35">Digit Life Insurance</p>
+              <p className="text-sm text-white/35">Bengaluru, India</p>
             </div>
           </div>
           {/* Favorite things */}
-          <div className="border border-white/[0.06] p-3">
-            <p className="mb-2.5 text-[10px] uppercase tracking-widest text-white/25">Favorite Things</p>
-            <div className="grid grid-cols-2 gap-2">
-              {["Data Analysis", "Process Design", "Automation", "Finance", "AI Tools", "Side Projects"].map(i => (
-                <div key={i} className="border border-white/[0.06] bg-black/40 px-2 py-2 text-center text-[10px] text-white/30">{i}</div>
+          <div className="border border-white/10 p-3">
+            <p className="mb-2 font-[family-name:var(--font-pixel)] text-[8px] uppercase tracking-widest text-white/30">Favorite Things</p>
+            <div className="grid grid-cols-2 gap-1.5">
+              {[
+                { icon: BarChart3, label: "Data Analysis" }, { icon: Workflow, label: "Process Design" },
+                { icon: Terminal, label: "Automation" }, { icon: PenTool, label: "Finance" },
+              ].map(f => (
+                <div key={f.label} className="flex flex-col items-center gap-1 border border-white/5 bg-black/40 p-2">
+                  <f.icon size={20} className="text-[#a855f7]" />
+                  <span className="text-center text-[10px] text-white/30">{f.label}</span>
+                </div>
               ))}
             </div>
           </div>
         </div>
+
+        {/* Right content */}
         <div className="flex-1">
-          <h2 className="text-3xl font-bold text-white" style={{ textShadow: "0 0 25px rgba(255,107,157,0.15)" }}>Who am I?</h2>
-          <div className="mt-4 space-y-3 text-xs leading-relaxed text-white/40">
-            <p>Product &amp; data-focused Business Analyst experienced in building and optimising API-driven systems and workflows. I translate business requirements into technical solutions, perform SQL-driven analysis, and deliver automation and system improvements that enhance efficiency and reduce errors.</p>
-            <p>Strong in system design, data analysis, and cross-functional execution across product, engineering, and operations teams. Proficient in PostgreSQL, Python, and workflow automation.</p>
-            <p>When I&apos;m not optimising workflows, you&apos;ll find me exploring AI tools, building side projects that solve real problems, or diving into financial markets.</p>
+          <h2 className="font-[family-name:var(--font-pixel)] text-xl text-white" style={{ textShadow: "0 0 20px rgba(255,107,157,0.2)" }}>
+            Who am I?
+          </h2>
+          <div className="mt-4 space-y-3 text-base leading-relaxed text-white/40">
+            <p>I&apos;m a product &amp; data-focused Business Analyst experienced in building and optimising API-driven systems and workflows. I translate business requirements into technical solutions, perform SQL-driven analysis, and deliver automation.</p>
+            <p>Strong in system design, data analysis, and cross-functional execution across product, engineering, and operations teams. Proficient in PostgreSQL, Python, and workflow automation tools.</p>
+            <p>When I&apos;m not optimising workflows, you&apos;ll find me exploring AI tools, building side projects, or diving into financial markets.</p>
           </div>
           {/* System info */}
-          <div className="mt-5 border border-white/[0.06] bg-black/30 p-4">
-            <p className="mb-3 text-xs text-[#ff6b9d]">system.info</p>
-            <div className="grid gap-x-6 gap-y-1.5 text-[11px] sm:grid-cols-2">
+          <div className="mt-5 border border-white/10 bg-black/40 p-4">
+            <p className="mb-2 font-[family-name:var(--font-pixel)] text-[9px] text-[#ff6b9d]">system.info</p>
+            <div className="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
               {[
-                ["OS", "Business Analyst v2.0"],
-                ["CPU", "MBA Finance + B.Tech CSE"],
-                ["RAM", "MPSTME, Mumbai · 2025"],
-                ["HDD", "4 projects loaded"],
-                ["Mode", "Focused"],
-                ["Award", "Tech Titan — Digit Life Insurance"],
-                ["Location", "Bengaluru, India"],
-                ["C:/ Drive", "Open to opportunities"],
+                ["OS", "Business Analyst v2.0"], ["CPU", "MBA + B.Tech Dual Degree"],
+                ["RAM", "MPSTME, Mumbai"], ["HDD", "4 projects loaded"],
+                ["Mode", "Focused"], ["Award", "Tech Titan"],
+                ["Coffee", "Many cups"], ["C:/ Drive", "85% free — open to opportunities"],
               ].map(([k, v]) => (
-                <p key={k} className="text-white/25">{k}: <span className="text-white/45">{v}</span></p>
+                <p key={k} className="text-white/25">{k}: <span className="text-white/50">{v}</span></p>
               ))}
             </div>
           </div>
@@ -335,215 +407,238 @@ function AboutScreen() {
   );
 }
 
-/* ═══ PROJECTS ═════════════════════════════════════════ */
+/* ═══ PROJECTS ═══════════════════════════════════════════ */
 
 function ProjectsScreen() {
   const [filter, setFilter] = useState("ALL");
-  const filters = ["ALL", "AI", "MOBILE", "AUTOMATION"];
   return (
     <div>
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Cmd text="my projects" />
         <div className="flex gap-1">
-          {filters.map(f => (
-            <button key={f} onClick={() => setFilter(f)} className={`border px-3 py-1 text-[10px] tracking-wider transition ${filter === f ? "border-[#39ff14]/30 bg-[#39ff14]/[0.08] text-[#39ff14]" : "border-white/[0.06] text-white/20 hover:text-white/35"}`}>{f}</button>
+          {["ALL", "AI", "MOBILE", "AUTOMATION"].map(f => (
+            <button key={f} onClick={() => setFilter(f)} className={`border px-3 py-1 font-[family-name:var(--font-pixel)] text-[8px] transition ${filter === f ? "border-[#39ff14]/30 bg-[#39ff14]/10 text-[#39ff14]" : "border-white/10 text-white/25 hover:text-white/40"}`}>{f}</button>
           ))}
         </div>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {projects.map((pr, idx) => (
-          <motion.div key={pr.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.07 }} className="group border border-white/[0.06] bg-black/30 transition hover:border-white/[0.12]">
-            {/* Colored header area */}
-            <div className="relative h-28 overflow-hidden" style={{ background: `linear-gradient(135deg, ${pr.color}06, ${pr.color}12)` }}>
-              <div className="absolute inset-0" style={{ backgroundImage: `radial-gradient(${pr.color}15 1px, transparent 1px)`, backgroundSize: "8px 8px" }} />
-              <div className="absolute inset-0" style={{ backgroundImage: `linear-gradient(45deg, transparent 35%, ${pr.color}06 35%, ${pr.color}06 65%, transparent 65%)` }} />
-              <div className="absolute left-3 top-3 text-xl font-bold" style={{ color: pr.color, textShadow: `0 0 15px ${pr.color}40` }}>{pr.id}</div>
-              <div className="absolute bottom-3 left-3 text-sm font-bold tracking-wider text-white">{pr.title}</div>
+          <motion.div key={pr.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.06 }}
+            className="group border border-white/10 bg-black/40 transition hover:border-white/20" style={{ borderTopColor: pr.color, borderTopWidth: 3 }}>
+            {/* Preview area */}
+            <div className="relative h-28 overflow-hidden" style={{ background: `linear-gradient(135deg, ${pr.color}08, ${pr.color}18)` }}>
+              <div className="absolute inset-0" style={{ backgroundImage: `radial-gradient(${pr.color}20 1px, transparent 1px)`, backgroundSize: "10px 10px" }} />
+              <div className="absolute left-3 top-3 font-[family-name:var(--font-pixel)] text-lg" style={{ color: pr.color }}>{pr.id}</div>
+              <div className="absolute bottom-3 left-3 font-[family-name:var(--font-pixel)] text-[10px] tracking-wider text-white">{pr.title}</div>
             </div>
-            {/* Content */}
             <div className="p-3">
-              <p className="text-[10px] text-[#ffd700]/60">{pr.status}</p>
-              <p className="mt-1.5 text-[11px] leading-relaxed text-white/30">{pr.desc}</p>
+              <p className="text-sm leading-relaxed text-white/35">{pr.desc}</p>
               <div className="mt-3 flex items-center justify-between">
                 <div className="flex flex-wrap gap-1">
-                  {pr.tags.map(t => <span key={t} className="border border-white/[0.06] px-1.5 py-0.5 text-[9px] text-white/20">{t}</span>)}
+                  {pr.tags.map(t => <span key={t} className="border border-white/5 px-1.5 py-0.5 text-[10px] text-white/20">{t}</span>)}
                 </div>
-                <span className="text-[11px] text-white/15 transition group-hover:text-white/40">VIEW DEMO →</span>
+                {pr.repo ? (
+                  <a href={pr.repo} target="_blank" rel="noopener noreferrer" className="font-[family-name:var(--font-pixel)] text-[8px] text-white/20 transition hover:text-[#39ff14]">VIEW DEMO →</a>
+                ) : (
+                  <span className="font-[family-name:var(--font-pixel)] text-[8px] text-white/15">VIEW DEMO →</span>
+                )}
               </div>
             </div>
           </motion.div>
         ))}
       </div>
-      {/* What projects demonstrate */}
-      <div className="mt-4 border border-white/[0.06] bg-black/30 p-3">
-        <p className="mb-2 text-[10px] text-[#ffd700]/50">▸ What these projects demonstrate</p>
-        <div className="flex flex-wrap gap-1.5">
-          {["Product Thinking", "API & Integration", "AI Integration", "End-to-End Ownership", "Privacy-First", "User Empathy"].map(s => (
-            <span key={s} className="border border-white/[0.05] bg-black/40 px-2 py-1 text-[9px] uppercase text-white/25">{s}</span>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
 
-/* ═══ SKILLS ═══════════════════════════════════════════ */
+/* ═══ SKILLS ═════════════════════════════════════════════ */
 
 function SkillsScreen() {
   return (
     <div>
       <Cmd text="skills &amp; tools" />
-      <div className="mt-5 flex flex-col gap-6 lg:flex-row">
-        {/* Skill bars */}
+      <div className="mt-4 flex flex-col gap-6 lg:flex-row">
+        {/* Skills column */}
         <div className="flex-1">
-          <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#4ecdc4]">Skills</p>
-          <div className="space-y-2">
-            {skillBars.map((s, i) => (
-              <motion.div key={s.name} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
-                <div className="mb-0.5 flex items-center justify-between text-[11px]">
-                  <span className="text-white/35">{s.name}</span>
-                </div>
-                <div className="h-[10px] bg-white/[0.03]">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${s.pct}%` }} transition={{ duration: 0.5, delay: i * 0.05 }} className="h-full" style={{ backgroundImage: `repeating-linear-gradient(90deg, ${i % 2 === 0 ? "#4ecdc4" : "#00d4ff"} 0 6px, transparent 6px 9px)` }} />
-                </div>
-              </motion.div>
-            ))}
+          <div className="mb-1 border border-white/10 bg-black/30 p-4">
+            <p className="mb-3 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest text-[#00d4ff]">Skills</p>
+            <div className="space-y-2.5">
+              {skillBars.map((s, i) => (
+                <motion.div key={s.name} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
+                  <p className="mb-0.5 text-sm text-white/40">{s.name}</p>
+                  <div className="h-3 bg-white/5">
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${s.pct}%` }} transition={{ duration: 0.6, delay: i * 0.04 }} className="h-full"
+                      style={{ backgroundImage: `repeating-linear-gradient(90deg, ${["#00d4ff", "#39ff14", "#ff6b9d", "#ffd700", "#a855f7"][i % 5]} 0 7px, transparent 7px 10px)` }} />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
-        {/* Tools grid */}
+
+        {/* Tools column */}
         <div className="lg:w-[280px]">
-          <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#a855f7]">Tools I Use</p>
-          <div className="grid grid-cols-4 gap-2">
-            {toolsList.map((tool, i) => (
-              <motion.div key={tool.name} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.03 }} className="flex flex-col items-center gap-1 border border-white/[0.06] bg-black/40 p-2 transition hover:border-white/[0.12]">
-                <div className="flex h-8 w-8 items-center justify-center bg-white/[0.04] text-[11px] font-bold text-white/35">{tool.abbr}</div>
-                <span className="text-[8px] text-white/20">{tool.name}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
-      {/* Skill categories */}
-      <div className="mt-6 grid gap-3 sm:grid-cols-2">
-        {skillCategories.map(cat => (
-          <div key={cat.title} className="border border-white/[0.06] bg-black/30 p-3">
-            <p className="mb-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: cat.color }}>{cat.title}</p>
-            <div className="flex flex-wrap gap-1.5">
-              {cat.skills.map(s => <span key={s} className="border border-white/[0.05] bg-black/40 px-2 py-1 text-[10px] text-white/35">{s}</span>)}
+          <div className="border border-white/10 bg-black/30 p-4">
+            <p className="mb-3 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest text-[#ff6b9d]">Tools I Use</p>
+            <div className="grid grid-cols-3 gap-2">
+              {tools.map((tool, i) => (
+                <motion.div key={tool.name} initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.03 }}
+                  className="flex flex-col items-center gap-1.5 border border-white/5 bg-black/40 p-2.5 transition hover:border-white/15">
+                  <tool.icon size={22} style={{ color: tool.color }} />
+                  <span className="text-center text-[10px] text-white/30">{tool.name}</span>
+                </motion.div>
+              ))}
             </div>
           </div>
-        ))}
-      </div>
-      {/* Certifications */}
-      <div className="mt-4 border border-white/[0.06] bg-black/30 p-3">
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[#ffd700]">Certifications</p>
-        <div className="grid gap-1.5 sm:grid-cols-2">
-          {certs.map(c => <div key={c} className="border border-white/[0.05] bg-black/40 px-2 py-1.5 text-[10px] text-white/35">▪ {c}</div>)}
         </div>
       </div>
+
       {/* Currently learning */}
-      <div className="mt-4 border border-white/[0.06] bg-black/30 p-3">
-        <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#ff6b9d]">Currently Learning...</p>
-        <div className="flex items-center gap-3">
-          <Cmd text="learning.exe" />
+      <div className="mt-4 border border-white/10 bg-black/30 p-3">
+        <p className="font-[family-name:var(--font-pixel)] text-[9px] uppercase tracking-widest text-[#ffd700]">Currently Learning...</p>
+        <div className="mt-2 flex items-center gap-3">
+          <span className="text-sm text-[#39ff14]/50">C:\&gt;</span>
+          <p className="text-sm text-white/35">learning.exe</p>
           <div className="flex-1">
-            <p className="text-[11px] text-white/30">Agentic AI systems, product analytics, and AI-native product design</p>
-            <div className="mt-1 h-2.5 bg-white/[0.03]">
-              <motion.div initial={{ width: 0 }} animate={{ width: "60%" }} transition={{ duration: 1 }} className="h-full" style={{ backgroundImage: "repeating-linear-gradient(90deg, #ff6b9d 0 5px, transparent 5px 8px)" }} />
+            <p className="text-sm text-white/40">Agentic AI, product analytics, and AI-native product design</p>
+            <div className="mt-1 h-3 bg-white/5">
+              <motion.div initial={{ width: 0 }} animate={{ width: "60%" }} transition={{ duration: 1.2 }}
+                className="h-full" style={{ backgroundImage: "repeating-linear-gradient(90deg, #ff6b9d 0 6px, transparent 6px 9px)" }} />
             </div>
           </div>
+          <span className="text-xl">🎓</span>
         </div>
       </div>
     </div>
   );
 }
 
-/* ═══ EXPERIENCE ═══════════════════════════════════════ */
+/* ═══ EXPERIENCE ═════════════════════════════════════════ */
 
 function ExperienceScreen() {
   return (
     <div>
       <Cmd text="experience" />
-      <h2 className="mt-3 text-2xl font-bold text-white" style={{ textShadow: "0 0 20px rgba(255,215,0,0.1)" }}>Work Experience</h2>
-      <p className="mt-1 text-[11px] text-white/25">Full-time role and internships.</p>
-      <div className="mt-4 space-y-3">
+      <h2 className="mt-3 font-[family-name:var(--font-pixel)] text-lg text-white" style={{ textShadow: "0 0 15px rgba(255,215,0,0.15)" }}>
+        Work Experience
+      </h2>
+      <div className="mt-3 space-y-3">
         {jobs.map((j, i) => (
-          <motion.div key={j.co} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="border border-white/[0.06] bg-black/30 p-4">
+          <motion.div key={j.co} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
+            className="border border-white/10 bg-black/40 p-4">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <span className="text-sm font-bold text-white">{j.role}</span>
-                <span className="text-sm text-white/20"> — {j.co}</span>
+                <span className="text-base font-bold text-white">{j.role}</span>
+                <span className="text-base text-white/30"> — {j.co}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-white/20">{j.period} · {j.loc}</span>
-                {j.award && <span className="border border-[#ffd700]/20 bg-[#ffd700]/[0.05] px-1.5 py-0.5 text-[9px] text-[#ffd700]/60">🏆 {j.award}</span>}
+                <span className="text-sm text-white/20">{j.period} · {j.loc}</span>
+                {j.award && <span className="border border-[#ffd700]/20 bg-[#ffd700]/5 px-1.5 py-0.5 text-[10px] text-[#ffd700]/70">🏆 {j.award}</span>}
               </div>
             </div>
-            <ul className="mt-2.5 space-y-1">
-              {j.bullets.map(b => <li key={b} className="text-[11px] leading-relaxed text-white/30">▸ {b}</li>)}
+            <ul className="mt-2 space-y-0.5">
+              {j.bullets.map(b => <li key={b} className="text-sm leading-relaxed text-white/35">▸ {b}</li>)}
             </ul>
           </motion.div>
         ))}
       </div>
 
       {/* Education */}
-      <p className="mb-3 mt-6 text-xs font-bold uppercase tracking-widest text-[#ff6b9d]">Education</p>
+      <p className="mb-2 mt-5 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest text-[#ff6b9d]">Education</p>
       <div className="grid gap-2 sm:grid-cols-3">
         {education.map(e => (
-          <div key={e.deg} className="border border-white/[0.06] bg-black/30 p-3">
-            <p className="text-[11px] font-bold text-white/50">{e.deg}</p>
-            <p className="text-[10px] text-white/25">{e.school}{e.school ? " · " : ""}{e.year}</p>
-            <p className="text-[10px] text-[#39ff14]/50">{e.gpa}</p>
+          <div key={e.deg} className="border border-white/10 bg-black/40 p-3">
+            <p className="text-sm font-bold text-white/60">{e.deg}</p>
+            <p className="text-sm text-white/25">{e.school}{e.school ? " · " : ""}{e.year}</p>
+            <p className="text-sm text-[#39ff14]/60">{e.gpa}</p>
           </div>
         ))}
       </div>
 
+      {/* Certs */}
+      <p className="mb-2 mt-4 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest text-[#ffd700]">Certifications</p>
+      <div className="grid gap-1.5 sm:grid-cols-2">
+        {certs.map(c => <div key={c} className="border border-white/5 bg-black/30 px-3 py-2 text-sm text-white/35">▪ {c}</div>)}
+      </div>
+
       {/* Achievement */}
-      <div className="mt-4 border border-[#ffd700]/10 bg-[#ffd700]/[0.03] p-3">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-[#ffd700]/50">Achievement</p>
-        <p className="mt-1 text-[11px] text-white/35">Finalist — EY Young Leader&apos;s Business Case Study Competition 2024</p>
+      <div className="mt-4 border border-[#ffd700]/15 bg-[#ffd700]/5 p-3">
+        <p className="font-[family-name:var(--font-pixel)] text-[9px] text-[#ffd700]/60">Achievement</p>
+        <p className="mt-1 text-sm text-white/40">Finalist — EY Young Leader&apos;s Business Case Study Competition 2024</p>
       </div>
     </div>
   );
 }
 
-/* ═══ CONTACT ══════════════════════════════════════════ */
+/* ═══ CONTACT ════════════════════════════════════════════ */
 
 function ContactScreen() {
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  const handleSubmit = async () => {
+    if (!form.name || !form.email || !form.message) return;
+    setStatus("sending");
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/itsmepriyanshu36@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ name: form.name, email: form.email, message: form.message }),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        setForm({ name: "", email: "", message: "" });
+        setTimeout(() => setStatus("idle"), 4000);
+      } else { setStatus("error"); setTimeout(() => setStatus("idle"), 3000); }
+    } catch { setStatus("error"); setTimeout(() => setStatus("idle"), 3000); }
+  };
+
   return (
     <div>
       <Cmd text="contact me" />
-      <h2 className="mt-3 text-3xl font-bold text-white" style={{ textShadow: "0 0 25px rgba(168,85,247,0.12)" }}>Let&apos;s connect!</h2>
-      <p className="mt-2 text-xs text-white/25">I am always open to discussing interesting opportunities in business analysis, product, and technology.</p>
+      <h2 className="mt-3 font-[family-name:var(--font-pixel)] text-xl text-white" style={{ textShadow: "0 0 20px rgba(168,85,247,0.2)" }}>
+        Let&apos;s connect!
+      </h2>
+      <p className="mt-2 text-base text-white/30">Always open to discussing interesting opportunities in business analysis, product, and technology.</p>
+
       <div className="mt-5 flex flex-col gap-6 md:flex-row">
         {/* Social links */}
         <div className="space-y-4 md:w-64">
           {[
-            { label: "EMAIL", value: "itsmepriyanshu36@gmail.com", icon: "✉", href: "mailto:itsmepriyanshu36@gmail.com" },
-            { label: "LINKEDIN", value: "/in/priyanshu-patel", icon: "in", href: "https://www.linkedin.com/in/priyanshu-patel-069331200/" },
-            { label: "GITHUB", value: "/zucc12309", icon: "⌘", href: "https://github.com/zucc12309" },
+            { label: "EMAIL", value: "itsmepriyanshu36@gmail.com", Icon: Mail, color: "#ff6b9d", href: "mailto:itsmepriyanshu36@gmail.com" },
+            { label: "LINKEDIN", value: "/in/priyanshu-patel", Icon: Linkedin, color: "#0077B5", href: "https://www.linkedin.com/in/priyanshu-patel-069331200/" },
+            { label: "GITHUB", value: "/zucc12309", Icon: Github, color: "#fff", href: "https://github.com/zucc12309" },
           ].map(s => (
             <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="group flex items-start gap-3 transition hover:opacity-80">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-white/[0.08] bg-black/40 text-sm text-[#a855f7]">{s.icon}</span>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-white/10 bg-black/50">
+                <s.Icon size={18} style={{ color: s.color }} />
+              </span>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-white/25">{s.label}</p>
-                <p className="text-[11px] text-white/45 transition group-hover:text-[#a855f7]">{s.value}</p>
+                <p className="font-[family-name:var(--font-pixel)] text-[8px] uppercase tracking-widest text-white/30">{s.label}</p>
+                <p className="text-sm text-white/50 transition group-hover:text-[#a855f7]">{s.value}</p>
               </div>
             </a>
           ))}
-          <div className="border-t border-white/[0.06] pt-3">
-            <p className="text-[10px] text-white/15">📍 Based in Bengaluru, India</p>
-            <p className="text-[10px] text-white/15">Available worldwide</p>
+          <div className="border-t border-white/5 pt-3">
+            <p className="text-sm text-white/20">📍 Based in Bengaluru, India</p>
+            <p className="text-sm text-white/20">Available Worldwide</p>
           </div>
         </div>
+
         {/* Contact form */}
-        <div className="flex-1 border border-white/[0.06] bg-black/30 p-4">
-          <p className="mb-4 text-center text-xs text-white/35">SEND A MESSAGE  :)</p>
+        <div className="flex-1 border border-white/10 bg-black/40 p-4">
+          <p className="mb-4 text-center font-[family-name:var(--font-pixel)] text-[10px] text-white/40">SEND A MESSAGE  :)</p>
           <div className="space-y-3">
-            <input type="text" placeholder="NAME" className="w-full border border-white/[0.07] bg-[#0a0a18] px-3 py-2.5 text-xs text-white/50 placeholder:text-white/12 outline-none focus:border-[#a855f7]/30" />
-            <input type="email" placeholder="EMAIL" className="w-full border border-white/[0.07] bg-[#0a0a18] px-3 py-2.5 text-xs text-white/50 placeholder:text-white/12 outline-none focus:border-[#a855f7]/30" />
-            <textarea placeholder="MESSAGE" rows={4} className="w-full resize-none border border-white/[0.07] bg-[#0a0a18] px-3 py-2.5 text-xs text-white/50 placeholder:text-white/12 outline-none focus:border-[#a855f7]/30" />
-            <button className="w-full border border-[#a855f7]/25 bg-[#a855f7]/[0.08] py-2.5 text-xs tracking-wider text-[#a855f7] transition hover:bg-[#a855f7]/[0.15]">▶ SEND MESSAGE</button>
+            <input type="text" placeholder="NAME" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+              className="w-full border border-white/10 bg-[#0a0018] px-3 py-2.5 font-[family-name:var(--font-vt)] text-base text-white/60 placeholder:text-white/15 outline-none transition focus:border-[#a855f7]/40" />
+            <input type="email" placeholder="EMAIL" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+              className="w-full border border-white/10 bg-[#0a0018] px-3 py-2.5 font-[family-name:var(--font-vt)] text-base text-white/60 placeholder:text-white/15 outline-none transition focus:border-[#a855f7]/40" />
+            <textarea placeholder="MESSAGE" rows={4} value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
+              className="w-full resize-none border border-white/10 bg-[#0a0018] px-3 py-2.5 font-[family-name:var(--font-vt)] text-base text-white/60 placeholder:text-white/15 outline-none transition focus:border-[#a855f7]/40" />
+            <button onClick={handleSubmit} disabled={status === "sending"}
+              className="w-full border border-[#a855f7]/30 bg-[#a855f7]/10 py-2.5 font-[family-name:var(--font-pixel)] text-[9px] tracking-wider text-[#a855f7] transition hover:bg-[#a855f7]/20 disabled:opacity-50">
+              {status === "sending" ? "SENDING..." : status === "sent" ? "✓ MESSAGE SENT!" : status === "error" ? "✕ RETRY" : "▶ SEND MESSAGE"}
+            </button>
           </div>
         </div>
       </div>
@@ -551,7 +646,7 @@ function ContactScreen() {
   );
 }
 
-/* ═══ TASKBAR ══════════════════════════════════════════ */
+/* ═══ TASKBAR ════════════════════════════════════════════ */
 
 function Taskbar({ screen, nav, time }: { screen: Screen; nav: (s: Screen) => void; time: string }) {
   const tabs: { id: Screen; label: string }[] = [
@@ -559,29 +654,29 @@ function Taskbar({ screen, nav, time }: { screen: Screen; nav: (s: Screen) => vo
     { id: "skills", label: "skills.exe" }, { id: "experience", label: "experience.exe" }, { id: "contact", label: "contact.exe" },
   ];
   return (
-    <div className="flex items-center gap-1 border-t border-white/[0.08] px-2 py-1.5" style={{ background: "linear-gradient(180deg, #1a1a35, #0e0e1f)" }}>
-      {/* Start button */}
-      <button onClick={() => nav("home")} className={`flex items-center gap-2 border px-3 py-1 text-xs transition ${screen === "home" ? "border-[#39ff14]/20 bg-[#39ff14]/[0.08] text-[#39ff14]" : "border-white/[0.08] bg-black/30 text-white/45 hover:bg-white/[0.04]"}`}>
+    <div className="flex items-center gap-1 border-t border-white/10 px-2 py-1.5" style={{ background: "linear-gradient(180deg, #1a0a3a, #0d0020)" }}>
+      <button onClick={() => nav("home")} className={`flex items-center gap-2 border px-3 py-1 font-[family-name:var(--font-pixel)] text-[9px] transition ${screen === "home" ? "border-[#39ff14]/20 bg-[#39ff14]/10 text-[#39ff14]" : "border-white/10 bg-black/30 text-white/40 hover:bg-white/5"}`}>
         <span className="grid grid-cols-2 gap-[2px]">
           <span className="block h-[5px] w-[5px] bg-[#ff6b9d]" /><span className="block h-[5px] w-[5px] bg-[#39ff14]" />
           <span className="block h-[5px] w-[5px] bg-[#00d4ff]" /><span className="block h-[5px] w-[5px] bg-[#ffd700]" />
         </span>
         Start
       </button>
-      {/* Tabs */}
       <div className="flex flex-1 gap-1 overflow-x-auto">
         {tabs.map(t => (
-          <button key={t.id} onClick={() => nav(t.id)} className={`border px-2.5 py-1 text-[10px] transition sm:px-3 ${screen === t.id ? "border-white/[0.12] bg-white/[0.07] text-white" : "border-white/[0.05] bg-black/30 text-white/20 hover:text-white/35"}`}>{t.label}</button>
+          <button key={t.id} onClick={() => nav(t.id)}
+            className={`border px-2 py-1 text-sm transition sm:px-3 ${screen === t.id ? "border-white/15 bg-white/10 text-white" : "border-white/5 bg-black/30 text-white/25 hover:text-white/40"}`}>
+            {t.label}
+          </button>
         ))}
       </div>
-      {/* Clock */}
-      <div className="border border-white/[0.06] bg-black/30 px-3 py-1 text-[11px] text-white/25">{time}</div>
+      <div className="border border-white/10 bg-black/30 px-3 py-1 text-sm text-white/30">{time}</div>
     </div>
   );
 }
 
-/* ═══ HELPERS ══════════════════════════════════════════ */
+/* ═══ HELPERS ════════════════════════════════════════════ */
 
 function Cmd({ text }: { text: string }) {
-  return <p className="text-sm"><span className="text-white/20">C:\&gt;</span> <span className="text-[#39ff14]" dangerouslySetInnerHTML={{ __html: text }} /></p>;
+  return <p className="text-base"><span className="text-[#39ff14]/50">C:\&gt;</span> <span className="font-bold text-[#39ff14]" dangerouslySetInnerHTML={{ __html: text }} /></p>;
 }
