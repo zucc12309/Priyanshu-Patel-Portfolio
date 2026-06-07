@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(143, 74, 255, 0.16), transparent 34%),
+    radial-gradient(circle at 80% 20%, rgba(237, 33, 161, 0.12), transparent 34%),
+    #050607;
+  color: white;
+  font-variant-ligatures: none;
+}
+
+::selection {
+  background: rgba(70, 233, 255, 0.28);
+}
+
+.retro-scanlines::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.035) 50%, rgba(0, 0, 0, 0.14) 50%),
+    linear-gradient(90deg, rgba(255, 0, 168, 0.035), rgba(0, 255, 110, 0.02), rgba(0, 153, 255, 0.035));
+  background-size: 100% 4px, 6px 100%;
+  mix-blend-mode: screen;
+  opacity: 0.38;
+}
+
+.retro-scanlines::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 69;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 58%, rgba(0, 0, 0, 0.42) 100%);
+}
+
+.retro-window {
+  border: 1px solid rgba(226, 218, 198, 0.72);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    rgba(4, 8, 9, 0.94);
+  background-size: 18px 18px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 26px 70px rgba(0, 0, 0, 0.55),
+    0 0 42px rgba(197, 56, 255, 0.08);
+}
+
+.retro-titlebar {
+  border-bottom: 1px solid rgba(226, 218, 198, 0.72);
+  background: linear-gradient(90deg, #16005f, #2b1775 48%, #111015);
+  color: #fff3d6;
+  text-shadow: 0 0 12px rgba(244, 50, 190, 0.5);
+}
+
+.retro-button {
+  border: 1px solid rgba(232, 218, 190, 0.72);
+  background: rgba(17, 18, 23, 0.9);
+  color: #fff3d6;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.18), inset -1px -1px 0 rgba(0, 0, 0, 0.55);
+}
+
+.retro-button:hover {
+  border-color: rgba(236, 42, 173, 0.9);
+  background: rgba(126, 19, 89, 0.72);
+  color: white;
+}
+
+.retro-terminal {
+  color: #77ff5f;
+  text-shadow: 0 0 12px rgba(119, 255, 95, 0.4);
+}
+
+.pixel-heading {
+  color: #f12aa5;
+  text-shadow: 4px 0 0 rgba(83, 35, 145, 0.9), 0 0 28px rgba(241, 42, 165, 0.35);
+}
+
+.retro-panel {
+  border: 1px solid rgba(226, 218, 198, 0.32);
+  background: rgba(8, 12, 14, 0.8);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.045);
+}
+
+.retro-progress {
+  background-image: repeating-linear-gradient(90deg, #65d84d 0 8px, transparent 8px 11px);
+}
+
+.retro-taskbar {
+  border-top: 2px solid #efe7d1;
+  background: linear-gradient(#c8c1ca, #9f98a4);
+  color: #101014;
+  box-shadow: inset 0 1px 0 white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
