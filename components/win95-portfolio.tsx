@@ -324,32 +324,9 @@ function HomeScreen({ nav }: { nav: (s: Screen) => void }) {
               Priyanshu<br />Patel
             </h1>
           </div>
-          {/* Retro computer icon */}
-          <div className="shrink-0">
-            <div className="relative">
-              {/* Monitor */}
-              <div className="h-28 w-36 rounded-t-lg border-2 border-[#39ff14]/30 bg-[#0a0020] sm:h-32 sm:w-40" style={{ boxShadow: "0 0 20px rgba(57,255,20,0.08), inset 0 0 30px rgba(57,255,20,0.05)" }}>
-                {/* Screen content */}
-                <div className="mx-2 mt-2 h-[76px] overflow-hidden rounded-sm border border-[#39ff14]/15 bg-black p-1.5 sm:h-[88px]">
-                  <p className="font-[family-name:var(--font-pixel)] text-[6px] text-[#39ff14]/60">C:\&gt; portfolio.exe</p>
-                  <p className="mt-0.5 font-[family-name:var(--font-pixel)] text-[5px] text-[#00d4ff]/50">Loading modules...</p>
-                  <p className="mt-0.5 font-[family-name:var(--font-pixel)] text-[5px] text-[#ff6b9d]/50">▓▓▓▓▓▓▓▓░░ 80%</p>
-                  <div className="mt-1 flex gap-[2px]">
-                    {["#ff6b9d", "#39ff14", "#00d4ff", "#ffd700", "#a855f7"].map(c => (
-                      <motion.div key={c} animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity, delay: Math.random() }} className="h-1.5 w-1.5 rounded-sm" style={{ background: c }} />
-                    ))}
-                  </div>
-                  <p className="mt-1 font-[family-name:var(--font-pixel)] text-[5px] text-[#39ff14]/40">Ready.</p>
-                </div>
-                {/* Monitor LED */}
-                <div className="mx-auto mt-1 flex items-center justify-center gap-1">
-                  <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }} className="h-1 w-1 rounded-full bg-[#39ff14]" />
-                </div>
-              </div>
-              {/* Stand */}
-              <div className="mx-auto h-3 w-12 border-x-2 border-[#39ff14]/20 bg-[#0a0020]" />
-              <div className="mx-auto h-1.5 w-20 rounded-b border-2 border-t-0 border-[#39ff14]/20 bg-[#0a0020]" />
-            </div>
+          {/* Retro computer pixel art */}
+          <div className="shrink-0" style={{ imageRendering: "pixelated" }}>
+            <RetroPC />
           </div>
         </div>
         <p className="mt-2 text-base text-white/50">Business Analyst at <span className="text-[#39ff14]">Digit Life Insurance</span></p>
@@ -836,4 +813,91 @@ function Taskbar({ screen, nav, time }: { screen: Screen; nav: (s: Screen) => vo
 
 function Cmd({ text }: { text: string }) {
   return <p className="text-base"><span className="text-[#39ff14]/50">C:\&gt;</span> <span className="font-bold text-[#39ff14]" dangerouslySetInnerHTML={{ __html: text }} /></p>;
+}
+
+/* Pixel-art retro PC: monitor with smiley, CPU tower, keyboard, coffee mug */
+function RetroPC() {
+  return (
+    <svg viewBox="0 0 160 140" className="h-36 w-44 sm:h-44 sm:w-52" style={{ imageRendering: "pixelated" }}>
+      {/* === CPU Tower (left) === */}
+      <rect x="4" y="30" width="34" height="75" rx="1" fill="#3a3530" stroke="#2a2520" strokeWidth="1" />
+      <rect x="6" y="32" width="30" height="71" rx="1" fill="#4a4540" />
+      {/* Drive bays */}
+      <rect x="9" y="36" width="24" height="8" rx="0.5" fill="#2a2520" stroke="#1a1510" strokeWidth="0.5" />
+      <rect x="9" y="47" width="24" height="8" rx="0.5" fill="#2a2520" stroke="#1a1510" strokeWidth="0.5" />
+      <rect x="9" y="58" width="24" height="5" rx="0.5" fill="#2a2520" stroke="#1a1510" strokeWidth="0.5" />
+      {/* Drive slot lines */}
+      <line x1="11" y1="40" x2="31" y2="40" stroke="#1a1510" strokeWidth="0.5" />
+      <line x1="11" y1="51" x2="31" y2="51" stroke="#1a1510" strokeWidth="0.5" />
+      {/* Eject buttons */}
+      <rect x="28" y="38" width="3" height="2" rx="0.3" fill="#5a5550" />
+      <rect x="28" y="49" width="3" height="2" rx="0.3" fill="#5a5550" />
+      {/* Power button */}
+      <circle cx="21" cy="94" r="3" fill="#2a2520" stroke="#1a1510" strokeWidth="0.5" />
+      <circle cx="21" cy="94" r="2" fill="#3a3530" />
+      {/* Power LED */}
+      <motion.circle cx="13" cy="94" r="1.5" fill="#39ff14" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }} />
+
+      {/* === Monitor === */}
+      <rect x="44" y="6" width="76" height="62" rx="3" fill="#3a3530" stroke="#2a2520" strokeWidth="1.5" />
+      <rect x="46" y="8" width="72" height="58" rx="2" fill="#4a4540" />
+      {/* Screen bezel */}
+      <rect x="52" y="12" width="60" height="46" rx="1" fill="#1a1510" />
+      {/* Screen */}
+      <rect x="54" y="14" width="56" height="42" fill="#0a1a0a" />
+      {/* Scanlines on screen */}
+      {Array.from({ length: 10 }).map((_, i) => (
+        <line key={`sl${i}`} x1="54" y1={14 + i * 4.2} x2="110" y2={14 + i * 4.2} stroke="#0f250f" strokeWidth="0.5" />
+      ))}
+      {/* Smiley face on screen */}
+      {/* Eyes */}
+      <motion.rect x="70" y="24" width="4" height="6" fill="#39ff14" animate={{ opacity: [0.7, 1, 0.7] }} transition={{ duration: 3, repeat: Infinity }} />
+      <motion.rect x="90" y="24" width="4" height="6" fill="#39ff14" animate={{ opacity: [0.7, 1, 0.7] }} transition={{ duration: 3, repeat: Infinity }} />
+      {/* Mouth */}
+      <motion.path d="M72 38 Q82 48 92 38" fill="none" stroke="#39ff14" strokeWidth="2.5" strokeLinecap="round"
+        animate={{ opacity: [0.7, 1, 0.7] }} transition={{ duration: 3, repeat: Infinity }} />
+      {/* Monitor brand label */}
+      <rect x="74" y="60" width="16" height="3" rx="0.5" fill="#5a5550" />
+      {/* Monitor LED */}
+      <motion.circle cx="68" cy="61.5" r="1.2" fill="#39ff14" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }} />
+
+      {/* Monitor stand */}
+      <rect x="72" y="68" width="20" height="6" fill="#3a3530" stroke="#2a2520" strokeWidth="0.5" />
+      <rect x="66" y="74" width="32" height="3" rx="1" fill="#3a3530" stroke="#2a2520" strokeWidth="0.5" />
+
+      {/* === Keyboard === */}
+      <rect x="44" y="82" width="76" height="18" rx="2" fill="#3a3530" stroke="#2a2520" strokeWidth="1" />
+      <rect x="46" y="84" width="72" height="14" rx="1" fill="#4a4540" />
+      {/* Key rows */}
+      {Array.from({ length: 12 }).map((_, i) => (
+        <rect key={`k1${i}`} x={48 + i * 5.5} y="86" width="4" height="3" rx="0.3" fill="#5a5550" stroke="#2a2520" strokeWidth="0.3" />
+      ))}
+      {Array.from({ length: 11 }).map((_, i) => (
+        <rect key={`k2${i}`} x={50 + i * 5.5} y="91" width="4" height="3" rx="0.3" fill="#5a5550" stroke="#2a2520" strokeWidth="0.3" />
+      ))}
+      {/* Spacebar */}
+      <rect x="60" y="96" width="24" height="2.5" rx="0.3" fill="#5a5550" stroke="#2a2520" strokeWidth="0.3" />
+
+      {/* === Coffee mug (right) === */}
+      <rect x="128" y="86" width="14" height="16" rx="2" fill="#4a4038" stroke="#3a3028" strokeWidth="1" />
+      {/* Mug handle */}
+      <path d="M142 90 Q148 90 148 94 Q148 98 142 98" fill="none" stroke="#3a3028" strokeWidth="1.5" />
+      {/* Coffee surface */}
+      <rect x="129" y="88" width="12" height="3" rx="1" fill="#2a1a0a" />
+      {/* Steam */}
+      <motion.path d="M133 84 Q134 80 133 76" fill="none" stroke="#ffffff" strokeWidth="0.6" opacity="0.2"
+        animate={{ opacity: [0.1, 0.3, 0.1], y: [0, -2, 0] }} transition={{ duration: 2, repeat: Infinity }} />
+      <motion.path d="M137 84 Q138 79 137 75" fill="none" stroke="#ffffff" strokeWidth="0.6" opacity="0.2"
+        animate={{ opacity: [0.15, 0.35, 0.15], y: [0, -2, 0] }} transition={{ duration: 2.5, repeat: Infinity }} />
+
+      {/* Ambient glow behind monitor */}
+      <rect x="54" y="14" width="56" height="42" fill="url(#screenGlow)" opacity="0.15" />
+      <defs>
+        <radialGradient id="screenGlow" cx="50%" cy="50%">
+          <stop offset="0%" stopColor="#39ff14" />
+          <stop offset="100%" stopColor="transparent" />
+        </radialGradient>
+      </defs>
+    </svg>
+  );
 }
