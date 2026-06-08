@@ -313,7 +313,7 @@ function HomeScreen({ nav, music }: { nav: (s: Screen) => void; music: MusicCont
   return (
     <div className="flex h-full flex-col gap-4 md:flex-row md:gap-8">
       {/* Left sidebar — hidden below md */}
-      <div className="hidden shrink-0 md:flex md:w-40 md:flex-col md:justify-between lg:w-44">
+      <div className="hidden shrink-0 md:flex md:w-40 md:flex-col md:gap-6 lg:w-44">
         <div>
           <p className="mb-3 font-[family-name:var(--font-pixel)] text-lg lg:text-xl" style={{ color: C.green, textShadow: `0 0 8px rgba(139,231,139,0.3)` }}>&gt;_</p>
           <nav className="flex flex-col gap-0.5">
@@ -350,7 +350,7 @@ function HomeScreen({ nav, music }: { nav: (s: Screen) => void; music: MusicCont
       </div>
 
       {/* Main hero */}
-      <div className="flex flex-1 flex-col justify-center">
+      <div className="flex flex-1 flex-col pt-4 sm:pt-8 md:pt-10 lg:pt-14">
         <div className="flex items-center gap-4 sm:gap-6">
           <div className="min-w-0 flex-1">
             <p className="text-lg sm:text-xl" style={{ color: C.cyan }}>Hello!</p>
