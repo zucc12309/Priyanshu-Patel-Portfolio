@@ -8,7 +8,7 @@ import {
   Terminal, PenTool, Send, Pause, Play, Download, Eye, EyeOff,
   SkipBack, SkipForward, Volume2, VolumeX, Trophy, Lightbulb,
   Target, Wrench, BookOpen, Briefcase, Rocket, Search, Zap,
-  ChevronRight, ExternalLink, Music,
+  ChevronRight, ExternalLink, Music, Gamepad2, Dumbbell, Pencil,
 } from "lucide-react";
 
 type Screen = "home" | "about" | "digit" | "builder" | "skills" | "contact";
@@ -285,7 +285,6 @@ export function Win95Portfolio() {
                   {music.muted ? <VolumeX size={12} /> : <Volume2 size={12} />}
                 </button>
               </div>
-              <span className="text-xs sm:text-sm" style={{ color: C.textDim }}>{time}</span>
             </div>
           </motion.div>
         </AnimatePresence>
@@ -450,7 +449,7 @@ function AboutScreen() {
           <div className="p-3" style={{ border: `1px solid ${C.border}` }}>
             <p className="mb-2 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest sm:text-xs" style={{ color: C.textDim }}>Interests</p>
             <div className="grid grid-cols-2 gap-1.5">
-              {[{ icon: BarChart3, label: "Data Analysis" }, { icon: Workflow, label: "Process Design" }, { icon: Terminal, label: "AI Tools" }, { icon: PenTool, label: "Finance" }].map(f => (
+              {[{ icon: Gamepad2, label: "Gaming" }, { icon: Dumbbell, label: "Working Out" }, { icon: Pencil, label: "Sketching" }, { icon: Terminal, label: "Vibe Coding" }].map(f => (
                 <div key={f.label} className="flex flex-col items-center gap-1 p-2" style={{ border: `1px solid ${C.borderLight}`, background: C.bg }}>
                   <f.icon size={18} style={{ color: C.purple }} />
                   <span className="text-center text-[10px] sm:text-xs" style={{ color: C.textDim }}>{f.label}</span>
@@ -786,7 +785,7 @@ function MemoryRouterTerminal() {
 /* ═══ SKILLS ═════════════════════════════════════════════ */
 
 function SkillsScreen() {
-  const colors = [C.cyan, C.green, C.pink, C.amber, C.purple];
+  const colors = ["rgba(107,197,232,0.45)", "rgba(139,231,139,0.45)", "rgba(232,114,154,0.45)", "rgba(245,177,76,0.45)", "rgba(169,112,255,0.45)"];
   return (
     <div>
       <Cmd text="skills &amp; tools" />
@@ -888,7 +887,6 @@ function ContactScreen() {
           ))}
           <div className="pt-3" style={{ borderTop: `1px solid ${C.borderLight}` }}>
             <p className="text-xs sm:text-sm" style={{ color: C.textDim }}>📍 Based in Bengaluru, India</p>
-            <p className="text-xs sm:text-sm" style={{ color: C.textDim }}>Available Worldwide</p>
           </div>
         </div>
         <div className="flex-1 p-3 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
