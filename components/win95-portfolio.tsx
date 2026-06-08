@@ -177,18 +177,19 @@ function useSynthPlayer(): MusicControls {
     gain.connect(ctx.destination);
     ctxRef.current = ctx;
     gainRef.current = gain;
-    const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
-    const melody = [0, 2, 4, 5, 4, 2, 3, 1, 0, 4, 7, 5, 4, 2, 0, 3];
+    // Passionfruit-inspired melody — Db major dreamy arpeggio
+    const notes = [277.18, 311.13, 349.23, 369.99, 415.30, 466.16, 554.37, 311.13];
+    const melody = [0, 2, 4, 6, 4, 2, 0, 3, 5, 4, 2, 0, 3, 1, 0, 7];
     let step = 0;
     const loop = () => {
       const now = ctx.currentTime;
       const note = notes[melody[step % melody.length]];
-      playNote(ctx, note, now, 0.4, gain);
-      playNote(ctx, note * 0.5, now, 0.6, gain);
+      playNote(ctx, note, now, 0.55, gain);
+      playNote(ctx, note * 0.5, now, 0.7, gain);
       step++;
     };
     loop();
-    intervalRef.current = setInterval(loop, 500);
+    intervalRef.current = setInterval(loop, 600);
     setPlaying(true);
   }, [playNote]);
 
@@ -277,7 +278,7 @@ export function Win95Portfolio() {
                       className="w-[2px] rounded-sm" style={{ background: `linear-gradient(180deg, ${C.pink}, ${C.purple})`, height: 2 }} />
                   ))}
                 </div>
-                <span className="hidden text-xs sm:inline" style={{ color: C.textDim }}>Synthwave</span>
+                <span className="hidden text-xs sm:inline" style={{ color: C.textDim }}>Passionfruit</span>
                 <button onClick={music.playing ? music.pause : music.start} className="flex h-5 w-5 items-center justify-center rounded-full transition hover:opacity-80" style={{ border: `1px solid rgba(169,112,255,0.3)`, background: `rgba(169,112,255,0.1)`, color: C.purple }}>
                   {music.playing ? <Pause size={8} /> : <Play size={8} />}
                 </button>
@@ -341,8 +342,8 @@ function HomeScreen({ nav, music }: { nav: (s: Screen) => void; music: MusicCont
         {/* Now Playing — sidebar only */}
         <div className="shrink-0 p-3" style={{ border: `1px solid ${C.border}`, background: `${C.bg}88` }}>
           <p className="font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest" style={{ color: C.textDim }}>Now Playing</p>
-          <p className="mt-1 text-base" style={{ color: C.textMuted }}>Synthwave Dreams</p>
-          <p className="text-sm" style={{ color: C.textDim }}>Lo-fi Focus Mix</p>
+          <p className="mt-1 text-base" style={{ color: C.textMuted }}>Passionfruit</p>
+          <p className="text-sm" style={{ color: C.textDim }}>Drake</p>
           <div className="mt-2 flex items-end gap-[3px]">
             {Array.from({ length: 14 }).map((_, i) => (
               <motion.div key={i} animate={music.playing ? { height: [4, 2 + Math.random() * 14, 4] } : { height: 3 }}
