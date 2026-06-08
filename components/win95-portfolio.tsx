@@ -231,14 +231,14 @@ export function Win95Portfolio() {
           <motion.div key={screen} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.12 }} className="flex h-full flex-col">
             {/* Title bar */}
             <div className="flex shrink-0 items-center justify-between px-3 py-1.5" style={{ background: `linear-gradient(90deg, #0d1117, ${C.surface} 48%, #0d1117)`, borderBottom: `1px solid ${C.border}` }}>
-              <span className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.green, textShadow: `0 0 8px rgba(139,231,139,0.3)` }}>{titles[screen]}</span>
+              <span className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.green, textShadow: `0 0 8px rgba(139,231,139,0.3)` }}>{titles[screen]}</span>
               <div className="flex items-center gap-2">
                 <button onClick={() => setRecruiterMode(true)} className="flex items-center gap-1.5 border px-2.5 py-1 text-xs transition hover:border-green-400/30" style={{ borderColor: C.border, color: C.textMuted }}>
                   <Eye size={11} /> Recruiter
                 </button>
                 <div className="flex gap-1">
                   {["─", "□", "×"].map((c, i) => (
-                    <span key={c} className={`flex h-4 w-5 items-center justify-center border text-[10px] leading-none ${i === 2 ? "border-red-500/20 bg-red-500/10 text-red-400/70" : ""}`} style={i < 2 ? { borderColor: C.border, color: C.textDim } : {}}>{c}</span>
+                    <span key={c} className={`flex h-4 w-5 items-center justify-center border text-xs leading-none ${i === 2 ? "border-red-500/20 bg-red-500/10 text-red-400/70" : ""}`} style={i < 2 ? { borderColor: C.border, color: C.textDim } : {}}>{c}</span>
                   ))}
                 </div>
               </div>
@@ -281,7 +281,7 @@ function BootScreen() {
   ];
   return (
     <div className="flex h-[100dvh] items-center justify-center font-[family-name:var(--font-vt)]" style={{ background: C.bg }}>
-      <div className="w-full max-w-xl space-y-2 px-6 text-lg" style={{ color: C.green }}>
+      <div className="w-full max-w-xl space-y-2 px-6 text-xl" style={{ color: C.green }}>
         {lines.filter((_, i) => p > i * 14).map(l => <p key={l} className={l.includes("✓") ? "" : ""} style={l.includes("✓") ? { color: C.amber } : {}}>{l}</p>)}
         <div className="mt-6 h-6 p-[3px]" style={{ border: `1px solid rgba(139,231,139,0.25)` }}>
           <div style={{ width: `${p}%`, backgroundImage: `repeating-linear-gradient(90deg, ${C.green} 0 8px, transparent 8px 11px)` }} className="h-full transition-[width] duration-100" />
@@ -302,10 +302,10 @@ function HomeScreen({ nav }: { nav: (s: Screen) => void }) {
       {/* Left sidebar */}
       <div className="hidden shrink-0 md:flex md:w-44 md:flex-col md:justify-between">
         <div>
-          <p className="mb-3 font-[family-name:var(--font-pixel)] text-lg" style={{ color: C.green, textShadow: `0 0 8px rgba(139,231,139,0.3)` }}>&gt;_</p>
+          <p className="mb-3 font-[family-name:var(--font-pixel)] text-xl" style={{ color: C.green, textShadow: `0 0 8px rgba(139,231,139,0.3)` }}>&gt;_</p>
           <nav className="flex flex-col gap-0.5">
             {([["home", "HOME"], ["about", "ABOUT"], ["digit", "DIGIT.EXE"], ["builder", "BUILDER.EXE"], ["skills", "SKILLS"], ["contact", "CONTACT"]] as const).map(([id, label]) => (
-              <button key={id} onClick={() => nav(id as Screen)} className="py-1 text-left text-base transition hover:opacity-80" style={{ color: C.textDim }}>
+              <button key={id} onClick={() => nav(id as Screen)} className="py-1 text-left text-lg transition hover:opacity-80" style={{ color: C.textDim }}>
                 {label}
               </button>
             ))}
@@ -313,7 +313,7 @@ function HomeScreen({ nav }: { nav: (s: Screen) => void }) {
         </div>
         {/* Now Playing */}
         <div className="shrink-0 p-3" style={{ border: `1px solid ${C.border}`, background: `${C.bg}88` }}>
-          <p className="font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest" style={{ color: C.textDim }}>Now Playing</p>
+          <p className="font-[family-name:var(--font-pixel)] text-xs uppercase tracking-widest" style={{ color: C.textDim }}>Now Playing</p>
           <p className="mt-1 text-base" style={{ color: C.textMuted }}>Synthwave Dreams</p>
           <p className="text-sm" style={{ color: C.textDim }}>Lo-fi Focus Mix</p>
           <div className="mt-2 flex items-end gap-[3px]">
@@ -340,9 +340,9 @@ function HomeScreen({ nav }: { nav: (s: Screen) => void }) {
       <div className="flex flex-1 flex-col justify-center">
         <div className="flex items-center gap-6">
           <div className="flex-1">
-            <p className="text-lg" style={{ color: C.cyan }}>Hello!</p>
-            <p className="mt-1 text-xl" style={{ color: C.textMuted }}>I&apos;m</p>
-            <h1 className="font-[family-name:var(--font-pixel)] text-3xl leading-relaxed sm:text-4xl lg:text-5xl" style={{ color: C.text, textShadow: `2px 0 0 rgba(169,112,255,0.4), 0 0 20px rgba(169,112,255,0.15)` }}>
+            <p className="text-xl" style={{ color: C.cyan }}>Hello!</p>
+            <p className="mt-1 text-2xl" style={{ color: C.textMuted }}>I&apos;m</p>
+            <h1 className="font-[family-name:var(--font-pixel)] text-4xl leading-relaxed sm:text-5xl lg:text-6xl" style={{ color: C.text, textShadow: `2px 0 0 rgba(169,112,255,0.4), 0 0 20px rgba(169,112,255,0.15)` }}>
               Priyanshu<br />Patel
             </h1>
           </div>
@@ -352,14 +352,14 @@ function HomeScreen({ nav }: { nav: (s: Screen) => void }) {
           </div>
         </div>
 
-        <p className="mt-3 text-lg" style={{ color: C.textMuted }}>Business Analyst at <span style={{ color: C.green }}>Digit Life Insurance</span></p>
-        <p className="mt-1 text-base" style={{ color: C.textDim }}>Building AI-native products and workflow systems independently.</p>
-        <p className="mt-1 text-sm" style={{ color: C.textDim }}>MBA Finance + B.Tech CSE · Bengaluru, India</p>
+        <p className="mt-3 text-xl" style={{ color: C.textMuted }}>Business Analyst at <span style={{ color: C.green }}>Digit Life Insurance</span></p>
+        <p className="mt-1 text-lg" style={{ color: C.textDim }}>Building AI-native products and workflow systems independently.</p>
+        <p className="mt-1 text-base" style={{ color: C.textDim }}>MBA Finance + B.Tech CSE · Bengaluru, India</p>
 
         {/* Tech Titan Award */}
         <div className="mt-4 inline-flex w-fit items-center gap-2 px-4 py-2" style={{ border: `1px solid rgba(245,177,76,0.2)`, background: `rgba(245,177,76,0.06)`, boxShadow: `0 0 20px rgba(245,177,76,0.08)` }}>
           <Trophy size={16} style={{ color: C.amber }} />
-          <span className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.amber }}>TECH TITAN AWARD RECIPIENT</span>
+          <span className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.amber }}>TECH TITAN AWARD RECIPIENT</span>
           <span className="text-sm" style={{ color: `rgba(245,177,76,0.5)` }}>— Digit Life Insurance</span>
         </div>
 
@@ -370,27 +370,27 @@ function HomeScreen({ nav }: { nav: (s: Screen) => void }) {
             onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(107,197,232,0.2)"; e.currentTarget.style.boxShadow = "none"; }}>
             <div className="flex items-center gap-2">
               <Briefcase size={16} style={{ color: C.cyan }} />
-              <span className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.cyan }}>DIGIT.EXE</span>
+              <span className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.cyan }}>DIGIT.EXE</span>
             </div>
-            <p className="mt-2 text-sm" style={{ color: C.textMuted }}>Professional Career</p>
-            <p className="text-xs" style={{ color: C.textDim }}>Experience · Impact · Skills</p>
+            <p className="mt-2 text-base" style={{ color: C.textMuted }}>Professional Career</p>
+            <p className="text-sm" style={{ color: C.textDim }}>Experience · Impact · Skills</p>
           </button>
           <button onClick={() => nav("builder")} className="group p-4 text-left transition hover:scale-[1.01]" style={{ border: `1px solid rgba(232,114,154,0.2)`, background: `rgba(232,114,154,0.04)` }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(232,114,154,0.35)"; e.currentTarget.style.boxShadow = `0 0 20px rgba(232,114,154,0.08)`; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(232,114,154,0.2)"; e.currentTarget.style.boxShadow = "none"; }}>
             <div className="flex items-center gap-2">
               <Rocket size={16} style={{ color: C.pink }} />
-              <span className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.pink }}>BUILDER.EXE</span>
+              <span className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.pink }}>BUILDER.EXE</span>
             </div>
-            <p className="mt-2 text-sm" style={{ color: C.textMuted }}>Personal Projects</p>
-            <p className="text-xs" style={{ color: C.textDim }}>What I build independently</p>
+            <p className="mt-2 text-base" style={{ color: C.textMuted }}>Personal Projects</p>
+            <p className="text-sm" style={{ color: C.textDim }}>What I build independently</p>
           </button>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3">
-          <button onClick={() => nav("skills")} className="px-4 py-2 font-[family-name:var(--font-pixel)] text-[10px] transition hover:opacity-80" style={{ border: `1px solid ${C.border}`, color: C.textDim }}>SKILLS</button>
-          <button onClick={() => nav("contact")} className="px-4 py-2 font-[family-name:var(--font-pixel)] text-[10px] transition hover:opacity-80" style={{ border: `1px solid ${C.border}`, color: C.textDim }}>CONTACT</button>
-          <a href="/cv/priyanshu-patel-business-analyst-cv.pdf" className="flex items-center gap-1.5 px-4 py-2 font-[family-name:var(--font-pixel)] text-[10px] transition hover:opacity-80" style={{ border: `1px solid ${C.border}`, color: C.textDim }}>
+          <button onClick={() => nav("skills")} className="px-4 py-2 font-[family-name:var(--font-pixel)] text-xs transition hover:opacity-80" style={{ border: `1px solid ${C.border}`, color: C.textDim }}>SKILLS</button>
+          <button onClick={() => nav("contact")} className="px-4 py-2 font-[family-name:var(--font-pixel)] text-xs transition hover:opacity-80" style={{ border: `1px solid ${C.border}`, color: C.textDim }}>CONTACT</button>
+          <a href="/cv/priyanshu-patel-business-analyst-cv.pdf" className="flex items-center gap-1.5 px-4 py-2 font-[family-name:var(--font-pixel)] text-xs transition hover:opacity-80" style={{ border: `1px solid ${C.border}`, color: C.textDim }}>
             <Download size={11} /> RESUME
           </a>
         </div>
@@ -431,26 +431,26 @@ function AboutScreen() {
             </div>
           </div>
           <div className="p-3" style={{ border: `1px solid ${C.border}` }}>
-            <p className="mb-2 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest" style={{ color: C.textDim }}>Interests</p>
+            <p className="mb-2 font-[family-name:var(--font-pixel)] text-xs uppercase tracking-widest" style={{ color: C.textDim }}>Interests</p>
             <div className="grid grid-cols-2 gap-1.5">
               {[{ icon: BarChart3, label: "Data Analysis" }, { icon: Workflow, label: "Process Design" }, { icon: Terminal, label: "AI Tools" }, { icon: PenTool, label: "Finance" }].map(f => (
                 <div key={f.label} className="flex flex-col items-center gap-1 p-2" style={{ border: `1px solid ${C.borderLight}`, background: C.bg }}>
                   <f.icon size={20} style={{ color: C.purple }} />
-                  <span className="text-center text-[11px]" style={{ color: C.textDim }}>{f.label}</span>
+                  <span className="text-center text-sm" style={{ color: C.textDim }}>{f.label}</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
         <div className="flex-1">
-          <h2 className="font-[family-name:var(--font-pixel)] text-xl" style={{ color: C.text, textShadow: `0 0 20px rgba(232,114,154,0.15)` }}>Who am I?</h2>
-          <div className="mt-4 space-y-3 text-base leading-relaxed" style={{ color: C.textMuted }}>
+          <h2 className="font-[family-name:var(--font-pixel)] text-2xl" style={{ color: C.text, textShadow: `0 0 20px rgba(232,114,154,0.15)` }}>Who am I?</h2>
+          <div className="mt-4 space-y-3 text-lg leading-relaxed" style={{ color: C.textMuted }}>
             <p>Product &amp; data-focused Business Analyst at <span style={{ color: C.green }}>Digit Life Insurance</span>. I translate business requirements into technical solutions, perform SQL-driven analysis, and deliver automation that improves accuracy and reduces manual effort.</p>
             <p>Outside work, I independently build products — from AI infrastructure tools to mobile apps. These personal projects reflect my product thinking and technical curiosity, not my professional work.</p>
             <p>Strong in system design, data analysis, and cross-functional execution across product, engineering, and operations teams.</p>
           </div>
           <div className="mt-5 p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
-            <p className="mb-2 font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.pink }}>system.info</p>
+            <p className="mb-2 font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.pink }}>system.info</p>
             <div className="grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
               {[["OS", "Business Analyst v2.0"], ["CPU", "MBA + B.Tech Dual Degree"], ["RAM", "MPSTME, Mumbai · 2025"], ["Award", "Tech Titan — Digit Life"], ["Mode", "Focused"], ["Side Projects", "4 shipped"], ["Coffee", "Many cups"], ["C:/ Drive", "Open to opportunities"]].map(([k, v]) => (
                 <p key={k} style={{ color: C.textDim }}>{k}: <span style={{ color: C.textMuted }}>{v}</span></p>
@@ -472,16 +472,16 @@ function DigitScreen() {
         <Briefcase size={18} style={{ color: C.cyan }} />
         <Cmd text="professional career" />
       </div>
-      <p className="mt-2 text-sm" style={{ color: C.textDim }}>What I do at work. Real roles, real impact.</p>
+      <p className="mt-2 text-base" style={{ color: C.textDim }}>What I do at work. Real roles, real impact.</p>
 
-      <h2 className="mt-4 font-[family-name:var(--font-pixel)] text-lg" style={{ color: C.text, textShadow: `0 0 15px rgba(107,197,232,0.12)` }}>Work Experience</h2>
+      <h2 className="mt-4 font-[family-name:var(--font-pixel)] text-xl" style={{ color: C.text, textShadow: `0 0 15px rgba(107,197,232,0.12)` }}>Work Experience</h2>
       <div className="mt-3 space-y-3">
         {jobs.map((j, i) => (
           <motion.div key={j.co} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }} className="p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
             <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <span className="text-base font-bold" style={{ color: C.text }}>{j.role}</span>
-                <span className="text-base" style={{ color: C.textDim }}> — {j.co}</span>
+                <span className="text-lg font-bold" style={{ color: C.text }}>{j.role}</span>
+                <span className="text-lg" style={{ color: C.textDim }}> — {j.co}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm" style={{ color: C.textDim }}>{j.period} · {j.loc}</span>
@@ -489,13 +489,13 @@ function DigitScreen() {
               </div>
             </div>
             <ul className="mt-2 space-y-1">
-              {j.bullets.map(b => <li key={b} className="text-sm leading-relaxed" style={{ color: C.textMuted }}>▸ {b}</li>)}
+              {j.bullets.map(b => <li key={b} className="text-base leading-relaxed" style={{ color: C.textMuted }}>▸ {b}</li>)}
             </ul>
           </motion.div>
         ))}
       </div>
 
-      <p className="mb-2 mt-5 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest" style={{ color: C.pink }}>Education</p>
+      <p className="mb-2 mt-5 font-[family-name:var(--font-pixel)] text-xs uppercase tracking-widest" style={{ color: C.pink }}>Education</p>
       <div className="grid gap-2 sm:grid-cols-3">
         {education.map(e => (
           <div key={e.deg} className="p-3" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
@@ -506,13 +506,13 @@ function DigitScreen() {
         ))}
       </div>
 
-      <p className="mb-2 mt-4 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest" style={{ color: C.amber }}>Certifications</p>
+      <p className="mb-2 mt-4 font-[family-name:var(--font-pixel)] text-xs uppercase tracking-widest" style={{ color: C.amber }}>Certifications</p>
       <div className="grid gap-1.5 sm:grid-cols-2">
         {certs.map(c => <div key={c} className="px-3 py-2 text-sm" style={{ border: `1px solid ${C.borderLight}`, background: C.bg, color: C.textMuted }}>▪ {c}</div>)}
       </div>
 
       <div className="mt-4 p-3" style={{ border: `1px solid rgba(245,177,76,0.12)`, background: `rgba(245,177,76,0.04)` }}>
-        <p className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: `rgba(245,177,76,0.6)` }}>Achievement</p>
+        <p className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: `rgba(245,177,76,0.6)` }}>Achievement</p>
         <p className="mt-1 text-sm" style={{ color: C.textMuted }}>Finalist — EY Young Leader&apos;s Business Case Study Competition 2024</p>
       </div>
     </div>
@@ -528,7 +528,7 @@ function BuilderScreen() {
         <Rocket size={18} style={{ color: C.pink }} />
         <Cmd text="personal projects" />
       </div>
-      <p className="mt-2 text-sm" style={{ color: C.textDim }}>What I build independently, outside work. These are not company projects.</p>
+      <p className="mt-2 text-base" style={{ color: C.textDim }}>What I build independently, outside work. These are not company projects.</p>
 
       <div className="mt-4 space-y-4">
         {builderProjects.map((pr, idx) => (
@@ -538,8 +538,8 @@ function BuilderScreen() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="font-[family-name:var(--font-pixel)] text-lg" style={{ color: pr.color }}>{pr.id}</span>
-                  <span className="font-[family-name:var(--font-pixel)] text-[11px] tracking-wider" style={{ color: C.text }}>{pr.title}</span>
-                  {pr.flagship && <span className="flex items-center gap-1 px-1.5 py-0.5 text-[10px]" style={{ border: `1px solid rgba(245,177,76,0.2)`, color: C.amber }}><Zap size={9} /> Flagship</span>}
+                  <span className="font-[family-name:var(--font-pixel)] text-sm tracking-wider" style={{ color: C.text }}>{pr.title}</span>
+                  {pr.flagship && <span className="flex items-center gap-1 px-1.5 py-0.5 text-xs" style={{ border: `1px solid rgba(245,177,76,0.2)`, color: C.amber }}><Zap size={9} /> Flagship</span>}
                 </div>
                 <div className="flex items-center gap-2">
                   <StatusBadge status={pr.status} />
@@ -551,16 +551,16 @@ function BuilderScreen() {
                 <div className="p-3" style={{ border: `1px solid ${C.borderLight}`, background: C.surfaceAlt }}>
                   <div className="flex items-center gap-1.5">
                     <Target size={12} style={{ color: C.pink }} />
-                    <span className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.pink }}>PROBLEM</span>
+                    <span className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.pink }}>PROBLEM</span>
                   </div>
-                  <p className="mt-1.5 text-sm leading-relaxed" style={{ color: C.textMuted }}>{pr.problem}</p>
+                  <p className="mt-1.5 text-base leading-relaxed" style={{ color: C.textMuted }}>{pr.problem}</p>
                 </div>
                 <div className="p-3" style={{ border: `1px solid ${C.borderLight}`, background: C.surfaceAlt }}>
                   <div className="flex items-center gap-1.5">
                     <Lightbulb size={12} style={{ color: C.green }} />
-                    <span className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.green }}>SOLUTION</span>
+                    <span className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.green }}>SOLUTION</span>
                   </div>
-                  <p className="mt-1.5 text-sm leading-relaxed" style={{ color: C.textMuted }}>{pr.solution}</p>
+                  <p className="mt-1.5 text-base leading-relaxed" style={{ color: C.textMuted }}>{pr.solution}</p>
                 </div>
               </div>
 
@@ -574,16 +574,16 @@ function BuilderScreen() {
               <div className="mt-3 pt-3" style={{ borderTop: `1px solid ${C.borderLight}` }}>
                 <div className="flex items-center gap-1.5">
                   <BookOpen size={11} style={{ color: C.amber }} />
-                  <span className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.amber }}>LEARNINGS</span>
+                  <span className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.amber }}>LEARNINGS</span>
                 </div>
                 <ul className="mt-1.5 space-y-0.5">
-                  {pr.learnings.map(l => <li key={l} className="text-sm leading-relaxed" style={{ color: C.textDim }}>▸ {l}</li>)}
+                  {pr.learnings.map(l => <li key={l} className="text-base leading-relaxed" style={{ color: C.textDim }}>▸ {l}</li>)}
                 </ul>
               </div>
             </div>
 
             {/* Memory Router interactive demo */}
-            {pr.flagship && <MemoryRouterDemo />}
+            {pr.flagship && <MemoryRouterTerminal />}
           </motion.div>
         ))}
       </div>
@@ -591,62 +591,177 @@ function BuilderScreen() {
   );
 }
 
-/* ═══ MEMORY ROUTER DEMO ════════════════════════════════ */
+/* ═══ MEMORY ROUTER TERMINAL ═══════════════════════════ */
 
-function MemoryRouterDemo() {
-  const [query, setQuery] = useState("");
-  const [running, setRunning] = useState(false);
-  const [step, setStep] = useState(0);
+function MemoryRouterTerminal() {
+  const [input, setInput] = useState("");
+  const [lines, setLines] = useState<{ text: string; color?: string; isCmd?: boolean }[]>([
+    { text: "Memory Router v0.3.1 — Local-first AI memory & routing layer", color: C.green },
+    { text: 'Type "help" for commands. Click terminal to focus.', color: C.textDim },
+    { text: "" },
+  ]);
+  const [cmdHist, setCmdHist] = useState<string[]>([]);
+  const [histIdx, setHistIdx] = useState(-1);
+  const [busy, setBusy] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const runDemo = () => {
-    if (!query.trim()) return;
-    setRunning(true);
-    setStep(0);
-    const timers = [
-      setTimeout(() => setStep(1), 400),
-      setTimeout(() => setStep(2), 900),
-      setTimeout(() => setStep(3), 1400),
-      setTimeout(() => setStep(4), 1900),
-      setTimeout(() => { setRunning(false); }, 2200),
-    ];
-    return () => timers.forEach(clearTimeout);
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [lines]);
+
+  const emit = useCallback((rows: { text: string; color?: string }[], cb?: () => void) => {
+    setBusy(true);
+    let i = 0;
+    const next = () => {
+      if (i < rows.length) {
+        const row = rows[i];
+        setLines(p => [...p, row]);
+        i++;
+        setTimeout(next, 80 + Math.random() * 60);
+      } else {
+        setLines(p => [...p, { text: "" }]);
+        setBusy(false);
+        cb?.();
+      }
+    };
+    next();
+  }, []);
+
+  const exec = useCallback((raw: string) => {
+    const cmd = raw.trim().toLowerCase();
+    setLines(p => [...p, { text: raw, isCmd: true }]);
+    if (raw.trim()) setCmdHist(p => [raw.trim(), ...p]);
+    setHistIdx(-1);
+    setInput("");
+    if (!cmd) return;
+
+    if (cmd === "help") {
+      emit([
+        { text: "Available commands:", color: C.green },
+        { text: "  route <query>   Route a query through the memory pipeline", color: C.textMuted },
+        { text: "  memories        Show stored memory count & index stats", color: C.textMuted },
+        { text: "  status          System health and provider status", color: C.textMuted },
+        { text: "  providers       List available LLM providers", color: C.textMuted },
+        { text: "  clear           Clear terminal", color: C.textMuted },
+      ]);
+    } else if (cmd === "clear") {
+      setLines([]);
+    } else if (cmd === "memories") {
+      emit([
+        { text: "Scanning memory index...", color: C.textDim },
+        { text: "  FTS5 Index:     847 documents", color: C.cyan },
+        { text: "  Categories:     12 namespaces", color: C.cyan },
+        { text: "  Last indexed:   2 min ago", color: C.textMuted },
+        { text: "  Storage:        SQLite (14.2 MB)", color: C.textMuted },
+        { text: "  Index health:   OK ✓", color: C.green },
+      ]);
+    } else if (cmd === "status") {
+      emit([
+        { text: "Memory Router — System Status", color: C.green },
+        { text: "  Engine:        Running ✓", color: C.green },
+        { text: "  Memory store:  SQLite + FTS5", color: C.textMuted },
+        { text: "  MCP server:    Connected (port 3847)", color: C.green },
+        { text: "  Ollama:        localhost:11434 ✓", color: C.green },
+        { text: "  Queries today: 142", color: C.textMuted },
+        { text: "  Avg latency:   23ms (retrieval)", color: C.textMuted },
+        { text: "  Token savings: ~47% avg", color: C.amber },
+      ]);
+    } else if (cmd === "providers") {
+      emit([
+        { text: "Configured LLM Providers:", color: C.green },
+        { text: "  [1] Ollama (local)   llama3, codellama  ✓", color: C.green },
+        { text: "  [2] Claude Sonnet    via API key         ✓", color: C.green },
+        { text: "  [3] GPT-4o           via API key         ✓", color: C.green },
+        { text: "  [4] Claude Haiku     via API key         ✓", color: C.green },
+        { text: "  Routing: cost-optimized, local-first", color: C.textMuted },
+      ]);
+    } else if (cmd.startsWith("route ")) {
+      const q = raw.trim().slice(6);
+      if (!q) { emit([{ text: "Usage: route <your query>", color: C.amber }]); return; }
+      const cat = q.toLowerCase().includes("code") || q.toLowerCase().includes("build") ? "Coding" : q.toLowerCase().includes("finance") || q.toLowerCase().includes("money") ? "Finance" : "General";
+      const mdl = cat === "Coding" ? "Claude Sonnet" : cat === "Finance" ? "GPT-4o" : "Ollama (local)";
+      const sav = cat === "Coding" ? "42%" : cat === "Finance" ? "38%" : "51%";
+      const n = cat === "Coding" ? 5 : cat === "Finance" ? 3 : 4;
+      emit([
+        { text: "[1/4] Classifying query...", color: C.textDim },
+        { text: `       Category: ${cat}`, color: C.cyan },
+        { text: "[2/4] Searching memories (FTS5)...", color: C.textDim },
+        { text: `       Found ${n} relevant memories (23ms)`, color: C.green },
+        { text: "[3/4] Assembling context window...", color: C.textDim },
+        { text: "       Prompt: 2,847 → 1,203 tokens", color: C.textMuted },
+        { text: "[4/4] Routing to provider...", color: C.textDim },
+        { text: `       Selected: ${mdl}`, color: C.purple },
+        { text: "" },
+        { text: "  ✓ Routed successfully", color: C.green },
+        { text: `  Token savings: ${sav}   Cost: $0.0003`, color: C.amber },
+      ]);
+    } else {
+      emit([
+        { text: `Unknown command: "${cmd}"`, color: C.pink },
+        { text: 'Type "help" for commands.', color: C.textDim },
+      ]);
+    }
+  }, [emit]);
+
+  const onKey = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !busy) exec(input);
+    else if (e.key === "ArrowUp") { e.preventDefault(); if (cmdHist.length) { const i = Math.min(histIdx + 1, cmdHist.length - 1); setHistIdx(i); setInput(cmdHist[i]); } }
+    else if (e.key === "ArrowDown") { e.preventDefault(); if (histIdx > 0) { setHistIdx(histIdx - 1); setInput(cmdHist[histIdx - 1]); } else { setHistIdx(-1); setInput(""); } }
   };
 
-  const classify = query.toLowerCase().includes("code") || query.toLowerCase().includes("build") ? "Coding" : query.toLowerCase().includes("finance") || query.toLowerCase().includes("money") ? "Finance" : "General";
-  const model = classify === "Coding" ? "Claude Sonnet" : classify === "Finance" ? "GPT-4o" : "Claude Haiku";
-  const savings = classify === "Coding" ? "42%" : classify === "Finance" ? "38%" : "51%";
-
   return (
-    <div className="p-4" style={{ borderTop: `1px solid ${C.border}`, background: C.surfaceAlt }}>
-      <p className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.purple }}>▶ INTERACTIVE DEMO</p>
-      <p className="mt-1 text-xs" style={{ color: C.textDim }}>See how Memory Router classifies, retrieves, and routes.</p>
-      <div className="mt-2 flex gap-2">
-        <div className="flex flex-1 items-center gap-2 px-3 py-2" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
-          <Search size={14} style={{ color: C.textDim }} />
-          <input type="text" placeholder="Try: How does Memory Router work?" value={query} onChange={e => setQuery(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && runDemo()}
-            className="w-full bg-transparent text-sm outline-none placeholder:opacity-40" style={{ color: C.textMuted }} />
+    <div className="p-4" style={{ borderTop: `1px solid ${C.border}`, background: "#0a0e12" }}>
+      <div className="mb-2 flex items-center justify-between">
+        <p className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.purple }}>▶ INTERACTIVE TERMINAL</p>
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full" style={{ background: C.green }} />
+          <span className="text-base" style={{ color: C.textDim }}>v0.3.1</span>
         </div>
-        <button onClick={runDemo} disabled={running} className="shrink-0 px-3 py-2 font-[family-name:var(--font-pixel)] text-[10px] transition hover:opacity-80 disabled:opacity-40" style={{ border: `1px solid rgba(169,112,255,0.25)`, background: `rgba(169,112,255,0.08)`, color: C.purple }}>
-          RUN
-        </button>
       </div>
-      {step > 0 && (
-        <div className="mt-3 space-y-1.5 font-[family-name:var(--font-vt)] text-sm" style={{ color: C.green }}>
-          {step >= 1 && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <span style={{ color: C.textDim }}>Query Classified:</span> <span style={{ color: C.cyan }}>{classify}</span>
-          </motion.p>}
-          {step >= 2 && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <span style={{ color: C.textDim }}>Searching memories...</span> <span style={{ color: C.green }}>3 memories retrieved</span>
-          </motion.p>}
-          {step >= 3 && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <span style={{ color: C.textDim }}>Best Model:</span> <span style={{ color: C.purple }}>{model}</span>
-          </motion.p>}
-          {step >= 4 && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <span style={{ color: C.textDim }}>Estimated Token Savings:</span> <span style={{ color: C.amber }}>{savings}</span>
-          </motion.p>}
-        </div>
-      )}
+
+      <div
+        onClick={() => inputRef.current?.focus()}
+        ref={scrollRef}
+        className="h-56 cursor-text overflow-y-auto p-3 font-[family-name:var(--font-vt)]"
+        style={{ background: C.bg, border: `1px solid ${C.border}` }}
+      >
+        {lines.map((l, i) =>
+          l.isCmd ? (
+            <p key={i} className="text-lg"><span style={{ color: C.green }}>C:\memory-router&gt;</span> <span style={{ color: C.text }}>{l.text}</span></p>
+          ) : (
+            <p key={i} className="text-lg" style={{ color: l.color || C.textMuted, minHeight: l.text ? undefined : "1.25em" }}>{l.text}</p>
+          ),
+        )}
+        {!busy && (
+          <div className="flex items-center text-lg">
+            <span className="shrink-0" style={{ color: C.green }}>C:\memory-router&gt;&nbsp;</span>
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={e => !busy && setInput(e.target.value)}
+              onKeyDown={onKey}
+              spellCheck={false}
+              className="min-w-0 flex-1 bg-transparent outline-none"
+              style={{ color: C.text, caretColor: C.green }}
+              aria-label="Terminal input"
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-base" style={{ color: C.textDim }}>
+        Try:
+        {[
+          { cmd: "route How does memory routing work?", label: "route", color: C.purple },
+          { cmd: "memories", label: "memories", color: C.cyan },
+          { cmd: "status", label: "status", color: C.green },
+          { cmd: "help", label: "help", color: C.amber },
+        ].map(s => (
+          <button key={s.label} onClick={() => !busy && exec(s.cmd)} className="underline transition hover:opacity-80" style={{ color: s.color }}>{s.label}</button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -661,13 +776,13 @@ function SkillsScreen() {
       <div className="mt-4 flex flex-col gap-6 lg:flex-row">
         <div className="flex-1">
           <div className="p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
-            <p className="mb-3 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest" style={{ color: C.cyan }}>Skills</p>
+            <p className="mb-3 font-[family-name:var(--font-pixel)] text-xs uppercase tracking-widest" style={{ color: C.cyan }}>Skills</p>
             <div className="space-y-2.5">
               {skillBars.map((s, i) => (
                 <motion.div key={s.name} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
                   <div className="mb-0.5 flex items-center justify-between">
-                    <p className="text-sm" style={{ color: C.textMuted }}>{s.name}</p>
-                    <p className="text-xs" style={{ color: C.textDim }}>{s.pct}%</p>
+                    <p className="text-base" style={{ color: C.textMuted }}>{s.name}</p>
+                    <p className="text-sm" style={{ color: C.textDim }}>{s.pct}%</p>
                   </div>
                   <div className="h-3" style={{ background: `rgba(245,241,232,0.04)` }}>
                     <motion.div initial={{ width: 0 }} animate={{ width: `${s.pct}%` }} transition={{ duration: 0.6, delay: i * 0.04 }} className="h-full"
@@ -680,13 +795,13 @@ function SkillsScreen() {
         </div>
         <div className="lg:w-[280px]">
           <div className="p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
-            <p className="mb-3 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest" style={{ color: C.pink }}>Tools I Use</p>
+            <p className="mb-3 font-[family-name:var(--font-pixel)] text-xs uppercase tracking-widest" style={{ color: C.pink }}>Tools I Use</p>
             <div className="grid grid-cols-3 gap-2">
               {tools.map((tool, i) => (
                 <motion.div key={tool.name} initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.03 }}
                   className="flex flex-col items-center gap-1.5 p-2.5 transition hover:opacity-80" style={{ border: `1px solid ${C.borderLight}`, background: C.surfaceAlt }}>
                   <tool.icon size={22} style={{ color: tool.color }} />
-                  <span className="text-center text-[11px]" style={{ color: C.textDim }}>{tool.name}</span>
+                  <span className="text-center text-sm" style={{ color: C.textDim }}>{tool.name}</span>
                 </motion.div>
               ))}
             </div>
@@ -694,7 +809,7 @@ function SkillsScreen() {
         </div>
       </div>
       <div className="mt-4 p-3" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
-        <p className="font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest" style={{ color: C.amber }}>Currently Learning...</p>
+        <p className="font-[family-name:var(--font-pixel)] text-xs uppercase tracking-widest" style={{ color: C.amber }}>Currently Learning...</p>
         <div className="mt-2 flex items-center gap-3">
           <span className="text-sm" style={{ color: C.green, opacity: 0.5 }}>C:\&gt;</span>
           <div className="flex-1">
@@ -735,8 +850,8 @@ function ContactScreen() {
   return (
     <div>
       <Cmd text="contact me" />
-      <h2 className="mt-3 font-[family-name:var(--font-pixel)] text-xl" style={{ color: C.text, textShadow: `0 0 20px rgba(169,112,255,0.15)` }}>Let&apos;s connect!</h2>
-      <p className="mt-2 text-base" style={{ color: C.textDim }}>Always open to discussing interesting opportunities in business analysis, product, and technology.</p>
+      <h2 className="mt-3 font-[family-name:var(--font-pixel)] text-2xl" style={{ color: C.text, textShadow: `0 0 20px rgba(169,112,255,0.15)` }}>Let&apos;s connect!</h2>
+      <p className="mt-2 text-lg" style={{ color: C.textDim }}>Always open to discussing interesting opportunities in business analysis, product, and technology.</p>
       <div className="mt-5 flex flex-col gap-6 md:flex-row">
         <div className="space-y-4 md:w-64">
           {[
@@ -749,7 +864,7 @@ function ContactScreen() {
                 <s.Icon size={18} style={{ color: s.color }} />
               </span>
               <div>
-                <p className="font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest" style={{ color: C.textDim }}>{s.label}</p>
+                <p className="font-[family-name:var(--font-pixel)] text-xs uppercase tracking-widest" style={{ color: C.textDim }}>{s.label}</p>
                 <p className="text-sm" style={{ color: C.textMuted }}>{s.value}</p>
               </div>
             </a>
@@ -760,12 +875,12 @@ function ContactScreen() {
           </div>
         </div>
         <div className="flex-1 p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
-          <p className="mb-4 text-center font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.textDim }}>SEND A MESSAGE  :)</p>
+          <p className="mb-4 text-center font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.textDim }}>SEND A MESSAGE  :)</p>
           <div className="space-y-3">
             <input type="text" placeholder="NAME" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} className="w-full px-3 py-2.5 font-[family-name:var(--font-vt)] text-base outline-none transition placeholder:opacity-30 focus:border-purple-400/30" style={inputStyle} />
             <input type="email" placeholder="EMAIL" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} className="w-full px-3 py-2.5 font-[family-name:var(--font-vt)] text-base outline-none transition placeholder:opacity-30 focus:border-purple-400/30" style={inputStyle} />
             <textarea placeholder="MESSAGE" rows={4} value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} className="w-full resize-none px-3 py-2.5 font-[family-name:var(--font-vt)] text-base outline-none transition placeholder:opacity-30 focus:border-purple-400/30" style={inputStyle} />
-            <button onClick={handleSubmit} disabled={status === "sending"} className="w-full py-2.5 font-[family-name:var(--font-pixel)] text-[10px] tracking-wider transition hover:opacity-80 disabled:opacity-50"
+            <button onClick={handleSubmit} disabled={status === "sending"} className="w-full py-2.5 font-[family-name:var(--font-pixel)] text-xs tracking-wider transition hover:opacity-80 disabled:opacity-50"
               style={{ border: `1px solid rgba(169,112,255,0.25)`, background: `rgba(169,112,255,0.08)`, color: C.purple }}>
               {status === "sending" ? "SENDING..." : status === "sent" ? "✓ MESSAGE SENT!" : status === "error" ? "✕ RETRY" : "▶ SEND MESSAGE"}
             </button>
@@ -784,7 +899,7 @@ function RecruiterMode({ exit, time }: { exit: () => void; time: string }) {
       <div className="flex items-center justify-between px-4 py-2.5" style={{ borderBottom: `1px solid ${C.border}`, background: C.surface }}>
         <div className="flex items-center gap-2">
           <Eye size={14} style={{ color: C.green }} />
-          <span className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.green }}>RECRUITER MODE</span>
+          <span className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.green }}>RECRUITER MODE</span>
           <span className="text-sm" style={{ color: C.textDim }}>— 30-second overview</span>
         </div>
         <button onClick={exit} className="flex items-center gap-1 px-2.5 py-1 text-sm transition hover:opacity-80" style={{ border: `1px solid ${C.border}`, color: C.textDim }}>
@@ -795,9 +910,9 @@ function RecruiterMode({ exit, time }: { exit: () => void; time: string }) {
       <div className="flex-1 overflow-y-auto p-4 sm:p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <h1 className="font-[family-name:var(--font-pixel)] text-2xl sm:text-3xl" style={{ color: C.text }}>Priyanshu Patel</h1>
-            <p className="mt-1 text-lg" style={{ color: C.cyan }}>Business Analyst</p>
-            <p className="text-base" style={{ color: C.textMuted }}>Digit Life Insurance · Bengaluru, India</p>
+            <h1 className="font-[family-name:var(--font-pixel)] text-3xl sm:text-4xl" style={{ color: C.text }}>Priyanshu Patel</h1>
+            <p className="mt-1 text-xl" style={{ color: C.cyan }}>Business Analyst</p>
+            <p className="text-lg" style={{ color: C.textMuted }}>Digit Life Insurance · Bengaluru, India</p>
             <div className="mt-2 flex items-center gap-2">
               <Trophy size={14} style={{ color: C.amber }} />
               <span className="text-sm" style={{ color: C.amber }}>Tech Titan Award Recipient</span>
@@ -810,19 +925,19 @@ function RecruiterMode({ exit, time }: { exit: () => void; time: string }) {
           </div>
         </div>
 
-        <p className="mt-4 max-w-3xl text-base leading-relaxed" style={{ color: C.textMuted }}>
+        <p className="mt-4 max-w-3xl text-lg leading-relaxed" style={{ color: C.textMuted }}>
           Product &amp; data-focused Business Analyst. Led end-to-end SDLC for Group Life products supporting 1,500+ Cr premium portfolio and 2L+ monthly transactions. Strong in SQL-driven analysis, API design, GAP analysis, and workflow automation.
         </p>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="p-4" style={{ border: `1px solid ${C.border}`, background: C.surfaceAlt }}>
-            <p className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.cyan }}>CORE SKILLS</p>
+            <p className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.cyan }}>CORE SKILLS</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {["Requirements & BRD/SRS", "SQL & Data Analysis", "API Integration", "UAT & Test Cases", "GAP Analysis", "Stakeholder Management", "Agile/Scrum", "Workflow Automation", "Python", "Process Improvement"].map(s => (
                 <span key={s} className="px-2 py-1 text-sm" style={{ border: `1px solid ${C.border}`, background: C.bg, color: C.textMuted }}>{s}</span>
               ))}
             </div>
-            <p className="mt-3 font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.pink }}>TOOLS</p>
+            <p className="mt-3 font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.pink }}>TOOLS</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {["Jira", "Confluence", "Postman", "SQL Server", "Power BI", "DBeaver", "Camunda", "Excel", "n8n", "Git"].map(t => (
                 <span key={t} className="px-2 py-1 text-sm" style={{ border: `1px solid ${C.border}`, background: C.bg, color: C.textMuted }}>{t}</span>
@@ -830,7 +945,7 @@ function RecruiterMode({ exit, time }: { exit: () => void; time: string }) {
             </div>
           </div>
           <div className="p-4" style={{ border: `1px solid ${C.border}`, background: C.surfaceAlt }}>
-            <p className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.amber }}>EXPERIENCE</p>
+            <p className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.amber }}>EXPERIENCE</p>
             <div className="mt-2 space-y-3">
               {jobs.map(j => (
                 <div key={j.co}>
@@ -845,7 +960,7 @@ function RecruiterMode({ exit, time }: { exit: () => void; time: string }) {
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div className="p-4" style={{ border: `1px solid ${C.border}`, background: C.surfaceAlt }}>
-            <p className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.purple }}>EDUCATION</p>
+            <p className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.purple }}>EDUCATION</p>
             <div className="mt-2 space-y-1.5">
               {education.map(e => (
                 <p key={e.deg} className="text-sm" style={{ color: C.textMuted }}>{e.deg} · {e.gpa} <span style={{ color: C.textDim }}>({e.year})</span></p>
@@ -853,7 +968,7 @@ function RecruiterMode({ exit, time }: { exit: () => void; time: string }) {
             </div>
           </div>
           <div className="p-4" style={{ border: `1px solid ${C.border}`, background: C.surfaceAlt }}>
-            <p className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.purple }}>CERTIFICATIONS</p>
+            <p className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.purple }}>CERTIFICATIONS</p>
             <div className="mt-2 space-y-1">
               {certs.map(c => <p key={c} className="text-sm" style={{ color: C.textMuted }}>{c}</p>)}
             </div>
@@ -861,7 +976,7 @@ function RecruiterMode({ exit, time }: { exit: () => void; time: string }) {
         </div>
 
         <div className="mt-4 p-4" style={{ border: `1px solid ${C.border}`, background: C.surfaceAlt }}>
-          <p className="font-[family-name:var(--font-pixel)] text-[10px]" style={{ color: C.pink }}>PERSONAL PROJECTS <span style={{ color: C.textDim }}>(built independently, not company work)</span></p>
+          <p className="font-[family-name:var(--font-pixel)] text-xs" style={{ color: C.pink }}>PERSONAL PROJECTS <span style={{ color: C.textDim }}>(built independently, not company work)</span></p>
           <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {builderProjects.map(pr => (
               <div key={pr.id} className="p-3" style={{ border: `1px solid ${C.borderLight}`, background: C.bg, borderTopColor: pr.color, borderTopWidth: 2 }}>
@@ -871,7 +986,7 @@ function RecruiterMode({ exit, time }: { exit: () => void; time: string }) {
                 </div>
                 <p className="mt-1 text-xs leading-relaxed" style={{ color: C.textDim }}>{pr.problem.split(".")[0]}.</p>
                 <div className="mt-2 flex flex-wrap gap-1">
-                  {pr.stack.slice(0, 3).map(t => <span key={t} className="text-[10px]" style={{ color: C.textDim }}>{t}</span>)}
+                  {pr.stack.slice(0, 3).map(t => <span key={t} className="text-xs" style={{ color: C.textDim }}>{t}</span>)}
                 </div>
               </div>
             ))}
@@ -896,7 +1011,7 @@ function Taskbar({ screen, nav, time }: { screen: Screen; nav: (s: Screen) => vo
   ];
   return (
     <div className="flex items-center gap-1 px-2 py-1.5" style={{ borderTop: `1px solid rgba(139,231,139,0.2)`, background: `linear-gradient(${C.surface}, #0d1117)` }}>
-      <button onClick={() => nav("home")} className="flex items-center gap-2 px-3 py-1 font-[family-name:var(--font-pixel)] text-[10px] transition"
+      <button onClick={() => nav("home")} className="flex items-center gap-2 px-3 py-1 font-[family-name:var(--font-pixel)] text-xs transition"
         style={screen === "home" ? { border: `1px solid rgba(139,231,139,0.15)`, background: `rgba(139,231,139,0.08)`, color: C.green } : { border: `1px solid ${C.border}`, background: C.bg, color: C.textDim }}>
         <span className="grid grid-cols-2 gap-[2px]">
           <span className="block h-[5px] w-[5px]" style={{ background: C.pink }} /><span className="block h-[5px] w-[5px]" style={{ background: C.green }} />
@@ -921,13 +1036,13 @@ function Taskbar({ screen, nav, time }: { screen: Screen; nav: (s: Screen) => vo
 /* ═══ HELPERS ════════════════════════════════════════════ */
 
 function Cmd({ text }: { text: string }) {
-  return <p className="text-base"><span style={{ color: C.green, opacity: 0.5 }}>C:\&gt;</span> <span className="font-bold" style={{ color: C.green }} dangerouslySetInnerHTML={{ __html: text }} /></p>;
+  return <p className="text-lg"><span style={{ color: C.green, opacity: 0.5 }}>C:\&gt;</span> <span className="font-bold" style={{ color: C.green }} dangerouslySetInnerHTML={{ __html: text }} /></p>;
 }
 
 function StatusBadge({ status }: { status: "Active" | "Complete" | "Experimental" }) {
   const colors = { Active: C.green, Complete: C.cyan, Experimental: C.amber };
   return (
-    <span className="flex items-center gap-1 text-[10px]" style={{ color: colors[status] }}>
+    <span className="flex items-center gap-1 text-xs" style={{ color: colors[status] }}>
       <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: colors[status] }} />
       {status}
     </span>
