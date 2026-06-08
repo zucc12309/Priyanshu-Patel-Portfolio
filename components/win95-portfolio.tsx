@@ -34,8 +34,8 @@ const C = {
   cyan: "#6BC5E8",
   gold: "#F5B14C",
   text: "#F5F1E8",
-  textDim: "rgba(245,241,232,0.55)",
-  textMuted: "#B8C0CC",
+  textDim: "rgba(245,241,232,0.72)",
+  textMuted: "#D0D6DE",
   border: "rgba(245,241,232,0.12)",
   borderLight: "rgba(245,241,232,0.08)",
 };
@@ -387,7 +387,7 @@ function HomeScreen({ nav, music }: { nav: (s: Screen) => void; music: MusicCont
         <div className="mt-3 inline-flex w-fit flex-wrap items-center gap-1.5 px-3 py-1.5 sm:mt-4 sm:gap-2 sm:px-4 sm:py-2" style={{ border: `1px solid rgba(245,177,76,0.2)`, background: `rgba(245,177,76,0.06)`, boxShadow: `0 0 20px rgba(245,177,76,0.08)` }}>
           <Trophy size={14} style={{ color: C.amber }} />
           <span className="font-[family-name:var(--font-pixel)] text-[9px] sm:text-[10px] lg:text-xs" style={{ color: C.amber }}>TECH TITAN AWARD RECIPIENT</span>
-          <span className="hidden text-xs sm:inline sm:text-sm" style={{ color: `rgba(245,177,76,0.5)` }}>— Digit Life Insurance</span>
+          <span className="hidden text-xs sm:inline sm:text-sm" style={{ color: `rgba(245,177,76,0.7)` }}>— Digit Life Insurance</span>
         </div>
 
         {/* Dual-track navigation */}
@@ -528,7 +528,7 @@ function DigitScreen() {
       </div>
 
       <div className="mt-4 p-2 sm:p-3" style={{ border: `1px solid rgba(245,177,76,0.12)`, background: `rgba(245,177,76,0.04)` }}>
-        <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: `rgba(245,177,76,0.6)` }}>Achievement</p>
+        <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: `rgba(245,177,76,0.75)` }}>Achievement</p>
         <p className="mt-1 text-xs sm:text-sm" style={{ color: C.textMuted }}>Finalist — EY Young Leader&apos;s Business Case Study Competition 2024</p>
       </div>
     </div>
@@ -1010,7 +1010,7 @@ function RecruiterMode({ exit, time, music }: { exit: () => void; time: string; 
       </div>
 
       <div className="flex items-center justify-between gap-2 px-3 py-1.5 sm:px-4" style={{ borderTop: `1px solid ${C.border}`, background: C.surface }}>
-        <span className="text-xs sm:text-sm" style={{ color: `rgba(139,231,139,0.4)` }}>Recruiter Mode Active</span>
+        <span className="text-xs sm:text-sm" style={{ color: `rgba(139,231,139,0.6)` }}>Recruiter Mode Active</span>
         {/* Music controls in recruiter mode too */}
         <div className="flex items-center gap-2">
           <button onClick={music.playing ? music.pause : music.start} className="flex h-5 w-5 items-center justify-center rounded-full" style={{ border: `1px solid rgba(169,112,255,0.3)`, background: `rgba(169,112,255,0.1)`, color: C.purple }}>
