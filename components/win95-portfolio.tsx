@@ -150,57 +150,42 @@ const tools = [
 /* ═══ MUSIC PLAYER HOOK ══════════════════════════════════ */
 
 function useSynthPlayer(): MusicControls {
-  const ctxRef = useRef<AudioContext | null>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
-  const gainRef = useRef<GainNode | null>(null);
 
-  const playNote = useCallback((ctx: AudioContext, freq: number, start: number, dur: number, gain: GainNode) => {
-    const osc = ctx.createOscillator();
-    const env = ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(freq, start);
-    env.gain.setValueAtTime(0, start);
-    env.gain.linearRampToValueAtTime(0.08, start + 0.05);
-    env.gain.linearRampToValueAtTime(0, start + dur);
-    osc.connect(env).connect(gain);
-    osc.start(start);
-    osc.stop(start + dur);
+  const getAudio = useCallback(() => {
+    if (!audioRef.current) {
+      const audio = new Audio("/audio/passionfruit.mp3");
+      audio.loop = true;
+      audio.volume = 0.4;
+      audio.addEventListener("ended", () => setPlaying(false));
+      audio.addEventListener("pause", () => setPlaying(false));
+      audio.addEventListener("play", () => setPlaying(true));
+      audioRef.current = audio;
+    }
+    return audioRef.current;
   }, []);
 
   const start = useCallback(() => {
-    if (ctxRef.current) { ctxRef.current.resume(); setPlaying(true); return; }
-    const ctx = new AudioContext();
-    const gain = ctx.createGain();
-    gain.gain.value = 0.3;
-    gain.connect(ctx.destination);
-    ctxRef.current = ctx;
-    gainRef.current = gain;
-    // Passionfruit-inspired melody — Db major dreamy arpeggio
-    const notes = [277.18, 311.13, 349.23, 369.99, 415.30, 466.16, 554.37, 311.13];
-    const melody = [0, 2, 4, 6, 4, 2, 0, 3, 5, 4, 2, 0, 3, 1, 0, 7];
-    let step = 0;
-    const loop = () => {
-      const now = ctx.currentTime;
-      const note = notes[melody[step % melody.length]];
-      playNote(ctx, note, now, 0.55, gain);
-      playNote(ctx, note * 0.5, now, 0.7, gain);
-      step++;
-    };
-    loop();
-    intervalRef.current = setInterval(loop, 600);
+    const audio = getAudio();
+    audio.play().catch(() => {});
     setPlaying(true);
-  }, [playNote]);
+  }, [getAudio]);
 
-  const pause = useCallback(() => { ctxRef.current?.suspend(); setPlaying(false); }, []);
+  const pause = useCallback(() => {
+    audioRef.current?.pause();
+    setPlaying(false);
+  }, []);
+
   const toggleMute = useCallback(() => {
-    if (gainRef.current) { gainRef.current.gain.value = muted ? 0.3 : 0; setMuted(!muted); }
-  }, [muted]);
+    const audio = getAudio();
+    audio.muted = !muted;
+    setMuted(!muted);
+  }, [muted, getAudio]);
 
   useEffect(() => () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    ctxRef.current?.close();
+    audioRef.current?.pause();
   }, []);
 
   return { playing, muted, start, pause, toggleMute };
