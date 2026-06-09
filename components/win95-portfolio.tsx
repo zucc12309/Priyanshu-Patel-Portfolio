@@ -9,6 +9,7 @@ import {
   SkipBack, SkipForward, Volume2, VolumeX, Trophy, Lightbulb,
   Target, Wrench, BookOpen, Briefcase, Rocket, Search, Zap,
   ChevronRight, ExternalLink, Music, Gamepad2, Dumbbell, Pencil,
+  TrendingUp, FileText, Layers,
 } from "lucide-react";
 
 type Screen = "home" | "about" | "digit" | "builder" | "skills" | "contact";
@@ -45,6 +46,19 @@ const C = {
 const jobs = [
   {
     role: "Business Analyst", co: "Digit Life Insurance", period: "Jun 2025 – Present", loc: "Bengaluru",
+    headline: "Driving Group Life product delivery across a 1,500+ Cr premium portfolio",
+    context: "Group Life insurance serving enterprise clients with 2L+ monthly transactions requiring precise business rules, cross-functional coordination, and continuous delivery.",
+    approach: [
+      "Led end-to-end SDLC — requirements gathering, GAP analysis, API & schema design, UAT, and release",
+      "Collaborated with 10-12 cross-functional stakeholders across sprint planning and release cycles",
+      "Analysed high-volume transaction data using SQL to identify inefficiencies and failure patterns",
+    ],
+    outcomes: [
+      "Automated workflows implementing 10+ business rules, improving accuracy by 18%, reducing effort by 30%",
+      "Led UAT with 80+ test cases, reducing post-release defects by 40%",
+      "Authored BRDs, SRS, and user stories ensuring clear requirement translation across modules",
+      "Performed RCA using API logs and database analysis with engineering and cloud/infra teams",
+    ],
     bullets: [
       "Led end-to-end SDLC for Group Life products — 1,500+ Cr premium portfolio, 2L+ monthly transactions",
       "Collaborated with 10-12 cross-functional stakeholders across sprint planning and release cycles",
@@ -121,6 +135,42 @@ const builderProjects = [
     stack: ["n8n", "Python", "Power BI", "Gmail API"],
     learnings: ["Automation is only valuable when it fits the process owner's mental model", "Reporting should explain bottlenecks, not just count activity", "The best workflow products make handoffs visible"],
     repo: "https://github.com/zucc12309/CRM-workflow-automation",
+  },
+];
+
+const skillCategories = [
+  {
+    label: "Business Analysis",
+    icon: FileText,
+    color: C.cyan,
+    skills: [
+      { name: "Requirements & BRD/SRS", pct: 92 },
+      { name: "GAP Analysis", pct: 88 },
+      { name: "UAT & Test Cases", pct: 90 },
+      { name: "Process Improvement", pct: 82 },
+    ],
+  },
+  {
+    label: "Product & Delivery",
+    icon: Layers,
+    color: C.pink,
+    skills: [
+      { name: "Agile / Scrum", pct: 87 },
+      { name: "Stakeholder Mgmt", pct: 85 },
+      { name: "Cross-functional Execution", pct: 85 },
+      { name: "Problem Solving", pct: 92 },
+    ],
+  },
+  {
+    label: "Data & Technical",
+    icon: Database,
+    color: C.green,
+    skills: [
+      { name: "SQL & Data Analysis", pct: 88 },
+      { name: "API Integration", pct: 85 },
+      { name: "Workflow Automation", pct: 80 },
+      { name: "Python Scripting", pct: 75 },
+    ],
   },
 ];
 
@@ -229,10 +279,10 @@ export function Win95Portfolio() {
             <div className="flex shrink-0 items-center justify-between gap-2 px-2 py-1.5 sm:px-3" style={{ background: `linear-gradient(90deg, #0d1117, ${C.surface} 48%, #0d1117)`, borderBottom: `1px solid ${C.border}` }}>
               <span className="min-w-0 truncate font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.green, textShadow: `0 0 8px rgba(139,231,139,0.3)` }}>{titles[screen]}</span>
               <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-                <button onClick={() => setRecruiterMode(true)} className="hidden items-center gap-1.5 border px-2 py-1 text-xs transition hover:border-green-400/30 xs:flex sm:px-2.5" style={{ borderColor: C.border, color: C.textMuted }}>
+                <button onClick={() => setRecruiterMode(true)} aria-label="Switch to recruiter mode" className="hidden items-center gap-1.5 border px-2 py-1 text-xs transition hover:border-green-400/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-purple-400/60 xs:flex sm:px-2.5" style={{ borderColor: C.border, color: C.textMuted }}>
                   <Eye size={11} /> <span className="hidden sm:inline">Recruiter</span>
                 </button>
-                <button onClick={() => setRecruiterMode(true)} className="flex items-center border p-1 text-xs xs:hidden" style={{ borderColor: C.border, color: C.textMuted }}>
+                <button onClick={() => setRecruiterMode(true)} aria-label="Switch to recruiter mode" className="flex items-center border p-1 text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-purple-400/60 xs:hidden" style={{ borderColor: C.border, color: C.textMuted }}>
                   <Eye size={12} />
                 </button>
                 <div className="flex gap-0.5 sm:gap-1">
@@ -264,10 +314,10 @@ export function Win95Portfolio() {
                   ))}
                 </div>
                 <span className="hidden text-xs sm:inline" style={{ color: C.textDim }}>Passionfruit</span>
-                <button onClick={music.playing ? music.pause : music.start} className="flex h-5 w-5 items-center justify-center rounded-full transition hover:opacity-80" style={{ border: `1px solid rgba(169,112,255,0.3)`, background: `rgba(169,112,255,0.1)`, color: C.purple }}>
+                <button onClick={music.playing ? music.pause : music.start} aria-label={music.playing ? "Pause music" : "Play music"} className="flex h-5 w-5 items-center justify-center rounded-full transition hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-purple-400/60" style={{ border: `1px solid rgba(169,112,255,0.3)`, background: `rgba(169,112,255,0.1)`, color: C.purple }}>
                   {music.playing ? <Pause size={8} /> : <Play size={8} />}
                 </button>
-                <button onClick={music.toggleMute} className="transition hover:opacity-80" style={{ color: C.textDim }}>
+                <button onClick={music.toggleMute} aria-label={music.muted ? "Unmute music" : "Mute music"} className="transition hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-purple-400/60" style={{ color: C.textDim }}>
                   {music.muted ? <VolumeX size={12} /> : <Volume2 size={12} />}
                 </button>
               </div>
@@ -366,11 +416,25 @@ function HomeScreen({ nav, music }: { nav: (s: Screen) => void; music: MusicCont
         </div>
 
         <p className="mt-3 text-base sm:text-lg lg:text-xl" style={{ color: C.textMuted }}>Business Analyst at <span style={{ color: C.green }}>Digit Life Insurance</span></p>
-        <p className="mt-1 text-sm sm:text-base lg:text-lg" style={{ color: C.textDim }}>Building AI-native products and workflow systems independently.</p>
+        <p className="mt-1 text-sm sm:text-base lg:text-lg" style={{ color: C.textDim }}>Driving product delivery for a 1,500+ Cr portfolio. Building AI-native products independently.</p>
         <p className="mt-1 text-xs sm:text-sm lg:text-base" style={{ color: C.textDim }}>MBA Finance + B.Tech CSE · Bengaluru, India</p>
 
+        {/* Key metrics strip */}
+        <div className="mt-3 flex flex-wrap gap-2 sm:gap-3" role="list" aria-label="Key highlights">
+          {[
+            { label: "Premium Portfolio", value: "1,500+ Cr", color: C.cyan },
+            { label: "Defect Reduction", value: "40%", color: C.green },
+            { label: "Effort Saved", value: "30%", color: C.amber },
+          ].map(m => (
+            <div key={m.label} role="listitem" className="px-2 py-1 sm:px-3 sm:py-1.5" style={{ border: `1px solid rgba(245,241,232,0.08)`, background: C.surfaceAlt }}>
+              <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: m.color }}>{m.value}</p>
+              <p className="text-[10px] sm:text-xs" style={{ color: C.textDim }}>{m.label}</p>
+            </div>
+          ))}
+        </div>
+
         {/* Tech Titan Award */}
-        <div className="mt-3 inline-flex w-fit flex-wrap items-center gap-1.5 px-3 py-1.5 sm:mt-4 sm:gap-2 sm:px-4 sm:py-2" style={{ border: `1px solid rgba(245,177,76,0.2)`, background: `rgba(245,177,76,0.06)`, boxShadow: `0 0 20px rgba(245,177,76,0.08)` }}>
+        <div className="mt-3 inline-flex w-fit flex-wrap items-center gap-1.5 px-3 py-1.5 sm:mt-4 sm:gap-2 sm:px-4 sm:py-2" style={{ border: `1px solid rgba(245,177,76,0.25)`, background: `linear-gradient(135deg, rgba(245,177,76,0.08), rgba(245,177,76,0.03))`, boxShadow: `0 0 24px rgba(245,177,76,0.1)` }}>
           <Trophy size={14} style={{ color: C.amber }} />
           <span className="font-[family-name:var(--font-pixel)] text-[9px] sm:text-[10px] lg:text-xs" style={{ color: C.amber }}>TECH TITAN AWARD RECIPIENT</span>
           <span className="hidden text-xs sm:inline sm:text-sm" style={{ color: `rgba(245,177,76,0.7)` }}>— Digit Life Insurance</span>
@@ -447,9 +511,9 @@ function AboutScreen() {
         <div className="min-w-0 flex-1">
           <h2 className="font-[family-name:var(--font-pixel)] text-lg sm:text-xl lg:text-2xl" style={{ color: C.text, textShadow: `0 0 20px rgba(232,114,154,0.15)` }}>Who am I?</h2>
           <div className="mt-3 space-y-3 text-sm leading-relaxed sm:mt-4 sm:text-base lg:text-lg" style={{ color: C.textMuted }}>
-            <p>Product &amp; data-focused Business Analyst at <span style={{ color: C.green }}>Digit Life Insurance</span>. I translate business requirements into technical solutions, perform SQL-driven analysis, and deliver automation that improves accuracy and reduces manual effort.</p>
+            <p>Product &amp; data-focused Business Analyst at <span style={{ color: C.green }}>Digit Life Insurance</span>, recognized with the <span style={{ color: C.amber }}>Tech Titan Award</span>. I translate business requirements into technical solutions, perform SQL-driven analysis, and deliver automation that improves accuracy and reduces manual effort.</p>
             <p>Outside work, I independently build products — from AI infrastructure tools to mobile apps. These personal projects reflect my product thinking and technical curiosity, not my professional work.</p>
-            <p>Strong in system design, data analysis, and cross-functional execution across product, engineering, and operations teams.</p>
+            <p>Strong in system design, data analysis, and cross-functional execution across product, engineering, and operations teams. I thrive at the intersection of business understanding and technical implementation.</p>
           </div>
           <div className="mt-4 p-3 sm:mt-5 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
             <p className="mb-2 font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.pink }}>system.info</p>
@@ -478,17 +542,65 @@ function DigitScreen() {
 
       <h2 className="mt-4 font-[family-name:var(--font-pixel)] text-base sm:text-lg lg:text-xl" style={{ color: C.text, textShadow: `0 0 15px rgba(107,197,232,0.12)` }}>Work Experience</h2>
       <div className="mt-3 space-y-3">
-        {jobs.map((j, i) => (
-          <motion.div key={j.co} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }} className="p-3 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
+        {/* Main role — case study format */}
+        {jobs.slice(0, 1).map((j, i) => (
+          <motion.div key={j.co} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }} className="overflow-hidden" style={{ border: `1px solid rgba(107,197,232,0.2)`, background: C.bg, borderLeftWidth: 3, borderLeftColor: C.cyan }}>
+            <div className="p-3 sm:p-4">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                  <span className="text-base font-bold sm:text-lg" style={{ color: C.text }}>{j.role}</span>
+                  <span className="text-base sm:text-lg" style={{ color: C.textDim }}> — {j.co}</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs sm:text-sm" style={{ color: C.textDim }}>{j.period} · {j.loc}</span>
+                  {j.award && <span className="flex items-center gap-1 px-2 py-0.5 text-[10px] sm:text-xs" style={{ border: `1px solid rgba(245,177,76,0.25)`, background: `linear-gradient(135deg, rgba(245,177,76,0.08), rgba(245,177,76,0.03))`, color: C.amber }}><Trophy size={10} /> {j.award}</span>}
+                </div>
+              </div>
+              {j.headline && <p className="mt-2 text-sm sm:text-base" style={{ color: C.cyan }}>{j.headline}</p>}
+
+              {/* Case study grid */}
+              {j.context && (
+                <div className="mt-3 grid gap-2 sm:gap-3 md:grid-cols-3">
+                  <div className="p-2 sm:p-3" style={{ border: `1px solid ${C.borderLight}`, background: C.surfaceAlt }}>
+                    <div className="flex items-center gap-1.5">
+                      <Target size={12} style={{ color: C.pink }} />
+                      <span className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.pink }}>CONTEXT</span>
+                    </div>
+                    <p className="mt-1.5 text-sm leading-relaxed sm:text-base" style={{ color: C.textMuted }}>{j.context}</p>
+                  </div>
+                  <div className="p-2 sm:p-3" style={{ border: `1px solid ${C.borderLight}`, background: C.surfaceAlt }}>
+                    <div className="flex items-center gap-1.5">
+                      <Wrench size={12} style={{ color: C.cyan }} />
+                      <span className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.cyan }}>APPROACH</span>
+                    </div>
+                    <ul className="mt-1.5 space-y-1">
+                      {j.approach?.map(a => <li key={a} className="text-sm leading-relaxed sm:text-base" style={{ color: C.textMuted }}>▸ {a}</li>)}
+                    </ul>
+                  </div>
+                  <div className="p-2 sm:p-3" style={{ border: `1px solid ${C.borderLight}`, background: C.surfaceAlt }}>
+                    <div className="flex items-center gap-1.5">
+                      <TrendingUp size={12} style={{ color: C.green }} />
+                      <span className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.green }}>OUTCOMES</span>
+                    </div>
+                    <ul className="mt-1.5 space-y-1">
+                      {j.outcomes?.map(o => <li key={o} className="text-sm leading-relaxed sm:text-base" style={{ color: C.textMuted }}>▸ {o}</li>)}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        ))}
+
+        {/* Other roles — compact format */}
+        {jobs.slice(1).map((j, i) => (
+          <motion.div key={j.co} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: (i + 1) * 0.07 }} className="p-3 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
             <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
                 <span className="text-base font-bold sm:text-lg" style={{ color: C.text }}>{j.role}</span>
                 <span className="text-base sm:text-lg" style={{ color: C.textDim }}> — {j.co}</span>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs sm:text-sm" style={{ color: C.textDim }}>{j.period} · {j.loc}</span>
-                {j.award && <span className="flex items-center gap-1 px-2 py-0.5 text-[10px] sm:text-xs" style={{ border: `1px solid rgba(245,177,76,0.2)`, background: `rgba(245,177,76,0.06)`, color: C.amber }}><Trophy size={10} /> {j.award}</span>}
-              </div>
+              <span className="text-xs sm:text-sm" style={{ color: C.textDim }}>{j.period} · {j.loc}</span>
             </div>
             <ul className="mt-2 space-y-1">
               {j.bullets.map(b => <li key={b} className="text-sm leading-relaxed sm:text-base" style={{ color: C.textMuted }}>▸ {b}</li>)}
@@ -771,45 +883,54 @@ function MemoryRouterTerminal() {
 /* ═══ SKILLS ═════════════════════════════════════════════ */
 
 function SkillsScreen() {
-  const colors = ["rgba(107,197,232,0.45)", "rgba(139,231,139,0.45)", "rgba(232,114,154,0.45)", "rgba(245,177,76,0.45)", "rgba(169,112,255,0.45)"];
   return (
     <div>
       <Cmd text="skills &amp; tools" />
-      <div className="mt-4 flex flex-col gap-4 sm:gap-6 lg:flex-row">
-        <div className="flex-1">
-          <div className="p-3 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
-            <p className="mb-3 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest sm:text-xs" style={{ color: C.cyan }}>Skills</p>
+
+      {/* Grouped skill categories */}
+      <div className="mt-4 grid gap-3 sm:gap-4 md:grid-cols-3">
+        {skillCategories.map((cat, ci) => (
+          <motion.div key={cat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: ci * 0.08 }}
+            className="p-3 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.bg, borderTopWidth: 2, borderTopColor: cat.color }}>
+            <div className="mb-3 flex items-center gap-2">
+              <cat.icon size={14} style={{ color: cat.color }} />
+              <p className="font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest sm:text-xs" style={{ color: cat.color }}>{cat.label}</p>
+            </div>
             <div className="space-y-2 sm:space-y-2.5">
-              {skillBars.map((s, i) => (
-                <motion.div key={s.name} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
+              {cat.skills.map((s, i) => (
+                <div key={s.name}>
                   <div className="mb-0.5 flex items-center justify-between">
                     <p className="text-sm sm:text-base" style={{ color: C.textMuted }}>{s.name}</p>
                     <p className="text-xs sm:text-sm" style={{ color: C.textDim }}>{s.pct}%</p>
                   </div>
-                  <div className="h-2.5 sm:h-3" style={{ background: `rgba(245,241,232,0.04)` }}>
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${s.pct}%` }} transition={{ duration: 0.6, delay: i * 0.04 }} className="h-full"
-                      style={{ backgroundImage: `repeating-linear-gradient(90deg, ${colors[i % 5]} 0 7px, transparent 7px 10px)` }} />
+                  <div className="h-2.5 sm:h-3" role="progressbar" aria-valuenow={s.pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${s.name}: ${s.pct}%`} style={{ background: `rgba(245,241,232,0.04)` }}>
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${s.pct}%` }} transition={{ duration: 0.6, delay: ci * 0.1 + i * 0.04 }} className="h-full"
+                      style={{ backgroundImage: `repeating-linear-gradient(90deg, ${cat.color}73 0 7px, transparent 7px 10px)` }} />
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
-          </div>
-        </div>
-        <div className="lg:w-[280px]">
-          <div className="p-3 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
-            <p className="mb-3 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest sm:text-xs" style={{ color: C.pink }}>Tools I Use</p>
-            <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-              {tools.map((tool, i) => (
-                <motion.div key={tool.name} initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.03 }}
-                  className="flex flex-col items-center gap-1 p-2 transition hover:opacity-80 sm:gap-1.5 sm:p-2.5" style={{ border: `1px solid ${C.borderLight}`, background: C.surfaceAlt }}>
-                  <tool.icon size={20} style={{ color: tool.color }} />
-                  <span className="text-center text-[10px] sm:text-xs" style={{ color: C.textDim }}>{tool.name}</span>
-                </motion.div>
-              ))}
-            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Tools grid */}
+      <div className="mt-4">
+        <div className="p-3 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
+          <p className="mb-3 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest sm:text-xs" style={{ color: C.pink }}>Technical Toolbox</p>
+          <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-6 sm:gap-2">
+            {tools.map((tool, i) => (
+              <motion.div key={tool.name} initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.03 }}
+                className="flex flex-col items-center gap-1 p-2 transition hover:opacity-80 sm:gap-1.5 sm:p-2.5" style={{ border: `1px solid ${C.borderLight}`, background: C.surfaceAlt }}>
+                <tool.icon size={20} style={{ color: tool.color }} />
+                <span className="text-center text-[10px] sm:text-xs" style={{ color: C.textDim }}>{tool.name}</span>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
+
+      {/* Currently learning */}
       <div className="mt-4 p-2 sm:p-3" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
         <p className="font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest sm:text-xs" style={{ color: C.amber }}>Currently Learning...</p>
         <div className="mt-2 flex items-center gap-2 sm:gap-3">
@@ -853,7 +974,7 @@ function ContactScreen() {
     <div>
       <Cmd text="contact me" />
       <h2 className="mt-3 font-[family-name:var(--font-pixel)] text-lg sm:text-xl lg:text-2xl" style={{ color: C.text, textShadow: `0 0 20px rgba(169,112,255,0.15)` }}>Let&apos;s connect!</h2>
-      <p className="mt-2 text-sm sm:text-base lg:text-lg" style={{ color: C.textDim }}>Always open to discussing interesting opportunities in business analysis, product, and technology.</p>
+      <p className="mt-2 text-sm sm:text-base lg:text-lg" style={{ color: C.textDim }}>Open to opportunities in business analysis, product management, and technology. Whether it&apos;s a role, a collaboration, or just a conversation — I&apos;d love to hear from you.</p>
       <div className="mt-4 flex flex-col gap-4 sm:mt-5 sm:gap-6 md:flex-row">
         <div className="space-y-3 sm:space-y-4 md:w-64">
           {[
@@ -929,6 +1050,22 @@ function RecruiterMode({ exit, time, music }: { exit: () => void; time: string; 
         <p className="mt-3 max-w-3xl text-sm leading-relaxed sm:mt-4 sm:text-base lg:text-lg" style={{ color: C.textMuted }}>
           Product &amp; data-focused Business Analyst. Led end-to-end SDLC for Group Life products supporting 1,500+ Cr premium portfolio and 2L+ monthly transactions. Strong in SQL-driven analysis, API design, GAP analysis, and workflow automation.
         </p>
+
+        {/* Quick-scan metrics */}
+        <div className="mt-3 flex flex-wrap gap-2 sm:mt-4 sm:gap-3">
+          {[
+            { label: "Premium Portfolio", value: "1,500+ Cr", color: C.cyan },
+            { label: "Monthly Transactions", value: "2L+", color: C.green },
+            { label: "Accuracy Improvement", value: "+18%", color: C.amber },
+            { label: "Effort Reduction", value: "30%", color: C.pink },
+            { label: "Defect Reduction", value: "40%", color: C.purple },
+          ].map(m => (
+            <div key={m.label} className="px-2 py-1 sm:px-3 sm:py-1.5" style={{ border: `1px solid rgba(245,241,232,0.08)`, background: C.bg }}>
+              <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: m.color }}>{m.value}</p>
+              <p className="text-[10px] sm:text-xs" style={{ color: C.textDim }}>{m.label}</p>
+            </div>
+          ))}
+        </div>
 
         <div className="mt-4 grid gap-3 sm:mt-5 sm:gap-4 md:grid-cols-2">
           <div className="p-3 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.surfaceAlt }}>
@@ -1023,7 +1160,7 @@ function Taskbar({ screen, nav, time }: { screen: Screen; nav: (s: Screen) => vo
     { id: "contact", label: "contact", short: "msg" },
   ];
   return (
-    <div className="flex items-center gap-0.5 px-1 py-1 sm:gap-1 sm:px-2 sm:py-1.5" style={{ borderTop: `1px solid rgba(139,231,139,0.2)`, background: `linear-gradient(${C.surface}, #0d1117)` }}>
+    <nav aria-label="Main navigation" className="flex items-center gap-0.5 px-1 py-1 sm:gap-1 sm:px-2 sm:py-1.5" style={{ borderTop: `1px solid rgba(139,231,139,0.2)`, background: `linear-gradient(${C.surface}, #0d1117)` }}>
       <button onClick={() => nav("home")} className="flex shrink-0 items-center gap-1.5 px-2 py-1 font-[family-name:var(--font-pixel)] text-[10px] transition sm:gap-2 sm:px-3 sm:text-xs"
         style={screen === "home" ? { border: `1px solid rgba(139,231,139,0.15)`, background: `rgba(139,231,139,0.08)`, color: C.green } : { border: `1px solid ${C.border}`, background: C.bg, color: C.textDim }}>
         <span className="grid grid-cols-2 gap-[2px]">
@@ -1042,8 +1179,8 @@ function Taskbar({ screen, nav, time }: { screen: Screen; nav: (s: Screen) => vo
           </button>
         ))}
       </div>
-      <div className="hidden shrink-0 px-2 py-1 text-xs sm:block sm:px-3 sm:text-sm" style={{ border: `1px solid ${C.border}`, background: C.bg, color: C.textDim }}>{time}</div>
-    </div>
+      <div className="hidden shrink-0 px-2 py-1 text-xs sm:block sm:px-3 sm:text-sm" aria-label={`Current time: ${time}`} style={{ border: `1px solid ${C.border}`, background: C.bg, color: C.textDim }}>{time}</div>
+    </nav>
   );
 }
 
