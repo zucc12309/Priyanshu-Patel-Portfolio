@@ -12,7 +12,7 @@ import {
   TrendingUp, FileText, Layers,
 } from "lucide-react";
 
-type Screen = "home" | "about" | "digit" | "builder" | "skills" | "contact";
+type Screen = "home" | "about" | "digit" | "builder" | "skills" | "assistant" | "contact";
 
 type MusicControls = {
   playing: boolean;
@@ -114,17 +114,17 @@ const builderProjects = [
   },
   {
     id: "02", title: "RIDECOMPARE", color: C.green, status: "Complete" as const,
-    problem: "Ride pricing is fragmented across apps. Users waste time checking providers manually without knowing which option is actually best.",
-    solution: "A mobile comparison layer that estimates fares, highlights savings, tracks accuracy, and deep-links into provider apps.",
-    stack: ["Flutter", "Node.js", "PostgreSQL", "Google Maps API"],
+    problem: "Ride pricing is fragmented across Uber, Ola, Rapido, and Namma Yatri. Users waste time checking providers manually without knowing which option is actually best.",
+    solution: "A cross-platform Flutter app with a Node.js + PostgreSQL fare engine (slab pricing, night surcharges), Google Maps APIs proxied through the backend, one-tap deep links into the cheapest ride app, and actual-vs-estimated fare tracking. Shipped with CI/CD and 160+ automated test cases.",
+    stack: ["Flutter", "Node.js", "PostgreSQL", "Google Maps API", "CI/CD"],
     learnings: ["Consumer AI has to earn trust through clear comparisons", "Pricing systems need feedback loops, not static formulas", "Mobile UX improves when recommendations explain the tradeoff"],
     repo: undefined,
   },
   {
     id: "03", title: "AI LIFEADMIN OS", color: C.cyan, status: "Active" as const,
-    problem: "Life administration is scattered across email, documents, subscriptions, calendars, and payment reminders — creating missed renewals and hidden work.",
-    solution: "An AI-native command center that extracts obligations, prioritizes tasks, and coordinates specialized agents with human review.",
-    stack: ["React", "Node.js", "Redis", "PostgreSQL", "LLM APIs"],
+    problem: "Life administration is scattered across email, documents, subscriptions, and payment reminders — creating missed renewals and hidden work.",
+    solution: "An iOS-first life-admin assistant that extracts obligations from Gmail and documents (on-device OCR), scores extraction confidence, and routes low-confidence items to a human review queue before anything is trusted.",
+    stack: ["Flutter", "Node.js", "PostgreSQL", "Anthropic API", "Gmail OAuth"],
     learnings: ["The inbox is the best entry point for personal automation", "Agent products need review queues and confidence states", "Premium UX matters more when the product touches money and documents"],
     repo: undefined,
   },
@@ -260,7 +260,7 @@ export function Win95Portfolio() {
 
   const titles: Record<Screen, string> = {
     home: "portfolio.exe", about: "about.exe", digit: "digit.exe",
-    builder: "builder.exe", skills: "skills.exe", contact: "contact.exe",
+    builder: "builder.exe", skills: "skills.exe", assistant: "assistant.exe", contact: "contact.exe",
   };
 
   if (recruiterMode) return <RecruiterMode exit={() => setRecruiterMode(false)} time={time} music={music} />;
@@ -299,6 +299,7 @@ export function Win95Portfolio() {
               {screen === "digit" && <DigitScreen />}
               {screen === "builder" && <BuilderScreen />}
               {screen === "skills" && <SkillsScreen />}
+              {screen === "assistant" && <AssistantScreen />}
               {screen === "contact" && <ContactScreen />}
             </div>
             {/* Status bar with persistent music */}
@@ -367,7 +368,7 @@ function HomeScreen({ nav, music }: { nav: (s: Screen) => void; music: MusicCont
         <div>
           <p className="mb-3 font-[family-name:var(--font-pixel)] text-lg lg:text-xl" style={{ color: C.green, textShadow: `0 0 8px rgba(139,231,139,0.3)` }}>&gt;_</p>
           <nav className="flex flex-col gap-0.5">
-            {([["home", "HOME"], ["about", "ABOUT"], ["digit", "DIGIT.EXE"], ["builder", "BUILDER.EXE"], ["skills", "SKILLS"], ["contact", "CONTACT"]] as const).map(([id, label]) => (
+            {([["home", "HOME"], ["about", "ABOUT"], ["digit", "DIGIT.EXE"], ["builder", "BUILDER.EXE"], ["skills", "SKILLS"], ["assistant", "ASK AI"], ["contact", "CONTACT"]] as const).map(([id, label]) => (
               <button key={id} onClick={() => nav(id as Screen)} className="py-1 text-left text-base transition hover:opacity-80 lg:text-lg" style={{ color: C.textDim }}>
                 {label}
               </button>
@@ -416,21 +417,24 @@ function HomeScreen({ nav, music }: { nav: (s: Screen) => void; music: MusicCont
         </div>
 
         <p className="mt-3 text-base sm:text-lg lg:text-xl" style={{ color: C.textMuted }}>Business Analyst at <span style={{ color: C.green }}>Digit Life Insurance</span></p>
-        <p className="mt-1 text-sm sm:text-base lg:text-lg" style={{ color: C.textDim }}>Driving product delivery for a 1,500+ Cr portfolio. Building AI-native products independently.</p>
+        <p className="mt-1 text-sm sm:text-base lg:text-lg" style={{ color: C.textDim }}>I turn business requirements into shipped features on large-scale insurance systems — and design and ship my own products using AI-assisted development.</p>
         <p className="mt-1 text-xs sm:text-sm lg:text-base" style={{ color: C.textDim }}>MBA Finance + B.Tech CSE · Bengaluru, India</p>
 
-        {/* Key metrics strip */}
-        <div className="mt-3 flex flex-wrap gap-2 sm:gap-3" role="list" aria-label="Key highlights">
-          {[
-            { label: "Premium Portfolio", value: "1,500+ Cr", color: C.cyan },
-            { label: "Defect Reduction", value: "40%", color: C.green },
-            { label: "Effort Saved", value: "30%", color: C.amber },
-          ].map(m => (
-            <div key={m.label} role="listitem" className="px-2 py-1 sm:px-3 sm:py-1.5" style={{ border: `1px solid rgba(245,241,232,0.08)`, background: C.surfaceAlt }}>
-              <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: m.color }}>{m.value}</p>
-              <p className="text-[10px] sm:text-xs" style={{ color: C.textDim }}>{m.label}</p>
-            </div>
-          ))}
+        {/* Key metrics strip — impact at Digit */}
+        <div className="mt-3">
+          <p className="mb-1.5 text-xs sm:text-sm" style={{ color: C.textDim }}>Impact delivered at Digit Life Insurance:</p>
+          <div className="flex flex-wrap gap-2 sm:gap-3" role="list" aria-label="Impact at Digit Life Insurance">
+            {[
+              { label: "premium portfolio I support", value: "1,500+ Cr", color: C.cyan },
+              { label: "fewer post-release defects via UAT", value: "40%", color: C.green },
+              { label: "manual effort cut via automation", value: "30%", color: C.amber },
+            ].map(m => (
+              <div key={m.label} role="listitem" className="px-2 py-1 sm:px-3 sm:py-1.5" style={{ border: `1px solid rgba(245,241,232,0.08)`, background: C.surfaceAlt }}>
+                <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: m.color }}>{m.value}</p>
+                <p className="text-[10px] sm:text-xs" style={{ color: C.textDim }}>{m.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Tech Titan Award */}
@@ -466,6 +470,7 @@ function HomeScreen({ nav, music }: { nav: (s: Screen) => void; music: MusicCont
 
         <div className="mt-3 flex flex-wrap gap-2 sm:mt-4 sm:gap-3">
           <button onClick={() => nav("skills")} className="px-3 py-1.5 font-[family-name:var(--font-pixel)] text-[10px] transition hover:opacity-80 sm:px-4 sm:py-2 sm:text-xs" style={{ border: `1px solid ${C.border}`, color: C.textDim }}>SKILLS</button>
+          <button onClick={() => nav("assistant")} className="px-3 py-1.5 font-[family-name:var(--font-pixel)] text-[10px] transition hover:opacity-80 sm:px-4 sm:py-2 sm:text-xs" style={{ border: `1px solid rgba(169,112,255,0.25)`, background: `rgba(169,112,255,0.06)`, color: C.purple }}>ASK AI</button>
           <button onClick={() => nav("contact")} className="px-3 py-1.5 font-[family-name:var(--font-pixel)] text-[10px] transition hover:opacity-80 sm:px-4 sm:py-2 sm:text-xs" style={{ border: `1px solid ${C.border}`, color: C.textDim }}>CONTACT</button>
           <a href="/cv/priyanshu-patel-business-analyst-cv.pdf" className="flex items-center gap-1.5 px-3 py-1.5 font-[family-name:var(--font-pixel)] text-[10px] transition hover:opacity-80 sm:px-4 sm:py-2 sm:text-xs" style={{ border: `1px solid ${C.border}`, color: C.textDim }}>
             <Download size={11} /> RESUME
@@ -512,7 +517,7 @@ function AboutScreen() {
           <h2 className="font-[family-name:var(--font-pixel)] text-lg sm:text-xl lg:text-2xl" style={{ color: C.text, textShadow: `0 0 20px rgba(232,114,154,0.15)` }}>Who am I?</h2>
           <div className="mt-3 space-y-3 text-sm leading-relaxed sm:mt-4 sm:text-base lg:text-lg" style={{ color: C.textMuted }}>
             <p>Product &amp; data-focused Business Analyst at <span style={{ color: C.green }}>Digit Life Insurance</span>, recognized with the <span style={{ color: C.amber }}>Tech Titan Award</span>. I translate business requirements into technical solutions, perform SQL-driven analysis, and deliver automation that improves accuracy and reduces manual effort.</p>
-            <p>Outside work, I independently build products — from AI infrastructure tools to mobile apps. These personal projects reflect my product thinking and technical curiosity, not my professional work.</p>
+            <p>Outside work, I design and ship my own products — from AI infrastructure tools to mobile apps — using AI-assisted development. I&apos;m not a professional developer; I bring the product thinking, system design, and requirements, and use AI as my build partner. These personal projects are separate from my professional work.</p>
             <p>Strong in system design, data analysis, and cross-functional execution across product, engineering, and operations teams. I thrive at the intersection of business understanding and technical implementation.</p>
           </div>
           <div className="mt-4 p-3 sm:mt-5 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
@@ -625,9 +630,46 @@ function DigitScreen() {
         {certs.map(c => <div key={c} className="px-2 py-1.5 text-xs sm:px-3 sm:py-2 sm:text-sm" style={{ border: `1px solid ${C.borderLight}`, background: C.bg, color: C.textMuted }}>▪ {c}</div>)}
       </div>
 
-      <div className="mt-4 p-2 sm:p-3" style={{ border: `1px solid rgba(245,177,76,0.12)`, background: `rgba(245,177,76,0.04)` }}>
-        <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: `rgba(245,177,76,0.75)` }}>Achievement</p>
-        <p className="mt-1 text-xs sm:text-sm" style={{ color: C.textMuted }}>Finalist — EY Young Leader&apos;s Business Case Study Competition 2024</p>
+      {/* Awards & Recognition */}
+      <p className="mb-2 mt-5 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest sm:text-xs" style={{ color: C.amber }}>Awards &amp; Recognition</p>
+      <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
+        <div className="flex items-start gap-3 p-3 sm:p-4" style={{ border: `1px solid rgba(245,177,76,0.25)`, background: `linear-gradient(135deg, rgba(245,177,76,0.08), rgba(245,177,76,0.02))`, boxShadow: `0 0 24px rgba(245,177,76,0.08)` }}>
+          <Trophy size={22} className="mt-0.5 shrink-0" style={{ color: C.amber }} />
+          <div>
+            <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.amber }}>TECH TITAN AWARD</p>
+            <p className="mt-1 text-sm sm:text-base" style={{ color: C.textMuted }}>Digit Life Insurance</p>
+            <p className="text-xs sm:text-sm" style={{ color: C.textDim }}>Recognition for technical excellence and impact as a Business Analyst</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-3 p-3 sm:p-4" style={{ border: `1px solid rgba(107,197,232,0.2)`, background: `rgba(107,197,232,0.04)` }}>
+          <Trophy size={22} className="mt-0.5 shrink-0" style={{ color: C.cyan }} />
+          <div>
+            <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.cyan }}>EY YOUNG LEADERS FINALIST</p>
+            <p className="mt-1 text-sm sm:text-base" style={{ color: C.textMuted }}>EY Young Leader&apos;s Business Case Study Competition 2024</p>
+            <p className="text-xs sm:text-sm" style={{ color: C.textDim }}>National-level business case competition</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Career Timeline */}
+      <p className="mb-2 mt-5 font-[family-name:var(--font-pixel)] text-[10px] uppercase tracking-widest sm:text-xs" style={{ color: C.green }}>Career Timeline</p>
+      <div className="p-3 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.bg }}>
+        <div className="relative space-y-4 pl-5" style={{ borderLeft: `1px solid rgba(139,231,139,0.25)` }}>
+          {[
+            { year: "2025 –", title: "Business Analyst — Digit Life Insurance", note: "Group Life products · Tech Titan Award", color: C.green, now: true },
+            { year: "2025", title: "MBA Finance + B.Tech CSE — MPSTME, Mumbai", note: "Dual degree · 3.56/4.00", color: C.purple },
+            { year: "2024", title: "Finance & Accounting Intern — BHEL", note: "Oracle ERP · MIS dashboards · EY Young Leaders Finalist", color: C.cyan },
+            { year: "2023", title: "Deep Learning Intern — MANIT Bhopal", note: "CNN cancer diagnosis · ~89% accuracy", color: C.pink },
+            { year: "2020", title: "12th CBSE — PCM", note: "85.4%", color: C.amber },
+          ].map(t => (
+            <div key={t.title} className="relative">
+              <span className="absolute -left-[26px] top-1.5 h-2.5 w-2.5 rounded-full" style={{ background: t.color, boxShadow: t.now ? `0 0 8px ${t.color}` : "none" }} />
+              <p className="text-xs sm:text-sm" style={{ color: t.color }}>{t.year}</p>
+              <p className="text-sm font-bold sm:text-base" style={{ color: C.textMuted }}>{t.title}</p>
+              <p className="text-xs sm:text-sm" style={{ color: C.textDim }}>{t.note}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -642,7 +684,7 @@ function BuilderScreen() {
         <Rocket size={18} style={{ color: C.pink }} />
         <Cmd text="personal projects" />
       </div>
-      <p className="mt-2 text-sm sm:text-base" style={{ color: C.textDim }}>What I build independently, outside work. These are not company projects.</p>
+      <p className="mt-2 text-sm sm:text-base" style={{ color: C.textDim }}>Personal products I design and ship outside work using AI-assisted development. These are not company projects.</p>
 
       <div className="mt-4 space-y-4">
         {builderProjects.map((pr, idx) => (
@@ -697,10 +739,47 @@ function BuilderScreen() {
               </div>
             </div>
 
+            {pr.flagship && <MemoryRouterArchitecture />}
             {pr.flagship && <MemoryRouterTerminal />}
           </motion.div>
         ))}
       </div>
+    </div>
+  );
+}
+
+/* ═══ MEMORY ROUTER ARCHITECTURE ════════════════════════ */
+
+function MemoryRouterArchitecture() {
+  const stages = [
+    { label: "QUERY", desc: "User prompt arrives", color: C.text },
+    { label: "CLASSIFY", desc: "Category detection", color: C.cyan },
+    { label: "RETRIEVE", desc: "SQLite + FTS5 memory search", color: C.green },
+    { label: "ASSEMBLE", desc: "Compact context window", color: C.amber },
+    { label: "ROUTE", desc: "Local-first provider selection", color: C.purple },
+  ];
+  return (
+    <div className="p-3 sm:p-4" style={{ borderTop: `1px solid ${C.border}`, background: C.surfaceAlt }}>
+      <p className="mb-3 font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.cyan }}>▶ ARCHITECTURE — how a query flows</p>
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-stretch sm:gap-0">
+        {stages.map((s, i) => (
+          <div key={s.label} className="flex items-center gap-1 sm:flex-1 sm:gap-0">
+            <div className="flex-1 p-2 text-center" style={{ border: `1px solid ${C.borderLight}`, background: C.bg }}>
+              <p className="font-[family-name:var(--font-pixel)] text-[9px] sm:text-[10px]" style={{ color: s.color }}>{s.label}</p>
+              <p className="mt-0.5 text-[10px] leading-snug sm:text-xs" style={{ color: C.textDim }}>{s.desc}</p>
+            </div>
+            {i < stages.length - 1 && (
+              <span className="shrink-0 px-1 text-center" style={{ color: C.green }} aria-hidden="true">
+                <span className="hidden sm:inline">→</span>
+                <span className="sm:hidden">↓</span>
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 text-xs sm:text-sm" style={{ color: C.textDim }}>
+        Local-first by default: memories never leave the machine unless a cloud provider is explicitly selected. Compact prompts cut token usage on every request.
+      </p>
     </div>
   );
 }
@@ -710,7 +789,7 @@ function BuilderScreen() {
 function MemoryRouterTerminal() {
   const [input, setInput] = useState("");
   const [lines, setLines] = useState<{ text: string; color?: string; isCmd?: boolean }[]>([
-    { text: "Memory Router v0.3.1 — Local-first AI memory & routing layer", color: C.green },
+    { text: "Memory Router v0.2.0 — Local-first context optimization & LLM routing", color: C.green },
     { text: 'Type "help" for commands. Click terminal to focus.', color: C.textDim },
     { text: "" },
   ]);
@@ -774,28 +853,27 @@ function MemoryRouterTerminal() {
       emit([
         { text: "Memory Router — System Status", color: C.green },
         { text: "  Engine:        Running ✓", color: C.green },
-        { text: "  Memory store:  SQLite + FTS5", color: C.textMuted },
-        { text: "  MCP server:    Connected (port 3847)", color: C.green },
+        { text: "  Memory store:  SQLite + FTS5 (local-only)", color: C.textMuted },
+        { text: "  Working mem:   Session scratchpad active", color: C.textMuted },
         { text: "  Ollama:        localhost:11434 ✓", color: C.green },
-        { text: "  Queries today: 142", color: C.textMuted },
         { text: "  Avg latency:   23ms (retrieval)", color: C.textMuted },
-        { text: "  Token savings: ~47% avg", color: C.amber },
+        { text: "  Token savings: 80-90% of input tokens", color: C.amber },
       ]);
     } else if (cmd === "providers") {
       emit([
         { text: "Configured LLM Providers:", color: C.green },
-        { text: "  [1] Ollama (local)   llama3, codellama  ✓", color: C.green },
-        { text: "  [2] Claude Sonnet    via API key         ✓", color: C.green },
-        { text: "  [3] GPT-4o           via API key         ✓", color: C.green },
-        { text: "  [4] Claude Haiku     via API key         ✓", color: C.green },
-        { text: "  Routing: cost-optimized, local-first", color: C.textMuted },
+        { text: "  [1] Ollama (local)   no API key needed   ✓", color: C.green },
+        { text: "  [2] OpenAI           via API key         ✓", color: C.green },
+        { text: "  [3] Anthropic        via API key         ✓", color: C.green },
+        { text: "  [4] Google Gemini    via API key         ✓", color: C.green },
+        { text: "  Routing: adaptive, local-first, auto-fallback", color: C.textMuted },
       ]);
     } else if (cmd.startsWith("route ")) {
       const q = raw.trim().slice(6);
       if (!q) { emit([{ text: "Usage: route <your query>", color: C.amber }]); return; }
       const cat = q.toLowerCase().includes("code") || q.toLowerCase().includes("build") ? "Coding" : q.toLowerCase().includes("finance") || q.toLowerCase().includes("money") ? "Finance" : "General";
-      const mdl = cat === "Coding" ? "Claude Sonnet" : cat === "Finance" ? "GPT-4o" : "Ollama (local)";
-      const sav = cat === "Coding" ? "42%" : cat === "Finance" ? "38%" : "51%";
+      const mdl = cat === "Coding" ? "Anthropic" : cat === "Finance" ? "OpenAI" : "Ollama (local)";
+      const sav = cat === "Coding" ? "82%" : cat === "Finance" ? "80%" : "88%";
       const n = cat === "Coding" ? 5 : cat === "Finance" ? 3 : 4;
       emit([
         { text: "[1/4] Classifying query...", color: C.textDim },
@@ -803,12 +881,12 @@ function MemoryRouterTerminal() {
         { text: "[2/4] Searching memories (FTS5)...", color: C.textDim },
         { text: `       Found ${n} relevant memories (23ms)`, color: C.green },
         { text: "[3/4] Assembling context window...", color: C.textDim },
-        { text: "       Prompt: 2,847 → 1,203 tokens", color: C.textMuted },
+        { text: "       Prompt: 8,400 → 1,150 tokens", color: C.textMuted },
         { text: "[4/4] Routing to provider...", color: C.textDim },
         { text: `       Selected: ${mdl}`, color: C.purple },
         { text: "" },
         { text: "  ✓ Routed successfully", color: C.green },
-        { text: `  Token savings: ${sav}   Cost: $0.0003`, color: C.amber },
+        { text: `  Input token savings: ${sav}`, color: C.amber },
       ]);
     } else {
       emit([
@@ -827,10 +905,10 @@ function MemoryRouterTerminal() {
   return (
     <div className="p-3 sm:p-4" style={{ borderTop: `1px solid ${C.border}`, background: "#0a0e12" }}>
       <div className="mb-2 flex items-center justify-between">
-        <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.purple }}>▶ INTERACTIVE TERMINAL</p>
+        <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.purple }}>▶ INTERACTIVE TERMINAL <span className="hidden sm:inline" style={{ color: C.textDim }}>(simulated demo)</span></p>
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full" style={{ background: C.green }} />
-          <span className="text-sm sm:text-base" style={{ color: C.textDim }}>v0.3.1</span>
+          <span className="text-sm sm:text-base" style={{ color: C.textDim }}>v0.2.0</span>
         </div>
       </div>
 
@@ -948,6 +1026,236 @@ function SkillsScreen() {
   );
 }
 
+/* ═══ AI PORTFOLIO ASSISTANT ════════════════════════════ */
+
+const assistantKB: { match: RegExp; answer: string[] }[] = [
+  {
+    match: /who|about|tell me|introduce|priyanshu|summary/i,
+    answer: [
+      "Priyanshu Patel is a Product & Data-focused Business Analyst at Digit Life Insurance (Bengaluru).",
+      "He holds an MBA in Finance & Business Analytics and a B.Tech in CSE (MPSTME, Mumbai — 3.56/4.00).",
+      "At work: end-to-end SDLC for Group Life products on a 1,500+ Cr premium portfolio.",
+      "Outside work: he designs and ships his own products (Memory Router, RideCompare) using AI-assisted development.",
+      "He is a Tech Titan Award recipient at Digit Life Insurance.",
+      "[source: about.exe, digit.exe]",
+    ],
+  },
+  {
+    match: /impact|outcome|achiev|result|metric|deliver/i,
+    answer: [
+      "Measurable impact at Digit Life Insurance:",
+      "  ▸ Automated workflows with 10+ business rules → accuracy +18%, manual effort -30%",
+      "  ▸ Led UAT with 80+ test cases → post-release defects -40%",
+      "  ▸ Supported a 1,500+ Cr premium portfolio with 2L+ monthly transactions",
+      "  ▸ Tech Titan Award recipient",
+      "[source: digit.exe → outcomes]",
+    ],
+  },
+  {
+    match: /memory\s*router|flagship|routing/i,
+    answer: [
+      "Memory Router is his flagship personal project — a local-first context optimization layer and LLM router.",
+      "Problem: LLM workflows resend too much context, lose durable memory, and trade privacy for capability.",
+      "Solution: stores structured memory locally (SQLite + FTS5), retrieves only relevant context, builds a compact prompt (saving 80-90% of input tokens), and routes to Ollama, OpenAI, Anthropic, or Gemini with automatic fallback.",
+      "Stack: Python, SQLite, FTS5, MCP, Ollama. All memory stays on the machine — no cloud component.",
+      "Try the live demo terminal in builder.exe.",
+      "[source: builder.exe → project 01]",
+    ],
+  },
+  {
+    match: /ride\s*compare|fare|uber|ola|mobile app|flutter/i,
+    answer: [
+      "RideCompare is a cross-platform Flutter app comparing real-time ride fares across Uber, Ola, Rapido, and Namma Yatri — with one-tap deep links into the cheapest app.",
+      "  ▸ Backend fare engine in Node.js + PostgreSQL with slab pricing and night surcharges",
+      "  ▸ Google Maps/Places APIs proxied through the backend for security and caching",
+      "  ▸ Tracks actual vs estimated fares and shows per-platform accuracy stats",
+      "  ▸ Phone OTP + JWT auth, CI/CD via GitHub Actions, 160+ automated test cases",
+      "[source: builder.exe → project 02]",
+    ],
+  },
+  {
+    match: /skill|sql|api|python|technical|tool/i,
+    answer: [
+      "Core skills, grouped:",
+      "  ▸ Business Analysis: Requirements & BRD/SRS, GAP Analysis, User Stories, UAT",
+      "  ▸ Product & Delivery: Agile/Scrum, Stakeholder Management, Cross-functional Execution",
+      "  ▸ Data & Technical: SQL, API Integration & Contracts, Python, Workflow Automation",
+      "  ▸ Tools: Jira, Confluence, Postman, SQL Server, Power BI, DBeaver, Camunda, n8n",
+      "[source: skills.exe]",
+    ],
+  },
+  {
+    match: /experience|work|digit|job|role|insurance/i,
+    answer: [
+      "Business Analyst — Digit Life Insurance (Jun 2025 – Present, Bengaluru):",
+      "  ▸ Led end-to-end SDLC for Group Life products — 1,500+ Cr portfolio, 2L+ monthly transactions",
+      "  ▸ Designed API contracts (request/response, error handling), database schemas, and UI workflows aligned with Figma designs",
+      "  ▸ SQL-driven analysis of high-volume transaction data; RCA with engineering and cloud/infra teams",
+      "Earlier: Finance & Accounting Intern at BHEL (Oracle ERP), Deep Learning Intern at MANIT (CNN cancer diagnosis, ~89% accuracy).",
+      "[source: digit.exe]",
+    ],
+  },
+  {
+    match: /award|recognition|titan|ey|honor/i,
+    answer: [
+      "Awards & Recognition:",
+      "  ▸ Tech Titan Award — Digit Life Insurance (verified recipient)",
+      "  ▸ Finalist — EY Young Leader's Business Case Study Competition 2024",
+      "[source: digit.exe → awards]",
+    ],
+  },
+  {
+    match: /education|degree|mba|b\.?tech|college|study/i,
+    answer: [
+      "Education:",
+      "  ▸ MBA/PGDM Finance — MPSTME, Mumbai (2025) · 3.56/4.00",
+      "  ▸ B.Tech CSE — MPSTME, Mumbai (2025) · 3.56/4.00",
+      "  ▸ 12th CBSE PCM — 85.4% (2020)",
+      "Certifications: NISM VIII (Equity Derivatives), NISM XV (Research Analyst), FMVA, Business Process Modelling.",
+      "[source: digit.exe → education]",
+    ],
+  },
+  {
+    match: /project|build|side|independent/i,
+    answer: [
+      "Personal projects (built independently — not company work):",
+      "  01 MEMORY ROUTER — local-first context optimization & LLM routing layer (flagship, active)",
+      "  02 RIDECOMPARE — real-time ride fare comparison app for Indian providers (complete)",
+      "  03 AI LIFEADMIN OS — iOS-first life-admin assistant with AI extraction + review queue (active)",
+      "  04 CRM WORKFLOW — CRM automation with n8n, Python, Power BI (complete)",
+      "[source: builder.exe]",
+    ],
+  },
+  {
+    match: /contact|email|hire|reach|linkedin|github/i,
+    answer: [
+      "Reach Priyanshu:",
+      "  ▸ Email: itsmepriyanshu36@gmail.com",
+      "  ▸ LinkedIn: /in/priyanshu-patel",
+      "  ▸ GitHub: /zucc12309",
+      "He is open to opportunities in business analysis, product, and technology.",
+      "[source: contact.exe]",
+    ],
+  },
+];
+
+function AssistantScreen() {
+  const [input, setInput] = useState("");
+  const [lines, setLines] = useState<{ text: string; color?: string; isUser?: boolean }[]>([
+    { text: "PORTFOLIO ASSISTANT v1.0 — trained on Priyanshu's resume, projects & experience", color: C.purple },
+    { text: "Every answer cites the portfolio section it comes from. Ask me anything.", color: C.textDim },
+    { text: "" },
+  ]);
+  const [busy, setBusy] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [lines]);
+
+  const ask = useCallback((raw: string) => {
+    const q = raw.trim();
+    if (!q || busy) return;
+    setLines(p => [...p, { text: q, isUser: true }]);
+    setInput("");
+    setBusy(true);
+    const hit = assistantKB.find(k => k.match.test(q));
+    const rows = hit
+      ? hit.answer
+      : [
+          "I can answer questions about Priyanshu's experience, impact, skills, projects, awards, education, and contact info.",
+          'Try: "What business impact has he delivered?" or "What is Memory Router?"',
+        ];
+    let i = 0;
+    const next = () => {
+      if (i < rows.length) {
+        const row = rows[i];
+        const isSource = row.startsWith("[source:");
+        setLines(p => [...p, { text: row, color: isSource ? C.textDim : row.startsWith("  ▸") ? C.textMuted : C.green }]);
+        i++;
+        setTimeout(next, 90 + Math.random() * 70);
+      } else {
+        setLines(p => [...p, { text: "" }]);
+        setBusy(false);
+      }
+    };
+    setTimeout(next, 250);
+  }, [busy]);
+
+  const suggestions = [
+    "Tell me about Priyanshu",
+    "What business impact has he delivered?",
+    "What is Memory Router?",
+    "How does RideCompare work?",
+    "What awards has he won?",
+  ];
+
+  return (
+    <div>
+      <div className="flex items-center gap-3">
+        <MessageSquare size={18} style={{ color: C.purple }} />
+        <Cmd text="ask the portfolio assistant" />
+      </div>
+      <p className="mt-2 text-sm sm:text-base" style={{ color: C.textDim }}>
+        A built-in assistant answering from resume and portfolio content only — every answer cites its source section.
+      </p>
+
+      <div className="mt-4" style={{ border: `1px solid rgba(169,112,255,0.2)`, background: "#0a0e12" }}>
+        <div className="flex items-center justify-between px-3 py-2" style={{ borderBottom: `1px solid ${C.border}` }}>
+          <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.purple }}>▶ PORTFOLIO ASSISTANT</p>
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full" style={{ background: busy ? C.amber : C.green }} />
+            <span className="text-sm" style={{ color: C.textDim }}>{busy ? "thinking..." : "online"}</span>
+          </div>
+        </div>
+
+        <div
+          onClick={() => inputRef.current?.focus()}
+          ref={scrollRef}
+          className="h-64 cursor-text overflow-y-auto p-3 font-[family-name:var(--font-vt)] sm:h-80"
+          style={{ background: C.bg }}
+          aria-live="polite"
+        >
+          {lines.map((l, i) =>
+            l.isUser ? (
+              <p key={i} className="text-sm sm:text-lg"><span style={{ color: C.purple }}>you&gt;</span> <span style={{ color: C.text }}>{l.text}</span></p>
+            ) : (
+              <p key={i} className="text-sm leading-relaxed sm:text-lg" style={{ color: l.color || C.textMuted, minHeight: l.text ? undefined : "1.25em" }}>{l.text}</p>
+            ),
+          )}
+          {!busy && (
+            <div className="flex items-center text-sm sm:text-lg">
+              <span className="shrink-0" style={{ color: C.purple }}>you&gt;&nbsp;</span>
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && ask(input)}
+                spellCheck={false}
+                className="min-w-0 flex-1 bg-transparent outline-none"
+                style={{ color: C.text, caretColor: C.purple }}
+                aria-label="Ask the portfolio assistant"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-1.5 sm:gap-2">
+        {suggestions.map(s => (
+          <button key={s} onClick={() => ask(s)} disabled={busy}
+            className="px-2 py-1 text-xs transition hover:opacity-80 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-purple-400/60 sm:px-3 sm:py-1.5 sm:text-sm"
+            style={{ border: `1px solid rgba(169,112,255,0.25)`, background: `rgba(169,112,255,0.06)`, color: C.textMuted }}>
+            {s}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ═══ CONTACT ════════════════════════════════════════════ */
 
 function ContactScreen() {
@@ -1054,11 +1362,11 @@ function RecruiterMode({ exit, time, music }: { exit: () => void; time: string; 
         {/* Quick-scan metrics */}
         <div className="mt-3 flex flex-wrap gap-2 sm:mt-4 sm:gap-3">
           {[
-            { label: "Premium Portfolio", value: "1,500+ Cr", color: C.cyan },
-            { label: "Monthly Transactions", value: "2L+", color: C.green },
-            { label: "Accuracy Improvement", value: "+18%", color: C.amber },
-            { label: "Effort Reduction", value: "30%", color: C.pink },
-            { label: "Defect Reduction", value: "40%", color: C.purple },
+            { label: "premium portfolio supported", value: "1,500+ Cr", color: C.cyan },
+            { label: "monthly transactions handled", value: "2L+", color: C.green },
+            { label: "accuracy gain via business rules", value: "+18%", color: C.amber },
+            { label: "manual effort cut via automation", value: "30%", color: C.pink },
+            { label: "fewer post-release defects via UAT", value: "40%", color: C.purple },
           ].map(m => (
             <div key={m.label} className="px-2 py-1 sm:px-3 sm:py-1.5" style={{ border: `1px solid rgba(245,241,232,0.08)`, background: C.bg }}>
               <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: m.color }}>{m.value}</p>
@@ -1085,11 +1393,23 @@ function RecruiterMode({ exit, time, music }: { exit: () => void; time: string; 
           <div className="p-3 sm:p-4" style={{ border: `1px solid ${C.border}`, background: C.surfaceAlt }}>
             <p className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs" style={{ color: C.amber }}>EXPERIENCE</p>
             <div className="mt-2 space-y-3">
-              {jobs.map(j => (
+              {jobs.map((j, i) => (
                 <div key={j.co}>
                   <p className="text-sm font-bold sm:text-base" style={{ color: C.textMuted }}>{j.role}</p>
                   <p className="text-xs sm:text-sm" style={{ color: C.cyan }}>{j.co} · {j.period}</p>
-                  <p className="mt-1 text-xs sm:text-sm" style={{ color: C.textDim }}>{j.bullets[0]}</p>
+                  <ul className="mt-1 space-y-0.5">
+                    {(i === 0
+                      ? [
+                          "Led end-to-end SDLC for Group Life products — 1,500+ Cr premium portfolio, 2L+ monthly transactions",
+                          "Automated workflows with 10+ business rules — accuracy +18%, manual effort -30%",
+                          "Led UAT with 80+ test cases, reducing post-release defects by 40%",
+                          "Designed API contracts, database schemas, and UI workflows through GAP analysis",
+                        ]
+                      : j.bullets.slice(0, 2)
+                    ).map(b => (
+                      <li key={b} className="text-xs leading-relaxed sm:text-sm" style={{ color: C.textDim }}>▸ {b}</li>
+                    ))}
+                  </ul>
                 </div>
               ))}
             </div>
@@ -1157,6 +1477,7 @@ function Taskbar({ screen, nav, time }: { screen: Screen; nav: (s: Screen) => vo
     { id: "digit", label: "digit", short: "dig" },
     { id: "builder", label: "builder", short: "bld" },
     { id: "skills", label: "skills", short: "skl" },
+    { id: "assistant", label: "ask-ai", short: "ai" },
     { id: "contact", label: "contact", short: "msg" },
   ];
   return (
@@ -1200,56 +1521,90 @@ function StatusBadge({ status }: { status: "Active" | "Complete" | "Experimental
   );
 }
 
-/* Pixel-art retro PC: monitor with smiley, CPU tower, keyboard, coffee mug */
+/* Pixel-art retro PC in warm beige: CRT monitor with green smiley, desktop case
+   with drive bays, keyboard, coffee mug — styled after classic 90s beige hardware */
 function RetroPC() {
+  // beige hardware palette
+  const P = {
+    face: "#C9BFA6",      // lit beige face
+    faceHi: "#DDD4BC",    // top highlight
+    mid: "#B0A78E",       // mid tone
+    shade: "#8E8670",     // shadow side
+    dark: "#5C5546",      // outline / deep shadow
+    slot: "#3E392E",      // drive slot
+    screen: "#0A120A",    // CRT glass
+  };
   return (
-    <svg viewBox="0 0 160 140" className="h-24 w-28 sm:h-36 sm:w-44 lg:h-44 lg:w-52" style={{ imageRendering: "pixelated" }}>
-      <rect x="4" y="30" width="34" height="75" rx="1" fill="#3a3530" stroke="#2a2520" strokeWidth="1" />
-      <rect x="6" y="32" width="30" height="71" rx="1" fill="#4a4540" />
-      <rect x="9" y="36" width="24" height="8" rx="0.5" fill="#2a2520" stroke="#1a1510" strokeWidth="0.5" />
-      <rect x="9" y="47" width="24" height="8" rx="0.5" fill="#2a2520" stroke="#1a1510" strokeWidth="0.5" />
-      <rect x="9" y="58" width="24" height="5" rx="0.5" fill="#2a2520" stroke="#1a1510" strokeWidth="0.5" />
-      <line x1="11" y1="40" x2="31" y2="40" stroke="#1a1510" strokeWidth="0.5" />
-      <line x1="11" y1="51" x2="31" y2="51" stroke="#1a1510" strokeWidth="0.5" />
-      <rect x="28" y="38" width="3" height="2" rx="0.3" fill="#5a5550" />
-      <rect x="28" y="49" width="3" height="2" rx="0.3" fill="#5a5550" />
-      <circle cx="21" cy="94" r="3" fill="#2a2520" stroke="#1a1510" strokeWidth="0.5" />
-      <circle cx="21" cy="94" r="2" fill="#3a3530" />
-      <motion.circle cx="13" cy="94" r="1.5" fill={C.green} animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }} />
-      <rect x="44" y="6" width="76" height="62" rx="3" fill="#3a3530" stroke="#2a2520" strokeWidth="1.5" />
-      <rect x="46" y="8" width="72" height="58" rx="2" fill="#4a4540" />
-      <rect x="52" y="12" width="60" height="46" rx="1" fill="#1a1510" />
-      <rect x="54" y="14" width="56" height="42" fill="#0a1a0a" />
-      {Array.from({ length: 10 }).map((_, i) => (
-        <line key={`sl${i}`} x1="54" y1={14 + i * 4.2} x2="110" y2={14 + i * 4.2} stroke="#0f250f" strokeWidth="0.5" />
-      ))}
-      <motion.rect x="70" y="24" width="4" height="6" fill={C.green} animate={{ opacity: [0.7, 1, 0.7] }} transition={{ duration: 3, repeat: Infinity }} />
-      <motion.rect x="90" y="24" width="4" height="6" fill={C.green} animate={{ opacity: [0.7, 1, 0.7] }} transition={{ duration: 3, repeat: Infinity }} />
-      <motion.path d="M72 38 Q82 48 92 38" fill="none" stroke={C.green} strokeWidth="2.5" strokeLinecap="round"
-        animate={{ opacity: [0.7, 1, 0.7] }} transition={{ duration: 3, repeat: Infinity }} />
-      <rect x="74" y="60" width="16" height="3" rx="0.5" fill="#5a5550" />
-      <motion.circle cx="68" cy="61.5" r="1.2" fill={C.green} animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }} />
-      <rect x="72" y="68" width="20" height="6" fill="#3a3530" stroke="#2a2520" strokeWidth="0.5" />
-      <rect x="66" y="74" width="32" height="3" rx="1" fill="#3a3530" stroke="#2a2520" strokeWidth="0.5" />
-      <rect x="44" y="82" width="76" height="18" rx="2" fill="#3a3530" stroke="#2a2520" strokeWidth="1" />
-      <rect x="46" y="84" width="72" height="14" rx="1" fill="#4a4540" />
+    <svg viewBox="0 0 200 170" className="h-28 w-32 sm:h-44 sm:w-52 lg:h-52 lg:w-60" style={{ imageRendering: "pixelated" }} aria-hidden="true">
+      {/* ── CRT monitor shell ── */}
+      <rect x="42" y="4" width="118" height="88" fill={P.mid} stroke={P.dark} strokeWidth="1.5" />
+      <rect x="44" y="6" width="114" height="6" fill={P.faceHi} />
+      <rect x="44" y="6" width="6" height="84" fill={P.face} />
+      <rect x="152" y="10" width="6" height="80" fill={P.shade} />
+      <rect x="44" y="84" width="114" height="6" fill={P.shade} />
+      {/* bezel */}
+      <rect x="54" y="14" width="94" height="64" fill={P.shade} stroke={P.dark} strokeWidth="1" />
+      <rect x="58" y="18" width="86" height="56" fill={P.dark} />
+      {/* screen */}
+      <rect x="61" y="21" width="80" height="50" fill={P.screen} />
       {Array.from({ length: 12 }).map((_, i) => (
-        <rect key={`k1${i}`} x={48 + i * 5.5} y="86" width="4" height="3" rx="0.3" fill="#5a5550" stroke="#2a2520" strokeWidth="0.3" />
+        <line key={`sl${i}`} x1="61" y1={21 + i * 4.2} x2="141" y2={21 + i * 4.2} stroke="#0F1F0F" strokeWidth="0.6" />
       ))}
-      {Array.from({ length: 11 }).map((_, i) => (
-        <rect key={`k2${i}`} x={50 + i * 5.5} y="91" width="4" height="3" rx="0.3" fill="#5a5550" stroke="#2a2520" strokeWidth="0.3" />
+      {/* green smiley */}
+      <motion.g animate={{ opacity: [0.75, 1, 0.75] }} transition={{ duration: 3, repeat: Infinity }}>
+        <rect x="86" y="32" width="6" height="9" fill={C.green} />
+        <rect x="110" y="32" width="6" height="9" fill={C.green} />
+        <path d="M84 52 Q101 64 118 52" fill="none" stroke={C.green} strokeWidth="3.5" strokeLinecap="square" />
+      </motion.g>
+      <rect x="61" y="21" width="80" height="50" fill="url(#crtGlow)" opacity="0.18" />
+      {/* bezel controls */}
+      <motion.rect x="138" y="82" width="4" height="3" fill={C.green} animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }} />
+      <rect x="126" y="82" width="7" height="3" fill={P.dark} />
+      <rect x="60" y="82" width="22" height="3" fill={P.shade} />
+      {/* monitor neck + swivel base */}
+      <rect x="86" y="92" width="30" height="5" fill={P.shade} stroke={P.dark} strokeWidth="1" />
+      <rect x="76" y="97" width="50" height="4" fill={P.mid} stroke={P.dark} strokeWidth="1" />
+
+      {/* ── desktop case ── */}
+      <rect x="38" y="101" width="126" height="24" fill={P.face} stroke={P.dark} strokeWidth="1.5" />
+      <rect x="40" y="103" width="122" height="4" fill={P.faceHi} />
+      <rect x="38" y="120" width="126" height="5" fill={P.shade} />
+      {/* floppy drives */}
+      <rect x="92" y="106" width="48" height="6" fill={P.slot} stroke={P.dark} strokeWidth="0.8" />
+      <rect x="130" y="107.5" width="6" height="3" fill={P.mid} />
+      <rect x="92" y="114" width="48" height="4" fill={P.slot} stroke={P.dark} strokeWidth="0.8" />
+      {/* power button + LED */}
+      <rect x="48" y="107" width="12" height="9" fill={P.mid} stroke={P.dark} strokeWidth="1" />
+      <motion.rect x="66" y="110" width="4" height="4" fill={C.green} animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.6, repeat: Infinity }} />
+      {/* case vents */}
+      {Array.from({ length: 4 }).map((_, i) => (
+        <line key={`v${i}`} x1={148} y1={106 + i * 3.5} x2={158} y2={106 + i * 3.5} stroke={P.shade} strokeWidth="1" />
       ))}
-      <rect x="60" y="96" width="24" height="2.5" rx="0.3" fill="#5a5550" stroke="#2a2520" strokeWidth="0.3" />
-      <rect x="128" y="86" width="14" height="16" rx="2" fill="#4a4038" stroke="#3a3028" strokeWidth="1" />
-      <path d="M142 90 Q148 90 148 94 Q148 98 142 98" fill="none" stroke="#3a3028" strokeWidth="1.5" />
-      <rect x="129" y="88" width="12" height="3" rx="1" fill="#2a1a0a" />
-      <motion.path d="M133 84 Q134 80 133 76" fill="none" stroke="#ffffff" strokeWidth="0.6" opacity="0.2"
+
+      {/* ── keyboard ── */}
+      <rect x="22" y="132" width="132" height="24" fill={P.face} stroke={P.dark} strokeWidth="1.5" />
+      <rect x="24" y="134" width="128" height="3" fill={P.faceHi} />
+      <rect x="22" y="151" width="132" height="5" fill={P.shade} />
+      {Array.from({ length: 16 }).map((_, i) => (
+        <rect key={`k1${i}`} x={27 + i * 7.7} y="138" width="6" height="4" fill={P.mid} stroke={P.dark} strokeWidth="0.4" />
+      ))}
+      {Array.from({ length: 15 }).map((_, i) => (
+        <rect key={`k2${i}`} x={30 + i * 7.7} y="144" width="6" height="4" fill={P.mid} stroke={P.dark} strokeWidth="0.4" />
+      ))}
+      <rect x="58" y="149.5" width="56" height="3" fill={P.mid} stroke={P.dark} strokeWidth="0.4" />
+
+      {/* ── coffee mug ── */}
+      <rect x="166" y="134" width="20" height="22" fill={P.mid} stroke={P.dark} strokeWidth="1.2" />
+      <rect x="168" y="136" width="4" height="18" fill={P.face} />
+      <rect x="168" y="135" width="16" height="4" fill="#2A1B0E" />
+      <path d="M186 139 Q194 139 194 145 Q194 151 186 151" fill="none" stroke={P.dark} strokeWidth="2" />
+      <motion.path d="M173 130 Q174 125 173 120" fill="none" stroke="#ffffff" strokeWidth="0.8" opacity="0.2"
         animate={{ opacity: [0.1, 0.3, 0.1], y: [0, -2, 0] }} transition={{ duration: 2, repeat: Infinity }} />
-      <motion.path d="M137 84 Q138 79 137 75" fill="none" stroke="#ffffff" strokeWidth="0.6" opacity="0.2"
+      <motion.path d="M179 130 Q180 124 179 119" fill="none" stroke="#ffffff" strokeWidth="0.8" opacity="0.2"
         animate={{ opacity: [0.15, 0.35, 0.15], y: [0, -2, 0] }} transition={{ duration: 2.5, repeat: Infinity }} />
-      <rect x="54" y="14" width="56" height="42" fill="url(#screenGlow)" opacity="0.15" />
+
       <defs>
-        <radialGradient id="screenGlow" cx="50%" cy="50%">
+        <radialGradient id="crtGlow" cx="50%" cy="50%">
           <stop offset="0%" stopColor={C.green} />
           <stop offset="100%" stopColor="transparent" />
         </radialGradient>
