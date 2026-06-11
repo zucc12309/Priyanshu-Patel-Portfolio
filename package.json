@@ -10,6 +10,7 @@
   },
   "description": "Premium personal portfolio for Priyanshu Patel",
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",
     "lucide-react": "^0.468.0",
