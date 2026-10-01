@@ -12,5 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <MemoryRouterPlayground />;
+  return (
+    <div className="min-h-screen bg-[#0B0F14] text-[#F5F1E8] [color-scheme:dark]">
+      <MemoryRouterPlayground />
+    </div>
+  );
 }
