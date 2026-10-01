@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { TransitionLink } from "@/components/site/transition-link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight, FileText, Github, Lock, Play } from "lucide-react";
 import { ProjectMedia } from "@/components/site/project-media";
@@ -36,9 +37,9 @@ export default async function ProjectPage({ params }: Props) {
     <div className="grain min-h-screen">
       <header className="fixed inset-x-0 top-0 z-50 bg-paper/80 pt-[var(--safe-top)] backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12">
-          <Link href="/#projects" className="flex items-center gap-2 text-[14px]">
+          <TransitionLink href="/#projects" className="flex items-center gap-2 text-[14px]">
             <ArrowLeft className="size-4" aria-hidden /> <span className="link-draw">All projects</span>
-          </Link>
+          </TransitionLink>
           <Link href="/" className="font-serif text-[22px] leading-none tracking-tight">
             Priyanshu <span className="italic">Patel</span>
           </Link>
@@ -49,7 +50,7 @@ export default async function ProjectPage({ params }: Props) {
         <p className="label fade-up text-mute">
           Project {String(index + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")} · {project.type} · {project.categories.join(" · ")}
         </p>
-        <h1 className="fade-up mt-5 font-serif text-[clamp(56px,10vw,152px)] leading-[0.88] tracking-[-0.035em]" style={{ animationDelay: "80ms" }}>
+        <h1 className="fade-up mt-5 font-serif text-[clamp(56px,10vw,152px)] leading-[0.88] tracking-[-0.035em]" style={{ animationDelay: "80ms", viewTransitionName: "vt-title" }}>
           {project.title}
           {project.subtitle ? <span className="block text-[0.32em] italic leading-tight text-mute">{project.subtitle}</span> : null}
         </h1>
@@ -80,7 +81,7 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="fade-up mt-14" style={{ animationDelay: "280ms" }}>
+        <div className="fade-up mt-14 rounded-[24px]" style={{ animationDelay: "280ms", viewTransitionName: "vt-media" }}>
           <TiltCard className="rounded-[24px] shadow-[0_50px_100px_-40px_rgba(18,18,17,0.5)]">
             <ProjectMedia project={project} sizes="(max-width: 1440px) 100vw, 1340px" priority />
           </TiltCard>
@@ -155,13 +156,13 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </div>
 
-        <Link href={`/projects/${next.slug}`} className="group mt-28 block border-t border-ink pt-8">
+        <TransitionLink href={`/projects/${next.slug}`} className="group mt-28 block border-t border-ink pt-8">
           <p className="label text-mute">Next project</p>
           <p className="mt-3 flex items-center justify-between gap-6 font-serif text-[clamp(44px,8vw,120px)] leading-none tracking-[-0.03em]">
             <span className="transition-transform duration-500 ease-out group-hover:translate-x-3">{next.title}</span>
             <ArrowRight className="size-10 shrink-0 transition-transform duration-500 ease-out group-hover:translate-x-2 md:size-16" aria-hidden />
           </p>
-        </Link>
+        </TransitionLink>
       </main>
       <RevealObserver />
     </div>

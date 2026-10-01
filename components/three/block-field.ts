@@ -104,6 +104,7 @@ export class BlockField {
   private lastInteraction = 0;
   private pulses: { x: number; z: number; t0: number }[] = [];
   private local = new Vector3();
+  private introStart = -1;
 
   constructor(private canvas: HTMLCanvasElement, opts: FieldOptions) {
     this.opts = opts;
@@ -221,6 +222,14 @@ export class BlockField {
     this.lastInteraction = performance.now();
   }
 
+  /** Intro: rebuild from nothing, centred and close, then settle into place. */
+  playIntro() {
+    const now = performance.now();
+    this.born = now;
+    this.introStart = now;
+    for (let k = 0; k < this.count; k++) this.heights[k] = 0;
+  }
+
   beginDrag() {
     this.dragging = true;
     this.rotationVel = 0;
@@ -300,7 +309,7 @@ export class BlockField {
   }
 
   /** Shifts the projected scene so it sits beside / below the copy. */
-  private applyViewOffset(mix: number) {
+  private applyViewOffset(mix: number, settle = 1) {
     const portrait = this.camera.aspect < 0.9;
     let ox = 0;
     let oy = 0;
@@ -310,7 +319,7 @@ export class BlockField {
     } else if (!portrait) {
       ox = -this.width * 0.12;
     }
-    this.camera.setViewOffset(this.width, this.height, ox, oy, this.width, this.height);
+    this.camera.setViewOffset(this.width, this.height, ox * settle, oy * settle, this.width, this.height);
   }
 
   start() {
@@ -420,10 +429,11 @@ export class BlockField {
     // Pull back as the bars rise so all four fit; gentle pointer parallax.
     const px = this.pointerActive && !reduced ? this.pointerNdc.x : 0;
     const py = this.pointerActive && !reduced ? this.pointerNdc.y : 0;
-    const zoom = 1 + 0.16 * mix;
+    const settle = this.introStart < 0 || reduced ? 1 : smooth(0.55, 1.9, (now - this.introStart) / 1000);
+    const zoom = (1 + 0.16 * mix) * (0.78 + 0.22 * settle);
     this.camera.position.set(this.camBase.x * zoom + px * 1.6, this.camBase.y * zoom + py * 1.2, this.camBase.z * zoom);
     this.camera.lookAt(0, 0.8 + mix * 1.2, 0);
-    this.applyViewOffset(mix);
+    this.applyViewOffset(mix, settle);
     this.camera.updateProjectionMatrix();
 
     this.renderer.render(this.scene, this.camera);

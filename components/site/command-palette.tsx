@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { navigateWithTransition } from "@/lib/view-transition";
 import { CornerDownLeft, Search } from "lucide-react";
 import { profile } from "@/lib/data";
 import { projects } from "@/lib/projects";
@@ -13,6 +15,7 @@ function go(href: string, newTab = false) {
 }
 
 export function CommandPalette({ onClose }: { onClose: () => void }) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -20,7 +23,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
   const items = useMemo<Item[]>(
     () => [
       ...["Impact", "Work", "Projects", "Skills", "Ask", "Contact"].map((label) => ({ id: label, group: "Jump to", label, run: () => go(`#${label.toLowerCase()}`) })),
-      ...projects.map((p) => ({ id: p.slug, group: "Projects", label: p.title, hint: p.status, run: () => go(`/projects/${p.slug}`) })),
+      ...projects.map((p) => ({ id: p.slug, group: "Projects", label: p.title, hint: p.status, run: () => navigateWithTransition(router, `/projects/${p.slug}`) })),
       { id: "resume", group: "Links", label: "Open résumé", hint: "PDF", run: () => go(profile.resume, true) },
       { id: "email", group: "Links", label: "Email Priyanshu", hint: profile.email, run: () => go(`mailto:${profile.email}`) },
       { id: "linkedin", group: "Links", label: "LinkedIn", run: () => go(profile.linkedin, true) },
@@ -28,7 +31,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
       { id: "playground", group: "Links", label: "Memory Router playground", run: () => go("/projects/memory-router/playground") },
       { id: "retro", group: "Easter egg", label: "Enter retro mode (Win95)", run: () => go("/retro") },
     ],
-    [],
+    [router],
   );
 
   const results = items.filter((i) => `${i.label} ${i.hint ?? ""} ${i.group}`.toLowerCase().includes(query.toLowerCase().trim()));

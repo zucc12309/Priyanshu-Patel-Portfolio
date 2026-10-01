@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { ArrowUpRight, Github, Lock, Plus } from "lucide-react";
 import { featuredProjects, projects, type Project } from "@/lib/projects";
 import { SectionHead } from "@/components/site/section-head";
@@ -10,6 +9,9 @@ import { ProjectMedia } from "@/components/site/project-media";
 import { MemoryRouterDemo } from "@/components/site/demos/memory-router-demo";
 import { LifePilotDemo } from "@/components/site/demos/lifepilot-demo";
 import { RideCompareDemo } from "@/components/site/demos/ridecompare-demo";
+import { ProjectSceneView } from "@/components/site/project-scene-view";
+import { TransitionLink } from "@/components/site/transition-link";
+import type { SceneKind } from "@/components/three/project-scenes";
 
 const demos: Partial<Record<string, () => React.JSX.Element>> = {
   "memory-router": MemoryRouterDemo,
@@ -42,13 +44,16 @@ export function Projects() {
 function Feature({ project, index }: { project: Project; index: number }) {
   const flip = index % 2 === 1;
   const Demo = demos[project.slug];
-  const [tab, setTab] = useState<"demo" | "media">(Demo ? "demo" : "media");
+  const sceneKind = (["memory-router", "lifepilot", "ridecompare"] as const).find((k) => k === project.slug) as SceneKind | undefined;
+  const tabs = [...(sceneKind ? (["scene"] as const) : []), ...(Demo ? (["demo"] as const) : []), "media" as const];
+  const [tab, setTab] = useState<"scene" | "demo" | "media">(tabs[0]);
+  const tabLabel = { scene: "3D", demo: "▶ Try it", media: project.image ? "Screens" : "Flow" };
   return (
-    <article className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12" aria-labelledby={`f-${project.slug}`}>
+    <article data-vt-card className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12" aria-labelledby={`f-${project.slug}`}>
       <div className={`lg:col-span-7 ${flip ? "lg:order-2" : ""}`} data-reveal>
-        {Demo ? (
+        {tabs.length > 1 ? (
           <div role="tablist" aria-label={`${project.title} view`} className="mb-3 inline-flex rounded-full border hairline p-1">
-            {(["demo", "media"] as const).map((t) => (
+            {tabs.map((t) => (
               <button
                 key={t}
                 type="button"
@@ -58,13 +63,17 @@ function Feature({ project, index }: { project: Project; index: number }) {
                 onClick={() => setTab(t)}
                 className={`h-8 rounded-full px-4 text-[13px] transition-colors ${tab === t ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
               >
-                {t === "demo" ? "▶ Try it" : project.image ? "Screens" : "Flow"}
+                {tabLabel[t]}
               </button>
             ))}
           </div>
         ) : null}
-        <div id={`panel-${project.slug}`} role={Demo ? "tabpanel" : undefined}>
-          {Demo && tab === "demo" ? (
+        <div id={`panel-${project.slug}`} role={tabs.length > 1 ? "tabpanel" : undefined} data-vt="media" className="rounded-[20px]">
+          {sceneKind && tab === "scene" ? (
+            <div className="rounded-[20px] shadow-[0_40px_80px_-30px_rgba(18,18,17,0.45)]">
+              <ProjectSceneView kind={sceneKind} />
+            </div>
+          ) : Demo && tab === "demo" ? (
             <div className="rounded-[20px] shadow-[0_40px_80px_-30px_rgba(18,18,17,0.45)]">
               <Demo />
             </div>
@@ -81,7 +90,7 @@ function Feature({ project, index }: { project: Project; index: number }) {
           <span className="h-px flex-1 bg-[var(--line)]" />
           <span>{project.categories.join(" · ")}</span>
         </p>
-        <h3 id={`f-${project.slug}`} className="mt-5 font-serif text-[clamp(44px,5vw,76px)] leading-[0.92] tracking-[-0.02em]" data-reveal>
+        <h3 id={`f-${project.slug}`} data-vt="title" className="mt-5 font-serif text-[clamp(44px,5vw,76px)] leading-[0.92] tracking-[-0.02em]" data-reveal>
           {project.title}
         </h3>
         <p className="mt-5 text-lg leading-relaxed" data-reveal>
@@ -99,13 +108,13 @@ function Feature({ project, index }: { project: Project; index: number }) {
           ))}
         </dl>
         <div className="mt-8 flex flex-wrap gap-3" data-reveal>
-          <Link href={`/projects/${project.slug}`} className="btn btn-ink">
+          <TransitionLink href={`/projects/${project.slug}`} className="btn btn-ink">
             Read the case <ArrowUpRight className="size-4" aria-hidden />
-          </Link>
+          </TransitionLink>
           {project.live ? (
-            <Link href={project.live.href} className="btn btn-ghost">
+            <TransitionLink href={project.live.href} className="btn btn-ghost">
               {project.live.label}
-            </Link>
+            </TransitionLink>
           ) : null}
           {project.repo ? (
             <a href={project.repo} target="_blank" rel="noreferrer" className="btn btn-ghost" aria-label={`${project.title} on GitHub (opens in new tab)`}>
@@ -151,7 +160,7 @@ function ProjectIndex() {
         {projects.map((project, i) => {
           const expanded = open === project.slug;
           return (
-            <li key={project.slug} className="border-b hairline">
+            <li key={project.slug} data-vt-card className="border-b hairline">
               <button
                 type="button"
                 aria-expanded={expanded}
@@ -161,7 +170,7 @@ function ProjectIndex() {
                 className="group grid w-full grid-cols-[2.25rem_1fr_auto] items-center gap-x-4 py-5 text-left md:grid-cols-[3rem_minmax(0,1.1fr)_minmax(0,1fr)_9rem_2rem] md:py-7"
               >
                 <span className="font-mono text-[12px] text-mute">{String(i + 1).padStart(2, "0")}</span>
-                <span className="font-serif text-[28px] leading-none tracking-tight transition-transform duration-500 ease-out group-hover:translate-x-2 md:text-[40px]">
+                <span data-vt="title" className="font-serif text-[28px] leading-none tracking-tight transition-transform duration-500 ease-out group-hover:translate-x-2 md:text-[40px]">
                   {project.title}
                   {project.featured ? <span className="ml-2 align-top font-mono text-[11px] text-signal">★</span> : null}
                 </span>
@@ -227,9 +236,9 @@ function Details({ project }: { project: Project }) {
           ))}
         </dl>
         <div className="mt-6 flex flex-wrap gap-2">
-          <Link href={`/projects/${project.slug}`} className="btn btn-ink h-10 px-4 text-[13px]">
+          <TransitionLink href={`/projects/${project.slug}`} className="btn btn-ink h-10 px-4 text-[13px]">
             Full case <ArrowUpRight className="size-3.5" aria-hidden />
-          </Link>
+          </TransitionLink>
           {project.repo ? (
             <a href={project.repo} target="_blank" rel="noreferrer" className="btn btn-ghost h-10 px-4 text-[13px]">
               GitHub

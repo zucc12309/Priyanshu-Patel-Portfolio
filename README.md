@@ -6,8 +6,11 @@ Editorial portfolio for Priyanshu Patel (Business Analyst → Product & AI), bui
 
 - **3D hero → impact stage** (`components/three/block-field.ts`): a single instanced-mesh "architectural model" rendered with raw three.js. It rises into a *PP* monogram, ripples under the cursor, and rebuilds into four bars — one per impact metric — as you scroll. HTML labels are pinned to the projected bar tops each frame.
 - **Playable hero**: type a word (or pick a preset) and the blocks rebuild it in a 5×7 pixel font; click to send a shockwave; drag sideways to rotate the model (vertical swipes still scroll on touch).
+- **3D project scenes** (`components/three/project-scenes.ts`): one small scene per featured project — Memory Router (memories stream into a router and out to a provider), LifePilot (an order loops the decision track and waits at the approval gate) and RideCompare (four fare columns compete for each trip). Click to interact.
+- **Page transitions**: project cards morph into their case pages with the View Transitions API (`lib/view-transition.ts`); browsers without it navigate normally.
+- **Motion intro**: blocks assemble before the name rises — once per visit, skippable, never with reduced motion.
+- **Custom cursor + sound**: a cursor that reacts to links, buttons and the 3D scenes (fine pointers only), and optional soft UI sounds, off by default.
 - **Try-it project demos** (`components/site/demos`): Memory Router context optimiser (runs the real sandbox adapter client-side), LifePilot approval loop with spend-cap and guardrail simulation, and a RideCompare slab-pricing fare engine.
-- **Try my job** (`components/site/rules-lab.tsx`): an illustrative Group Life enrolment validator with a live rule trace, the API response contract and a one-click UAT suite.
 - **Dark contact sculpture**: the same engine in an obsidian theme.
 - **Projects**: three featured case panels (CSS 3D tilt), plus an expandable index of all eight projects with a cursor-following preview, and a full case page per project at `/projects/[slug]`.
 - **Ask the portfolio**: a rule-based assistant that answers only from portfolio content and cites its source. No LLM calls.

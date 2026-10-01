@@ -83,8 +83,10 @@ export function useBlockField(
     };
 
     // Let the text paint first; the model builds itself in right after.
+    // During the intro the model *is* the first frame, so boot immediately.
     const idle = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
-    if (idle) idle(() => void boot(), { timeout: 600 });
+    if (document.documentElement.dataset.intro) void boot();
+    else if (idle) idle(() => void boot(), { timeout: 600 });
     else window.setTimeout(() => void boot(), 120);
 
     return () => {

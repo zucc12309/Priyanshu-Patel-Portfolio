@@ -271,3 +271,176 @@ html.is-dragging * {
   user-select: none;
   cursor: grabbing !important;
 }
+
+/* ==========================================================================
+   Custom cursor (fine pointers only; the component never mounts otherwise)
+   ========================================================================== */
+
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+
+html.has-cursor input,
+html.has-cursor textarea,
+html.has-cursor [contenteditable="true"] {
+  cursor: text !important;
+}
+
+.cursor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  opacity: 0;
+  transition: opacity 200ms linear;
+}
+
+html[data-cursor-shown] .cursor-layer {
+  opacity: 1;
+}
+
+.cursor-dot {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.cursor-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.cursor-ring::before {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: -18px;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid #fff;
+  border-radius: 999px;
+  transition:
+    transform 260ms var(--ease-out),
+    background-color 200ms linear,
+    opacity 200ms linear;
+}
+
+.cursor-ring[data-state="hover"]::before {
+  transform: scale(1.5);
+  background: #fff;
+}
+
+.cursor-ring[data-state="label"]::before {
+  transform: scale(2.1);
+  background: #fff;
+}
+
+.cursor-ring[data-state="text"]::before {
+  transform: scale(0.3);
+  opacity: 0;
+}
+
+.cursor-ring[data-pressed]::before {
+  transform: scale(0.8);
+}
+
+.cursor-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #000;
+  opacity: 0;
+  transition: opacity 150ms linear;
+}
+
+.cursor-ring[data-state="label"] .cursor-label {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Page transitions (View Transitions API)
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: vt-out 320ms var(--ease-out) both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-in 620ms var(--ease-out) 60ms both;
+  }
+  ::view-transition-group(vt-title),
+  ::view-transition-group(vt-media) {
+    animation-duration: 700ms;
+    animation-timing-function: var(--ease-out);
+  }
+  ::view-transition-old(vt-title),
+  ::view-transition-new(vt-title) {
+    height: 100%;
+    width: auto;
+  }
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.985);
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+
+/* ==========================================================================
+   Motion intro — html[data-intro] is set before first paint (once per visit)
+   ========================================================================== */
+
+.intro-ui {
+  display: none;
+}
+
+html[data-intro] .intro-ui {
+  display: flex;
+}
+
+html[data-intro] .hero-copy,
+html[data-intro] header {
+  opacity: 0;
+  pointer-events: none;
+}
+
+html[data-intro] .hero-copy *,
+html[data-intro] .hero-copy {
+  animation-play-state: paused !important;
+}
+
+.hero-copy,
+header {
+  transition: opacity 500ms var(--ease-out);
+}
+
+.intro-bar {
+  animation: intro-bar 1.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@keyframes intro-bar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

@@ -1,7 +1,6 @@
 import { Award } from "lucide-react";
 import { timeline, work } from "@/lib/data";
 import { SectionHead } from "@/components/site/section-head";
-import { RulesLab } from "@/components/site/rules-lab";
 
 export function Work() {
   return (
@@ -56,8 +55,6 @@ export function Work() {
           </div>
         </div>
       </div>
-
-      <RulesLab />
 
       <div className="mt-20" data-reveal>
         <p className="label text-mute">Timeline</p>

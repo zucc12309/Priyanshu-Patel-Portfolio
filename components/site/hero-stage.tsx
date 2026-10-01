@@ -7,6 +7,7 @@ import { useBlockField } from "@/components/three/use-block-field";
 import { LocalTime } from "@/components/site/local-time";
 import { SplitWords } from "@/components/site/split-words";
 import { ModelControls } from "@/components/site/model-controls";
+import { playSound } from "@/lib/sound";
 
 /**
  * Hero + Impact share one sticky WebGL stage. Scrolling from the hero into the
@@ -52,6 +53,45 @@ export function HeroStage() {
 
   const onWord = useCallback((word: string) => fieldRef.current?.setText(word), [fieldRef]);
 
+  // Motion intro: blocks assemble (≈1.7s), then the name and nav rise in.
+  const [intro, setIntro] = useState(false);
+  const introPlayed = useRef(false);
+  const endIntro = useCallback(() => {
+    delete document.documentElement.dataset.intro;
+    try {
+      sessionStorage.setItem("pp-intro", "1");
+    } catch {
+      // ignore
+    }
+    setIntro(false);
+  }, []);
+  useEffect(() => {
+    if (!document.documentElement.dataset.intro) return;
+    setIntro(true);
+    const done = window.setTimeout(endIntro, 1900);
+    const skip = (e: Event) => {
+      if (e instanceof KeyboardEvent && e.key === "Tab") return;
+      endIntro();
+    };
+    window.addEventListener("keydown", skip);
+    window.addEventListener("pointerdown", skip);
+    window.addEventListener("wheel", skip, { passive: true });
+    window.addEventListener("touchmove", skip, { passive: true });
+    return () => {
+      window.clearTimeout(done);
+      window.removeEventListener("keydown", skip);
+      window.removeEventListener("pointerdown", skip);
+      window.removeEventListener("wheel", skip);
+      window.removeEventListener("touchmove", skip);
+    };
+  }, [endIntro]);
+  useEffect(() => {
+    if (intro && ready && !introPlayed.current) {
+      introPlayed.current = true;
+      fieldRef.current?.playIntro();
+    }
+  }, [intro, ready, fieldRef]);
+
   // Click anywhere on the stage (not on controls) to pulse; drag sideways to rotate.
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -81,7 +121,10 @@ export function HeroStage() {
     const onUp = (e: PointerEvent) => {
       if (!start || e.pointerId !== start.id) return;
       if (dragging) fieldRef.current?.endDrag();
-      else if (Math.hypot(e.clientX - start.x, e.clientY - start.y) < 8) fieldRef.current?.pulse(e.clientX, e.clientY);
+      else if (Math.hypot(e.clientX - start.x, e.clientY - start.y) < 8) {
+        fieldRef.current?.pulse(e.clientX, e.clientY);
+        playSound("thump");
+      }
       document.documentElement.classList.remove("is-dragging");
       start = null;
       dragging = false;
@@ -99,7 +142,7 @@ export function HeroStage() {
   }, [fieldRef]);
 
   return (
-    <section ref={wrapRef} aria-label="Introduction and impact" className="relative touch-pan-y">
+    <section ref={wrapRef} aria-label="Introduction and impact" className="relative touch-pan-y" data-cursor="drag">
       {/* Sticky 3D stage */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
         <div className="sticky top-0 h-[100svh] overflow-hidden">
@@ -126,8 +169,18 @@ export function HeroStage() {
         </div>
       </div>
 
-      {/* Screen 1 — hero */}
-      <div className="relative mx-auto flex min-h-[100svh] max-w-[1440px] flex-col px-5 pb-8 pt-[calc(96px+var(--safe-top))] sm:px-8 md:pt-32 lg:px-12">
+      <div className="intro-ui pointer-events-none fixed inset-x-0 bottom-0 z-[60] flex-col items-center gap-3 pb-[calc(32px+var(--safe-bottom))]">
+        <p className="label text-mute">Assembling</p>
+        <span className="block h-px w-40 overflow-hidden bg-ink/15">
+          <span className="intro-bar block h-full w-full origin-left bg-ink" />
+        </span>
+        <button type="button" onClick={endIntro} className="pointer-events-auto mt-1 rounded-full border hairline bg-paper/80 px-4 py-2 text-[12px] backdrop-blur">
+          Skip intro
+        </button>
+      </div>
+
+      {/* Screen 1 — hero (hidden while the intro plays) */}
+      <div className="hero-copy relative mx-auto flex min-h-[100svh] max-w-[1440px] flex-col px-5 pb-8 pt-[calc(96px+var(--safe-top))] sm:px-8 md:pt-32 lg:px-12">
         <p className="label fade-up text-mute" style={{ animationDelay: "100ms" }}>
           Portfolio · Bengaluru · {new Date().getFullYear()}
         </p>
