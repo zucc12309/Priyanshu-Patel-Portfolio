@@ -3,6 +3,7 @@ import {
   BoxGeometry,
   Color,
   DirectionalLight,
+  Group,
   HemisphereLight,
   InstancedMesh,
   Matrix4,
@@ -21,6 +22,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
+import { maxWordLength, rasterizeWord } from "@/lib/pixel-font";
 
 /**
  * A field of extruded blocks — an "architectural model" that can morph between
@@ -95,11 +97,18 @@ export class BlockField {
   private barAnchors: Vector3[] = [];
   private projected = new Vector3();
   private opts: FieldOptions;
+  private group = new Group();
+  private rotation = 0;
+  private rotationVel = 0;
+  private dragging = false;
+  private lastInteraction = 0;
+  private pulses: { x: number; z: number; t0: number }[] = [];
+  private local = new Vector3();
 
   constructor(private canvas: HTMLCanvasElement, opts: FieldOptions) {
     this.opts = opts;
-    this.nx = opts.compact ? 26 : 40;
-    this.nz = opts.compact ? 18 : 24;
+    this.nx = opts.compact ? 26 : 44;
+    this.nz = opts.compact ? 18 : 26;
     this.count = this.nx * this.nz;
 
     this.renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -150,7 +159,8 @@ export class BlockField {
     this.mesh = new InstancedMesh(geometry, material, this.count);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
-    this.scene.add(this.mesh);
+    this.group.add(this.mesh);
+    this.scene.add(this.group);
 
     this.heights = new Float32Array(this.count);
     this.tint = new Float32Array(this.count);
@@ -174,29 +184,58 @@ export class BlockField {
     this.resize();
   }
 
-  /** Rasterise "PP" onto the grid. */
+  /** Rasterise "PP" onto the grid with the pixel font. */
   private buildMonogram() {
-    const out = new Float32Array(this.count);
-    if (this.opts.shape !== "monogram") return out;
-    const c = document.createElement("canvas");
-    c.width = this.nx;
-    c.height = this.nz;
-    const ctx = c.getContext("2d");
-    if (!ctx) return out;
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, this.nx, this.nz);
-    ctx.fillStyle = "#fff";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font = `900 ${Math.round(this.nz * 0.86)}px "Arial Black", "Helvetica Neue", Arial, sans-serif`;
-    ctx.fillText("PP", this.nx / 2, this.nz / 2 + 1);
-    const data = ctx.getImageData(0, 0, this.nx, this.nz).data;
-    for (let i = 0; i < this.nx; i++) {
-      for (let j = 0; j < this.nz; j++) {
-        out[i * this.nz + j] = data[(j * this.nx + i) * 4] / 255;
-      }
-    }
-    return out;
+    if (this.opts.shape !== "monogram") return new Float32Array(this.count);
+    return rasterizeWord("PP", this.nx, this.nz);
+  }
+
+  get maxChars() {
+    return maxWordLength(this.nx);
+  }
+
+  /** Reshape the raised letters; an empty string restores the monogram. */
+  setText(word: string) {
+    this.monogram = rasterizeWord(word || "PP", this.nx, this.nz);
+    if (!this.opts.reducedMotion) this.pulses.push({ x: 0, z: 0, t0: this.time });
+    if (!this.running) this.frame(performance.now());
+    this.lastInteraction = performance.now();
+  }
+
+  /** Converts a screen point to grid-local coordinates on the floor. */
+  private toLocal(clientX: number, clientY: number) {
+    const rect = this.canvas.getBoundingClientRect();
+    this.pointerNdc.set(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
+    this.raycaster.setFromCamera(this.pointerNdc, this.camera);
+    const hit = this.raycaster.ray.intersectPlane(this.ground, this.local);
+    return hit ? this.group.worldToLocal(hit) : null;
+  }
+
+  /** Sends a shockwave out from a screen point. */
+  pulse(clientX: number, clientY: number) {
+    if (this.opts.reducedMotion) return;
+    const p = this.toLocal(clientX, clientY);
+    if (!p) return;
+    if (this.pulses.length > 5) this.pulses.shift();
+    this.pulses.push({ x: p.x, z: p.z, t0: this.time });
+    this.lastInteraction = performance.now();
+  }
+
+  beginDrag() {
+    this.dragging = true;
+    this.rotationVel = 0;
+  }
+
+  /** Rotate by a horizontal pixel delta while dragging. */
+  dragBy(dx: number) {
+    const delta = dx * 0.006;
+    this.rotation += delta;
+    this.rotationVel = delta * 60;
+    this.lastInteraction = performance.now();
+  }
+
+  endDrag() {
+    this.dragging = false;
   }
 
   private buildBars() {
@@ -228,10 +267,7 @@ export class BlockField {
   }
 
   setPointer(clientX: number, clientY: number) {
-    const rect = this.canvas.getBoundingClientRect();
-    this.pointerNdc.set(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
-    this.raycaster.setFromCamera(this.pointerNdc, this.camera);
-    const hit = this.raycaster.ray.intersectPlane(this.ground, new Vector3());
+    const hit = this.toLocal(clientX, clientY);
     if (hit) {
       this.pointerTarget.copy(hit);
       if (!this.pointerActive) this.pointerWorld.copy(hit);
@@ -309,6 +345,15 @@ export class BlockField {
     this.pointerWorld.lerp(this.pointerTarget, 1 - Math.exp(-dt * 10));
     const rippleAmp = this.pointerActive && !reduced ? 1 : 0;
 
+    // Drag-to-rotate with inertia; drifts home after a few idle seconds.
+    if (!this.dragging) {
+      this.rotation += this.rotationVel * dt;
+      this.rotationVel *= Math.exp(-dt * 3.5);
+      if (now - this.lastInteraction > 4000) this.rotation += (0 - this.rotation) * (1 - Math.exp(-dt * 1.2));
+    }
+    this.group.rotation.y = this.rotation;
+    this.pulses = this.pulses.filter((p) => t - p.t0 < 2.6);
+
     const theme = themes[this.opts.theme];
     const ease = reduced ? 1 : 1 - Math.exp(-dt * 7);
 
@@ -346,6 +391,15 @@ export class BlockField {
         accent = Math.max(accent, Math.min(1, bump * 0.6));
       }
 
+      for (const p of this.pulses) {
+        const age = t - p.t0;
+        const d = Math.hypot(x - p.x, z - p.z);
+        const front = d - age * 15;
+        const wave = Math.exp(-(front * front) / 4) * 2.6 * Math.exp(-age * 1.3);
+        target += wave;
+        accent = Math.max(accent, Math.min(1, wave * 0.5));
+      }
+
       target *= build;
       this.heights[k] += (target - this.heights[k]) * ease;
       this.tint[k] += (accent - this.tint[k]) * ease;
@@ -377,7 +431,8 @@ export class BlockField {
     if (this.opts.onFrame) {
       this.opts.onFrame(
         this.barAnchors.map((a) => {
-          this.projected.copy(a).project(this.camera);
+          this.projected.copy(a);
+          this.group.localToWorld(this.projected).project(this.camera);
           return {
             x: (this.projected.x * 0.5 + 0.5) * this.width,
             y: (-this.projected.y * 0.5 + 0.5) * this.height,

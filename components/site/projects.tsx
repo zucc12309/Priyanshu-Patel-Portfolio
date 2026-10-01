@@ -7,6 +7,15 @@ import { featuredProjects, projects, type Project } from "@/lib/projects";
 import { SectionHead } from "@/components/site/section-head";
 import { TiltCard } from "@/components/site/tilt-card";
 import { ProjectMedia } from "@/components/site/project-media";
+import { MemoryRouterDemo } from "@/components/site/demos/memory-router-demo";
+import { LifePilotDemo } from "@/components/site/demos/lifepilot-demo";
+import { RideCompareDemo } from "@/components/site/demos/ridecompare-demo";
+
+const demos: Partial<Record<string, () => React.JSX.Element>> = {
+  "memory-router": MemoryRouterDemo,
+  lifepilot: LifePilotDemo,
+  ridecompare: RideCompareDemo,
+};
 
 export function Projects() {
   return (
@@ -32,12 +41,39 @@ export function Projects() {
 
 function Feature({ project, index }: { project: Project; index: number }) {
   const flip = index % 2 === 1;
+  const Demo = demos[project.slug];
+  const [tab, setTab] = useState<"demo" | "media">(Demo ? "demo" : "media");
   return (
     <article className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12" aria-labelledby={`f-${project.slug}`}>
       <div className={`lg:col-span-7 ${flip ? "lg:order-2" : ""}`} data-reveal>
-        <TiltCard className="rounded-[20px] shadow-[0_40px_80px_-30px_rgba(18,18,17,0.45)]">
-          <ProjectMedia project={project} sizes="(max-width: 1024px) 100vw, 58vw" />
-        </TiltCard>
+        {Demo ? (
+          <div role="tablist" aria-label={`${project.title} view`} className="mb-3 inline-flex rounded-full border hairline p-1">
+            {(["demo", "media"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                role="tab"
+                aria-selected={tab === t}
+                aria-controls={`panel-${project.slug}`}
+                onClick={() => setTab(t)}
+                className={`h-8 rounded-full px-4 text-[13px] transition-colors ${tab === t ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
+              >
+                {t === "demo" ? "▶ Try it" : project.image ? "Screens" : "Flow"}
+              </button>
+            ))}
+          </div>
+        ) : null}
+        <div id={`panel-${project.slug}`} role={Demo ? "tabpanel" : undefined}>
+          {Demo && tab === "demo" ? (
+            <div className="rounded-[20px] shadow-[0_40px_80px_-30px_rgba(18,18,17,0.45)]">
+              <Demo />
+            </div>
+          ) : (
+            <TiltCard className="rounded-[20px] shadow-[0_40px_80px_-30px_rgba(18,18,17,0.45)]">
+              <ProjectMedia project={project} sizes="(max-width: 1024px) 100vw, 58vw" />
+            </TiltCard>
+          )}
+        </div>
       </div>
       <div className={`lg:col-span-5 ${flip ? "lg:order-1" : ""}`}>
         <p className="label flex items-center gap-3 text-mute" data-reveal>

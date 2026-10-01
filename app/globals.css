@@ -264,3 +264,10 @@ html.no-js [data-reveal] {
     transform: none;
   }
 }
+
+/* While rotating the hero model, don't select text. */
+html.is-dragging,
+html.is-dragging * {
+  user-select: none;
+  cursor: grabbing !important;
+}

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { impact, profile } from "@/lib/data";
 import { useBlockField } from "@/components/three/use-block-field";
 import { LocalTime } from "@/components/site/local-time";
 import { SplitWords } from "@/components/site/split-words";
+import { ModelControls } from "@/components/site/model-controls";
 
 /**
  * Hero + Impact share one sticky WebGL stage. Scrolling from the hero into the
@@ -44,8 +45,61 @@ export function HeroStage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [fieldRef, ready]);
 
+  const [maxChars, setMaxChars] = useState(7);
+  useEffect(() => {
+    if (ready && fieldRef.current) setMaxChars(fieldRef.current.maxChars);
+  }, [ready, fieldRef]);
+
+  const onWord = useCallback((word: string) => fieldRef.current?.setText(word), [fieldRef]);
+
+  // Click anywhere on the stage (not on controls) to pulse; drag sideways to rotate.
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    let start: { x: number; y: number; last: number; id: number } | null = null;
+    let dragging = false;
+
+    const onDown = (e: PointerEvent) => {
+      if (e.button !== 0 || (e.target as HTMLElement).closest("a, button, input, label, [data-no-sculpt]")) return;
+      start = { x: e.clientX, y: e.clientY, last: e.clientX, id: e.pointerId };
+      dragging = false;
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!start || e.pointerId !== start.id) return;
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      if (!dragging && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+        dragging = true;
+        fieldRef.current?.beginDrag();
+        document.documentElement.classList.add("is-dragging");
+      }
+      if (dragging) {
+        fieldRef.current?.dragBy(e.clientX - start.last);
+        start.last = e.clientX;
+      }
+    };
+    const onUp = (e: PointerEvent) => {
+      if (!start || e.pointerId !== start.id) return;
+      if (dragging) fieldRef.current?.endDrag();
+      else if (Math.hypot(e.clientX - start.x, e.clientY - start.y) < 8) fieldRef.current?.pulse(e.clientX, e.clientY);
+      document.documentElement.classList.remove("is-dragging");
+      start = null;
+      dragging = false;
+    };
+    wrap.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      wrap.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+  }, [fieldRef]);
+
   return (
-    <section ref={wrapRef} aria-label="Introduction and impact" className="relative">
+    <section ref={wrapRef} aria-label="Introduction and impact" className="relative touch-pan-y">
       {/* Sticky 3D stage */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
         <div className="sticky top-0 h-[100svh] overflow-hidden">
@@ -100,6 +154,10 @@ export function HeroStage() {
             </a>
           </div>
         </div>
+
+        {ready ? (
+          <ModelControls maxChars={maxChars} onWord={onWord} className="fade-up mt-8 w-full max-w-sm md:absolute md:bottom-28 md:right-8 md:mt-0 md:w-80 lg:right-12" />
+        ) : null}
 
         <dl className="fade-up mt-auto grid grid-cols-2 gap-x-6 gap-y-4 rounded-2xl border-t hairline bg-paper/85 p-4 text-[13px] backdrop-blur-sm sm:grid-cols-4 md:rounded-none md:bg-transparent md:p-0 md:pt-5 md:backdrop-blur-0" style={{ animationDelay: "800ms" }}>
           <div>
