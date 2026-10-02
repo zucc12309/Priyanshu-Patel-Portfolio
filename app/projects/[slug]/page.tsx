@@ -1,22 +1,14 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { TransitionLink } from "@/components/site/transition-link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, Code2, Download, ExternalLink, FolderOpen, Github, Lock, Play, Sparkles } from "lucide-react";
-import { ArchitectureDiagram, ScreenshotGallery, WorkflowVisualization } from "@/components/project-simulators";
-import { Reveal } from "@/components/reveal";
+import { ArrowLeft, ArrowRight, ArrowUpRight, FileText, Github, Lock, Play } from "lucide-react";
+import { ProjectMedia } from "@/components/site/project-media";
+import { TiltCard } from "@/components/site/tilt-card";
+import { RevealObserver } from "@/components/site/reveal-observer";
 import { getProject, projects } from "@/lib/projects";
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
-
-type WindowProps = {
-  title: string;
-  children: ReactNode;
-  className?: string;
-};
+type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
@@ -25,231 +17,178 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const project = getProject(slug);
-
-  if (!project) {
-    return {};
-  }
-
+  if (!project) return {};
   return {
     title: project.title,
-    description: project.description,
-    openGraph: {
-      title: `${project.title} | Priyanshu Patel`,
-      description: project.description,
-      images: [project.image],
-    },
+    description: project.tagline,
+    openGraph: { title: `${project.title} | Priyanshu Patel`, description: project.tagline, images: [project.image ?? "/projects/memory-router.png"] },
   };
 }
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
   const project = getProject(slug);
+  if (!project) notFound();
 
-  if (!project) {
-    notFound();
-  }
-
-  const projectIndex = projects.findIndex((item) => item.slug === project.slug) + 1;
+  const index = projects.findIndex((p) => p.slug === project.slug);
+  const next = projects[(index + 1) % projects.length];
 
   return (
-    <main className="retro-scanlines min-h-screen px-3 py-3 pb-20 font-mono text-[13px] text-retro-text sm:px-5 sm:py-5">
-      <div className="mx-auto grid max-w-[1600px] gap-5">
-        <Link href="/#projects" className="retro-button inline-flex h-10 w-fit items-center gap-2 px-4 text-xs uppercase">
-          <ArrowLeft className="size-4" /> Back to projects
-        </Link>
-
-        <RetroWindow title="project.exe">
-          <div className="grid gap-0 lg:grid-cols-[220px_1fr]">
-            <aside className="border-b border-retro-text/10 p-4 lg:border-b-0 lg:border-r">
-              <Prompt command="project_detail" />
-              <div className="mt-8 space-y-2 uppercase">
-                {["Overview", "Features", "Tech Stack", "Demo", "Gallery", "Source Code"].map((item, index) => (
-                  <a
-                    key={item}
-                    href={index === 0 ? "#overview" : index === 4 ? "#gallery" : "#details"}
-                    className={`flex h-10 items-center gap-3 border px-3 text-xs transition ${
-                      index === 0 ? "border-retro-green/40 bg-retro-green/8 text-retro-green" : "border-transparent text-retro-text/50 hover:border-retro-green/20 hover:text-retro-text"
-                    }`}
-                  >
-                    {index === 0 ? <FolderOpen className="size-3.5 text-retro-green" /> : <Code2 className="size-3.5 text-accent-purple/60" />}
-                    {item}
-                  </a>
-                ))}
-              </div>
-            </aside>
-
-            <section id="overview" className="grid gap-8 p-5 md:p-8 xl:grid-cols-[1fr_.95fr]">
-              <Reveal>
-                <div className="flex items-center justify-between gap-3 text-retro-text/40">
-                  <Prompt command={project.slug} />
-                  <span className="text-xs">{String(projectIndex).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
-                </div>
-                <h1 className="pixel-heading mt-8 text-4xl font-black leading-tight md:text-5xl">{project.title}</h1>
-                <p className="mt-3 text-sm uppercase tracking-[0.14em] text-retro-amber">
-                  {project.type} · {project.status}
-                </p>
-                <p className="mt-5 max-w-3xl text-sm leading-7 text-retro-text/65">{project.description}</p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  {project.repo ? (
-                    <Link href={project.repo} className="retro-button inline-flex h-10 items-center gap-2 px-4 text-xs uppercase">
-                      <Github className="size-4" /> View Code
-                    </Link>
-                  ) : (
-                    <span className="retro-button inline-flex h-10 items-center gap-2 px-4 text-xs uppercase text-retro-text/40">
-                      <Lock className="size-4" /> Private Repository
-                    </span>
-                  )}
-                  {project.live ? (
-                    <Link href={project.live} className="retro-button inline-flex h-10 items-center gap-2 border-retro-green/40 bg-retro-green/8 px-4 text-xs uppercase text-retro-green">
-                      <ExternalLink className="size-4" /> Live Demo
-                    </Link>
-                  ) : null}
-                  {project.slug === "memory-router" ? (
-                    <Link href="/projects/memory-router/playground" className="retro-button inline-flex h-10 items-center gap-2 border-retro-green/40 bg-retro-green/8 px-4 text-xs uppercase text-retro-green">
-                      <Play className="size-4" /> Try Playground
-                    </Link>
-                  ) : null}
-                  <Link href={project.caseStudy} className="retro-button inline-flex h-10 items-center gap-2 px-4 text-xs uppercase">
-                    <Download className="size-4" /> Case Study
-                  </Link>
-                </div>
-              </Reveal>
-
-              <Reveal delay={0.08}>
-                <div className="retro-panel p-4">
-                  <div className="relative aspect-[16/10] overflow-hidden border border-retro-text/10 bg-black">
-                    <Image src={project.image} alt={`${project.title} cover`} fill sizes="(max-width: 1280px) 100vw, 640px" className="object-cover opacity-85" priority />
-                  </div>
-                  <div className="mt-3 grid grid-cols-2 gap-1.5">
-                    {project.stack.slice(0, 6).map((tech) => (
-                      <span key={tech} className="border border-retro-text/10 bg-black/40 px-2 py-1.5 text-[11px] text-retro-text/55">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </Reveal>
-            </section>
-          </div>
-        </RetroWindow>
-
-        <RetroWindow title="case-study.exe">
-          <GridSection items={[
-            ["Problem", project.sections.problem],
-            ["Solution", project.sections.solution],
-            ["Business Impact", project.impact.join(" ")],
-            ["Learnings", project.learnings.join(" ")],
-          ]} />
-        </RetroWindow>
-
-        <RetroWindow title="architecture.exe">
-          <div className="p-5">
-            <Prompt command="architecture_overview" />
-            <div className="mt-5">
-              <ArchitectureDiagram project={project} />
-            </div>
-          </div>
-        </RetroWindow>
-
-        <RetroWindow title="gallery.exe">
-          <div id="gallery" className="p-5">
-            <Prompt command="screenshots_and_system_view" />
-            <div className="mt-5">
-              <ScreenshotGallery project={project} />
-            </div>
-          </div>
-        </RetroWindow>
-
-        <RetroWindow title="flow.exe">
-          <div className="p-5">
-            <Prompt command="user_flow" />
-            <div className="mt-5">
-              <WorkflowVisualization flows={project.flows} accent={project.accent} />
-            </div>
-          </div>
-        </RetroWindow>
-
-        <section id="details" className="grid gap-5 lg:grid-cols-3">
-          <RetroWindow title="features.exe">
-            <ListCard title="Key Features" items={project.features} />
-          </RetroWindow>
-          <RetroWindow title="decisions.exe">
-            <ListCard title="Technical Decisions" items={project.sections.decisions} />
-          </RetroWindow>
-          <RetroWindow title="roadmap.exe">
-            <ListCard title="Future Roadmap" items={project.sections.roadmap} />
-          </RetroWindow>
-        </section>
-
-        <section className="grid gap-5 lg:grid-cols-3">
-          <RetroWindow title="stack.exe">
-            <ListCard title="Tech Stack" items={project.stack} />
-          </RetroWindow>
-          <RetroWindow title="challenges.exe">
-            <ListCard title="Challenges" items={project.challenges} />
-          </RetroWindow>
-          <RetroWindow title="learning.exe">
-            <ListCard title="What I Learned" items={project.learnings} />
-          </RetroWindow>
-        </section>
-
-        <Link href="/#projects" className="retro-button inline-flex h-10 w-fit items-center gap-2 px-4 text-xs uppercase">
-          More projects <ArrowRight className="size-4" />
-        </Link>
-      </div>
-    </main>
-  );
-}
-
-function RetroWindow({ title, children, className }: WindowProps) {
-  return (
-    <section className={`retro-window overflow-hidden ${className ?? ""}`}>
-      <div className="retro-titlebar flex h-8 items-center justify-between px-3 text-xs">
-        <span>{title}</span>
-        <div className="flex items-center gap-1.5">
-          <span className="size-3 rounded-full bg-red-400/70" />
-          <span className="size-3 rounded-full bg-retro-amber/70" />
-          <span className="size-3 rounded-full bg-retro-green/70" />
+    <div className="grain min-h-screen">
+      <header className="fixed inset-x-0 top-0 z-50 bg-paper/80 pt-[var(--safe-top)] backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12">
+          <TransitionLink href="/#projects" className="flex items-center gap-2 text-[14px]">
+            <ArrowLeft className="size-4" aria-hidden /> <span className="link-draw">All projects</span>
+          </TransitionLink>
+          <Link href="/" className="font-serif text-[22px] leading-none tracking-tight">
+            Priyanshu <span className="italic">Patel</span>
+          </Link>
         </div>
-      </div>
-      {children}
-    </section>
-  );
-}
+      </header>
 
-function Prompt({ command }: { command: string }) {
-  return (
-    <p className="retro-terminal text-sm">
-      <span className="text-retro-text/40">$</span> {command}
-    </p>
-  );
-}
+      <main className="mx-auto max-w-[1440px] px-5 pb-24 pt-32 sm:px-8 md:pt-40 lg:px-12">
+        <p className="label fade-up text-mute">
+          Project {String(index + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")} · {project.type} · {project.categories.join(" · ")}
+        </p>
+        <h1 className="fade-up mt-5 font-serif text-[clamp(56px,10vw,152px)] leading-[0.88] tracking-[-0.035em]" style={{ animationDelay: "80ms", viewTransitionName: "vt-title" }}>
+          {project.title}
+          {project.subtitle ? <span className="block text-[0.32em] italic leading-tight text-mute">{project.subtitle}</span> : null}
+        </h1>
+        <div className="mt-8 grid gap-8 lg:grid-cols-12">
+          <p className="fade-up text-xl leading-relaxed lg:col-span-7" style={{ animationDelay: "160ms" }}>
+            {project.tagline}
+          </p>
+          <div className="fade-up flex flex-wrap content-start gap-3 lg:col-span-5 lg:justify-end" style={{ animationDelay: "220ms" }}>
+            {project.live ? (
+              <Link href={project.live.href} className="btn btn-ink">
+                <Play className="size-4" aria-hidden /> {project.live.label}
+              </Link>
+            ) : null}
+            {project.repo ? (
+              <a href={project.repo} target="_blank" rel="noreferrer" className="btn btn-ghost">
+                <Github className="size-4" aria-hidden /> Code <ArrowUpRight className="size-3.5" aria-hidden />
+              </a>
+            ) : (
+              <span className="btn btn-ghost cursor-default text-mute">
+                <Lock className="size-4" aria-hidden /> Private repo
+              </span>
+            )}
+            {project.caseStudy ? (
+              <a href={project.caseStudy} className="btn btn-ghost">
+                <FileText className="size-4" aria-hidden /> Case study
+              </a>
+            ) : null}
+          </div>
+        </div>
 
-function GridSection({ items }: { items: [string, string][] }) {
-  return (
-    <div className="grid gap-5 p-5 md:grid-cols-2">
-      {items.map(([label, value]) => (
-        <Reveal key={label} className="retro-panel p-5">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-retro-green">{label}</p>
-          <p className="mt-3 text-sm leading-7 text-retro-text/60">{value}</p>
-        </Reveal>
-      ))}
+        <div className="fade-up mt-14 rounded-[24px]" style={{ animationDelay: "280ms", viewTransitionName: "vt-media" }}>
+          <TiltCard className="rounded-[24px] shadow-[0_50px_100px_-40px_rgba(18,18,17,0.5)]">
+            <ProjectMedia project={project} sizes="(max-width: 1440px) 100vw, 1340px" priority />
+          </TiltCard>
+        </div>
+
+        <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-8 border-y hairline py-10 md:grid-cols-4">
+          {project.metrics.map((m) => (
+            <div key={m.label} data-reveal>
+              <dt className="sr-only">{m.label}</dt>
+              <dd>
+                <span className="block font-serif text-5xl tracking-tight md:text-6xl">{m.value}</span>
+                <span className="mt-2 block text-[14px] text-mute">{m.label}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+
+        <div className="mt-20 grid gap-16 lg:grid-cols-12">
+          <aside className="lg:col-span-4">
+            <div className="lg:sticky lg:top-28" data-reveal>
+              <p className="label text-mute">My role</p>
+              <p className="mt-3 text-[17px] leading-7">{project.role}</p>
+              <p className="label mt-8 text-mute">Stack</p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {project.stack.map((s) => (
+                  <li key={s} className="rounded-full bg-paper-2 px-3 py-1 font-mono text-[12px]">
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+
+          <div className="space-y-16 lg:col-span-8">
+            <Block n="01" title="The problem">
+              <p className="font-serif text-3xl leading-snug md:text-4xl">{project.problem}</p>
+            </Block>
+            <Block n="02" title="The approach">
+              <p className="text-lg leading-8 text-ink-2">{project.solution}</p>
+            </Block>
+            <Block n="03" title="What I built">
+              <List items={project.built} />
+            </Block>
+            <Block n="04" title="Key product decisions">
+              <List items={project.decisions} />
+            </Block>
+            <Block n="05" title="Architecture">
+              <ol className="grid gap-px overflow-hidden rounded-2xl border hairline bg-[var(--line)] sm:grid-cols-2">
+                {project.architecture.map((node, i) => (
+                  <li key={node} className="flex items-center gap-4 bg-paper p-5">
+                    <span className="font-mono text-[11px] text-signal">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="text-[15px]">{node}</span>
+                  </li>
+                ))}
+              </ol>
+            </Block>
+            <Block n="06" title="User flow">
+              <ol className="flex flex-wrap items-center gap-2 text-[14px]">
+                {project.flows.map((f, i) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <span className="rounded-full border hairline px-3 py-1.5">{f}</span>
+                    {i < project.flows.length - 1 ? <ArrowRight className="size-3.5 text-mute" aria-hidden /> : null}
+                  </li>
+                ))}
+              </ol>
+            </Block>
+            {project.learnings ? (
+              <Block n="07" title="What I learned">
+                <List items={project.learnings} />
+              </Block>
+            ) : null}
+          </div>
+        </div>
+
+        <TransitionLink href={`/projects/${next.slug}`} className="group mt-28 block border-t border-ink pt-8">
+          <p className="label text-mute">Next project</p>
+          <p className="mt-3 flex items-center justify-between gap-6 font-serif text-[clamp(44px,8vw,120px)] leading-none tracking-[-0.03em]">
+            <span className="transition-transform duration-500 ease-out group-hover:translate-x-3">{next.title}</span>
+            <ArrowRight className="size-10 shrink-0 transition-transform duration-500 ease-out group-hover:translate-x-2 md:size-16" aria-hidden />
+          </p>
+        </TransitionLink>
+      </main>
+      <RevealObserver />
     </div>
   );
 }
 
-function ListCard({ title, items }: { title: string; items: string[] }) {
+function Block({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
   return (
-    <Reveal className="p-5">
-      <h3 className="text-lg font-bold text-accent-purple">{title}</h3>
-      <div className="mt-4 space-y-2">
-        {items.map((item) => (
-          <div key={item} className="flex gap-2 text-xs leading-5 text-retro-text/55">
-            <Sparkles className="mt-0.5 size-3 shrink-0 text-retro-green" />
-            {item}
-          </div>
-        ))}
-      </div>
-    </Reveal>
+    <section data-reveal>
+      <h2 className="label flex items-center gap-3 text-mute">
+        <span className="text-signal">{n}</span> {title}
+      </h2>
+      <div className="mt-5">{children}</div>
+    </section>
+  );
+}
+
+function List({ items }: { items: string[] }) {
+  return (
+    <ul className="divide-y hairline border-y hairline">
+      {items.map((item) => (
+        <li key={item} className="flex gap-4 py-4 text-[17px] leading-7">
+          <span className="mt-3 size-1.5 shrink-0 rounded-full bg-signal" aria-hidden />
+          {item}
+        </li>
+      ))}
+    </ul>
   );
 }
