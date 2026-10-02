@@ -4,8 +4,6 @@
 // startViewTransition snapshots the old page, we push the route, and the
 // RouteChangeNotifier (in the root layout) resolves once the new page commits.
 
-import { playSound } from "@/lib/sound";
-
 let resolveCommit: (() => void) | null = null;
 
 type Router = { push: (href: string) => void };
@@ -30,7 +28,6 @@ export function navigateWithTransition(router: Router, href: string, source?: El
   if (title) title.style.viewTransitionName = "vt-title";
   if (media) media.style.viewTransitionName = "vt-media";
   document.documentElement.dataset.vt = "on";
-  playSound("whoosh");
 
   const transition = doc.startViewTransition(
     () =>

@@ -1,82 +1,74 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { DemoShell, Segmented } from "@/components/site/demos/demo-shell";
+import Image from "next/image";
+import { DemoShell } from "@/components/site/demos/demo-shell";
 
-// Sample slab configuration to illustrate how the fare engine works — not live provider prices.
-const providers = [
-  { name: "Namma Yatri", base: 30, freeKm: 2, slabs: [[8, 15], [Infinity, 15]], night: 1.5 },
-  { name: "Rapido", base: 35, freeKm: 1, slabs: [[6, 13], [Infinity, 15]], night: 1.15 },
-  { name: "Ola", base: 45, freeKm: 1, slabs: [[6, 14], [Infinity, 17]], night: 1.25 },
-  { name: "Uber", base: 50, freeKm: 1, slabs: [[6, 14], [Infinity, 18]], night: 1.2 },
-] as const;
-
-function fare(p: (typeof providers)[number], km: number, night: boolean) {
-  let remaining = Math.max(0, km - p.freeKm);
-  let covered = p.freeKm;
-  let total = p.base;
-  for (const [upto, rate] of p.slabs) {
-    const span = Math.min(remaining, upto - covered);
-    if (span <= 0) continue;
-    total += span * rate;
-    remaining -= span;
-    covered += span;
-  }
-  return Math.round(total * (night ? p.night : 1));
-}
+// Sample fares and waiting times — not live provider data.
+const rides = [
+  { name: "Rapido", type: "Auto", fare: 116, wait: 8 },
+  { name: "Namma Yatri", type: "Auto", fare: 124, wait: 6 },
+  { name: "Ola", type: "Mini", fare: 148, wait: 5 },
+  { name: "Uber", type: "Go", fare: 168, wait: 3 },
+];
 
 export function RideCompareDemo() {
-  const [km, setKm] = useState(8);
-  const [time, setTime] = useState<"day" | "night">("day");
-  const [opened, setOpened] = useState<string | null>(null);
-
-  const ranked = useMemo(
-    () => providers.map((p) => ({ name: p.name, price: fare(p, km, time === "night") })).sort((a, b) => a.price - b.price),
-    [km, time],
-  );
-  const max = ranked[ranked.length - 1].price;
-  const saving = max - ranked[0].price;
+  // 0 = only price matters, 100 = only waiting time matters.
+  const [priority, setPriority] = useState(30);
+  const ranked = useMemo(() => {
+    const fares = rides.map((r) => r.fare);
+    const waits = rides.map((r) => r.wait);
+    const norm = (v: number, arr: number[]) => (v - Math.min(...arr)) / (Math.max(...arr) - Math.min(...arr) || 1);
+    const w = priority / 100;
+    return rides
+      .map((r) => ({ ...r, score: (1 - w) * norm(r.fare, fares) + w * norm(r.wait, waits) }))
+      .sort((a, b) => a.score - b.score);
+  }, [priority]);
+  const cheapest = Math.min(...rides.map((r) => r.fare));
+  const fastest = Math.min(...rides.map((r) => r.wait));
+  const best = ranked[0];
 
   return (
-    <DemoShell title="ridecompare /estimate" note="Sample slab pricing to show how the fare engine ranks rides — not live provider prices.">
-      <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
-        <label className="block">
-          <span className="flex justify-between text-[12px] text-paper/70">
-            <span>Trip distance</span>
-            <span className="font-mono tabular-nums text-paper">{km} km</span>
-          </span>
-          <input type="range" min={1} max={30} value={km} onChange={(e) => { setKm(Number(e.target.value)); setOpened(null); }} className="mt-2 w-full accent-[#FF4D12]" />
-        </label>
-        <Segmented label="Time of day" value={time} options={["day", "night"] as const} onChange={(v) => { setTime(v); setOpened(null); }} />
-      </div>
+    <DemoShell
+      title="ridecompare · rank rides"
+      note="Sample fares and waiting times, not live prices. The shipped app compares estimates and flags the cheapest and fastest ride; the price-vs-wait weighting is a demo of how ranking could adapt to what you care about."
+    >
+      <div className="grid gap-6 md:grid-cols-[minmax(0,240px)_1fr] md:items-start">
+        <figure className="m-0 mx-auto w-full max-w-[240px]">
+          <Image src="/projects/ridecompare/phoneframe-3.png" alt="RideCompare's real compare-fares screen" width={550} height={1014} sizes="240px" className="h-auto w-full" />
+          <figcaption className="mt-1 text-center text-[11px] text-paper/50">The real app screen (mock data)</figcaption>
+        </figure>
 
-      <ol className="mt-6 space-y-3" aria-live="polite">
-        {ranked.map((r, i) => (
-          <li key={r.name} className="grid grid-cols-[6.5rem_1fr_4.5rem] items-center gap-3">
-            <span className={`text-[14px] ${i === 0 ? "font-medium text-paper" : "text-paper/70"}`}>{r.name}</span>
-            <div className="h-7 overflow-hidden rounded-lg bg-paper/[0.06]">
-              <div className={`flex h-full items-center rounded-lg px-2 font-mono text-[10px] transition-[width] duration-500 ease-out ${i === 0 ? "bg-signal text-white" : "bg-paper/20 text-paper/80"}`} style={{ width: `${(r.price / max) * 100}%` }}>
-                {i === 0 ? "BEST" : ""}
-              </div>
-            </div>
-            <span className="text-right font-mono text-[14px] tabular-nums">₹{r.price}</span>
-          </li>
-        ))}
-      </ol>
+        <div>
+          <label htmlFor="rc-priority" className="block text-[13px] text-paper/80">
+            What matters more to you?
+          </label>
+          <input id="rc-priority" type="range" min={0} max={100} value={priority} onChange={(e) => setPriority(Number(e.target.value))} className="mt-3 w-full accent-[#FF4D12]" aria-valuetext={`${100 - priority}% price, ${priority}% waiting time`} />
+          <div className="mt-1 flex justify-between font-mono text-[11px] text-paper/60">
+            <span>Price {100 - priority}%</span>
+            <span>Waiting time {priority}%</span>
+          </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-paper/10 pt-4">
-        <p className="text-[14px]">
-          Save <span className="font-serif text-3xl text-signal">₹{saving}</span> vs the priciest option
-        </p>
-        <button type="button" onClick={() => setOpened(ranked[0].name)} className="btn h-10 bg-paper px-4 text-[13px] text-ink hover:bg-signal hover:text-white">
-          Book {ranked[0].name}
-        </button>
+          <ol className="mt-6 space-y-2" aria-live="polite" aria-label="Rides ranked for your priority">
+            {ranked.map((r, i) => (
+              <li key={r.name} className={`grid grid-cols-[1fr_auto_auto] items-center gap-4 rounded-xl px-4 py-3 transition-colors duration-300 ${i === 0 ? "bg-signal text-white" : "bg-paper/[0.06]"}`}>
+                <span>
+                  <span className="text-[15px] font-medium">{r.name}</span> <span className={i === 0 ? "text-white/80" : "text-paper/55"}>· {r.type}</span>
+                  <span className="mt-0.5 flex gap-2 font-mono text-[10px] uppercase tracking-wider">
+                    {r.fare === cheapest ? <span>Cheapest</span> : null}
+                    {r.wait === fastest ? <span>Fastest</span> : null}
+                  </span>
+                </span>
+                <span className="font-mono text-[15px] tabular-nums">₹{r.fare}</span>
+                <span className={`w-14 text-right font-mono text-[13px] tabular-nums ${i === 0 ? "text-white/90" : "text-paper/70"}`}>{r.wait} min</span>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-4 text-[13px] text-paper/75" role="status">
+            Best match: <strong className="font-medium text-paper">{best.name}</strong> — ₹{best.fare - cheapest} more than the cheapest, {best.wait - fastest} min longer than the fastest.
+          </p>
+        </div>
       </div>
-      {opened ? (
-        <p className="fade-up mt-3 font-mono text-[12px] text-paper/70" role="status">
-          → would open {opened} with pickup and drop pre-filled, and log the shown fare to compare with what you actually pay.
-        </p>
-      ) : null}
     </DemoShell>
   );
 }

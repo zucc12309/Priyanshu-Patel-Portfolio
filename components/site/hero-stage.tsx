@@ -1,27 +1,26 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
-import { impact, profile } from "@/lib/data";
+import { useEffect, useRef } from "react";
+import Image from "next/image";
+import { ArrowDown, ArrowUpRight, Mail } from "lucide-react";
+import { approach, profile } from "@/lib/data";
 import { useBlockField } from "@/components/three/use-block-field";
 import { LocalTime } from "@/components/site/local-time";
 import { SplitWords } from "@/components/site/split-words";
-import { ModelControls } from "@/components/site/model-controls";
-import { playSound } from "@/lib/sound";
 
 /**
- * Hero + Impact share one sticky WebGL stage. Scrolling from the hero into the
- * impact panel rebuilds the "PP" model into four bars, one per metric; HTML
- * labels are pinned to the projected bar tops every frame.
+ * Hero + "How I work" share one sticky sculpture. Scrolling from the hero into
+ * the approach section organises the scattered blocks into three districts —
+ * Analysis, Requirements, AI products — whose labels are pinned to the model.
+ * The sculpture is never needed to navigate; without WebGL a still image of the
+ * organised model takes its place.
  */
 export function HeroStage() {
   const wrapRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const labelRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const { fieldRef, ready } = useBlockField(canvasRef, wrapRef, {
-    theme: "plaster",
-    shape: "monogram",
+  const { fieldRef, ready, supported } = useBlockField(canvasRef, wrapRef, {
     onFrame: (anchors) => {
       anchors.forEach((a, i) => {
         const el = labelRefs.current[i];
@@ -46,213 +45,107 @@ export function HeroStage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [fieldRef, ready]);
 
-  const [maxChars, setMaxChars] = useState(7);
-  useEffect(() => {
-    if (ready && fieldRef.current) setMaxChars(fieldRef.current.maxChars);
-  }, [ready, fieldRef]);
-
-  const onWord = useCallback((word: string) => fieldRef.current?.setText(word), [fieldRef]);
-
-  // Motion intro: blocks assemble (≈1.7s), then the name and nav rise in.
-  const [intro, setIntro] = useState(false);
-  const introPlayed = useRef(false);
-  const endIntro = useCallback(() => {
-    delete document.documentElement.dataset.intro;
-    try {
-      sessionStorage.setItem("pp-intro", "1");
-    } catch {
-      // ignore
-    }
-    setIntro(false);
-  }, []);
-  useEffect(() => {
-    if (!document.documentElement.dataset.intro) return;
-    setIntro(true);
-    const done = window.setTimeout(endIntro, 1900);
-    const skip = (e: Event) => {
-      if (e instanceof KeyboardEvent && e.key === "Tab") return;
-      endIntro();
-    };
-    window.addEventListener("keydown", skip);
-    window.addEventListener("pointerdown", skip);
-    window.addEventListener("wheel", skip, { passive: true });
-    window.addEventListener("touchmove", skip, { passive: true });
-    return () => {
-      window.clearTimeout(done);
-      window.removeEventListener("keydown", skip);
-      window.removeEventListener("pointerdown", skip);
-      window.removeEventListener("wheel", skip);
-      window.removeEventListener("touchmove", skip);
-    };
-  }, [endIntro]);
-  useEffect(() => {
-    if (intro && ready && !introPlayed.current) {
-      introPlayed.current = true;
-      fieldRef.current?.playIntro();
-    }
-  }, [intro, ready, fieldRef]);
-
-  // Click anywhere on the stage (not on controls) to pulse; drag sideways to rotate.
-  useEffect(() => {
-    const wrap = wrapRef.current;
-    if (!wrap) return;
-    let start: { x: number; y: number; last: number; id: number } | null = null;
-    let dragging = false;
-
-    const onDown = (e: PointerEvent) => {
-      if (e.button !== 0 || (e.target as HTMLElement).closest("a, button, input, label, [data-no-sculpt]")) return;
-      start = { x: e.clientX, y: e.clientY, last: e.clientX, id: e.pointerId };
-      dragging = false;
-    };
-    const onMove = (e: PointerEvent) => {
-      if (!start || e.pointerId !== start.id) return;
-      const dx = e.clientX - start.x;
-      const dy = e.clientY - start.y;
-      if (!dragging && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
-        dragging = true;
-        fieldRef.current?.beginDrag();
-        document.documentElement.classList.add("is-dragging");
-      }
-      if (dragging) {
-        fieldRef.current?.dragBy(e.clientX - start.last);
-        start.last = e.clientX;
-      }
-    };
-    const onUp = (e: PointerEvent) => {
-      if (!start || e.pointerId !== start.id) return;
-      if (dragging) fieldRef.current?.endDrag();
-      else if (Math.hypot(e.clientX - start.x, e.clientY - start.y) < 8) {
-        fieldRef.current?.pulse(e.clientX, e.clientY);
-        playSound("thump");
-      }
-      document.documentElement.classList.remove("is-dragging");
-      start = null;
-      dragging = false;
-    };
-    wrap.addEventListener("pointerdown", onDown);
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerup", onUp);
-    window.addEventListener("pointercancel", onUp);
-    return () => {
-      wrap.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
-      window.removeEventListener("pointercancel", onUp);
-    };
-  }, [fieldRef]);
-
   return (
-    <section ref={wrapRef} aria-label="Introduction and impact" className="relative touch-pan-y" data-cursor="drag">
-      {/* Sticky 3D stage */}
+    <section ref={wrapRef} aria-label="Introduction and how I work" className="relative">
+      {/* Sticky sculpture (decorative — the copy carries every fact) */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
         <div className="sticky top-0 h-[100svh] overflow-hidden">
-        <canvas ref={canvasRef} className={`absolute inset-0 h-full w-full transition-opacity duration-1000 ${ready ? "opacity-100" : "opacity-0"}`} />
-        {/* Paper fades keep the copy legible over the model */}
-        <div className="absolute inset-y-0 left-0 hidden w-[46%] bg-gradient-to-r from-paper via-paper/80 to-transparent md:block" />
-        <div className="absolute inset-x-0 top-0 h-[52%] bg-gradient-to-b from-paper via-paper/85 to-transparent md:hidden" />
-        {impact.map((m, i) => (
-          <div
-            key={m.label}
-            ref={(el) => {
-              labelRefs.current[i] = el;
-            }}
-            className="absolute left-0 top-0 hidden opacity-0 will-change-transform md:block"
-          >
-            <div className="flex flex-col items-center">
-              <span className="whitespace-nowrap rounded-full bg-ink px-2.5 py-1 font-mono text-[11px] text-paper">
-                {String(i + 1).padStart(2, "0")} · {m.value}
-              </span>
-              <span className="h-5 w-px bg-ink/60" />
+          <canvas ref={canvasRef} className={`absolute inset-0 h-full w-full transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"}`} />
+          {!supported ? (
+            <div className="absolute inset-x-0 bottom-0 top-[45%] md:left-[38%] md:top-0">
+              <Image src="/sculpture-organised.webp" alt="" fill sizes="(max-width: 768px) 100vw, 62vw" className="object-contain object-center" />
             </div>
-          </div>
-        ))}
+          ) : null}
+          <div className="absolute inset-y-0 left-0 hidden w-[46%] bg-gradient-to-r from-paper via-paper/80 to-transparent md:block" />
+          <div className="absolute inset-x-0 top-0 h-[66%] bg-gradient-to-b from-paper via-paper/90 to-transparent md:hidden" />
+          {approach.map((step, i) => (
+            <div
+              key={step.id}
+              ref={(el) => {
+                labelRefs.current[i] = el;
+              }}
+              className="absolute left-0 top-0 hidden opacity-0 will-change-transform md:block"
+            >
+              <div className="flex flex-col items-center">
+                <span className="whitespace-nowrap rounded-full bg-ink px-2.5 py-1 font-mono text-[11px] text-paper">
+                  {String(i + 1).padStart(2, "0")} · {step.title}
+                </span>
+                <span className="h-5 w-px bg-ink/60" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="intro-ui pointer-events-none fixed inset-x-0 bottom-0 z-[60] flex-col items-center gap-3 pb-[calc(32px+var(--safe-bottom))]">
-        <p className="label text-mute">Assembling</p>
-        <span className="block h-px w-40 overflow-hidden bg-ink/15">
-          <span className="intro-bar block h-full w-full origin-left bg-ink" />
-        </span>
-        <button type="button" onClick={endIntro} className="pointer-events-auto mt-1 rounded-full border hairline bg-paper/80 px-4 py-2 text-[12px] backdrop-blur">
-          Skip intro
-        </button>
-      </div>
-
-      {/* Screen 1 — hero (hidden while the intro plays) */}
-      <div className="hero-copy relative mx-auto flex min-h-[100svh] max-w-[1440px] flex-col px-5 pb-8 pt-[calc(96px+var(--safe-top))] sm:px-8 md:pt-32 lg:px-12">
-        <p className="label fade-up text-mute" style={{ animationDelay: "100ms" }}>
-          Portfolio · Bengaluru · {new Date().getFullYear()}
+      {/* Screen 1 — who I am */}
+      <div className="relative mx-auto flex min-h-[100svh] max-w-[1440px] flex-col px-5 pb-8 pt-[calc(96px+var(--safe-top))] sm:px-8 md:pt-32 lg:px-12">
+        <p className="label fade-up text-mute" style={{ animationDelay: "60ms" }}>
+          {profile.location}
         </p>
-        <h1 className="mt-6 font-serif text-[clamp(64px,13vw,184px)] leading-[0.86] tracking-[-0.035em]">
-          <SplitWords text={profile.first} delay={150} />
+        <h1 className="mt-5 font-serif text-[clamp(60px,12vw,172px)] leading-[0.86] tracking-[-0.035em]">
+          <SplitWords text={profile.first} delay={80} />
           <br />
           <span className="italic">
-            <SplitWords text={profile.last} delay={260} />
+            <SplitWords text={profile.last} delay={160} />
           </span>
         </h1>
-        <div className="mt-8 max-w-[34rem] md:mt-10">
-          <p className="fade-up font-mono text-[12px] uppercase tracking-[0.14em]" style={{ animationDelay: "450ms" }}>
-            Business Analyst <span className="text-signal">→</span> Product & AI
+        <div className="mt-7 max-w-[34rem] md:mt-9">
+          <p className="fade-up font-mono text-[12px] uppercase tracking-[0.14em]" style={{ animationDelay: "240ms" }}>
+            Business Analyst <span className="text-signal">·</span> AI Product Builder
           </p>
-          <p className="fade-up mt-4 text-[17px] leading-[1.6] text-ink-2 sm:text-lg" style={{ animationDelay: "550ms" }}>
+          <p className="fade-up mt-4 text-[17px] leading-[1.6] text-ink-2 sm:text-lg" style={{ animationDelay: "300ms" }}>
             {profile.intro}
           </p>
-          <div className="fade-up mt-8 flex flex-wrap gap-3" style={{ animationDelay: "650ms" }}>
-            <a href="#work" className="btn btn-ink">
-              See selected work <ArrowDown className="size-4" aria-hidden />
+          <div className="fade-up mt-8 flex flex-wrap gap-3" style={{ animationDelay: "360ms" }}>
+            <a href="#projects" className="btn btn-ink">
+              See projects <ArrowDown className="size-4" aria-hidden />
             </a>
-            <a href={profile.resume} target="_blank" rel="noreferrer" className="btn btn-ghost bg-paper/80 backdrop-blur-sm">
-              Résumé <ArrowUpRight className="size-4" aria-hidden />
+            <a href={profile.resume} target="_blank" rel="noreferrer" className="btn btn-ghost bg-paper/80">
+              Résumé (PDF) <ArrowUpRight className="size-4" aria-hidden />
+            </a>
+            <a href={`mailto:${profile.email}`} className="btn btn-ghost bg-paper/80">
+              <Mail className="size-4" aria-hidden /> Email
             </a>
           </div>
         </div>
 
-        {ready ? (
-          <ModelControls maxChars={maxChars} onWord={onWord} className="fade-up mt-8 w-full max-w-sm md:absolute md:bottom-28 md:right-8 md:mt-0 md:w-80 lg:right-12" />
-        ) : null}
-
-        <dl className="fade-up mt-auto grid grid-cols-2 gap-x-6 gap-y-4 rounded-2xl border-t hairline bg-paper/85 p-4 text-[13px] backdrop-blur-sm sm:grid-cols-4 md:rounded-none md:bg-transparent md:p-0 md:pt-5 md:backdrop-blur-0" style={{ animationDelay: "800ms" }}>
+        <dl className="fade-up mt-auto grid grid-cols-2 gap-x-6 gap-y-4 rounded-2xl bg-paper/85 p-4 text-[13px] sm:grid-cols-3 md:rounded-none md:border-t md:hairline md:bg-transparent md:p-0 md:pt-5" style={{ animationDelay: "420ms" }}>
           <div>
             <dt className="label text-mute">Now</dt>
-            <dd className="mt-1">{profile.company}</dd>
+            <dd className="mt-1">
+              {profile.title}, {profile.company}
+            </dd>
           </div>
           <div>
+            <dt className="label text-mute">Looking for</dt>
+            <dd className="mt-1 flex items-center gap-2">
+              <span className="live-dot" aria-hidden /> Product / AI product roles
+            </dd>
+          </div>
+          <div className="col-span-2 sm:col-span-1">
             <dt className="label text-mute">Local time</dt>
             <dd className="mt-1 tabular-nums">
               <LocalTime />
             </dd>
           </div>
-          <div>
-            <dt className="label text-mute">Status</dt>
-            <dd className="mt-1 flex items-center gap-2">
-              <span className="live-dot" aria-hidden /> Open to Product / AI roles
-            </dd>
-          </div>
-          <div className="hidden sm:block">
-            <dt className="label text-mute">Scroll</dt>
-            <dd className="mt-1 text-mute">The model rebuilds into impact ↓</dd>
-          </div>
         </dl>
       </div>
 
-      {/* Screen 2 — impact */}
-      <div id="impact" className="relative mx-auto flex min-h-[100svh] max-w-[1440px] flex-col justify-end px-5 pb-12 sm:px-8 md:justify-center lg:px-12">
-        <div className="max-w-[30rem] rounded-2xl bg-paper/90 p-5 backdrop-blur-sm md:bg-transparent md:p-0 md:backdrop-blur-0">
-          <p className="label text-mute">(01) Impact</p>
-          <h2 className="mt-3 font-serif text-[clamp(40px,5.5vw,72px)] leading-[0.95] tracking-[-0.02em]">
-            Numbers from <span className="italic">the day job.</span>
+      {/* Screen 2 — how I work (the sculpture organises as you arrive) */}
+      <div id="approach" className="relative mx-auto flex min-h-[100svh] max-w-[1440px] scroll-mt-16 flex-col justify-end px-5 pb-12 sm:px-8 md:justify-center lg:px-12">
+        <div className="max-w-[32rem] rounded-2xl bg-paper/90 p-5 md:bg-transparent md:p-0">
+          <p className="label text-mute">How I work</p>
+          <h2 className="mt-3 font-serif text-[clamp(38px,5vw,64px)] leading-[0.98] tracking-[-0.02em]">
+            From scattered inputs to an <span className="italic">organised system.</span>
           </h2>
           <ol className="mt-8 divide-y hairline border-y hairline">
-            {impact.map((m, i) => (
-              <li key={m.label} className="grid grid-cols-[2.5rem_1fr] gap-x-3 py-4">
-                <span className="font-mono text-[11px] text-mute">{String(i + 1).padStart(2, "0")}</span>
+            {approach.map((step, i) => (
+              <li key={step.id} className="grid grid-cols-[2.25rem_1fr] gap-x-3 py-4">
+                <span className="font-mono text-[11px] leading-7 text-mute">{String(i + 1).padStart(2, "0")}</span>
                 <div>
-                  <p className="flex flex-wrap items-baseline gap-x-3">
-                    <span className={`font-serif text-4xl tracking-tight ${i === 0 ? "text-signal" : ""}`}>{m.value}</span>
-                    <span className="text-[15px] font-medium">{m.label}</span>
-                  </p>
-                  <p className="mt-1 text-[14px] leading-6 text-mute">{m.detail}</p>
+                  <h3 className="font-serif text-[26px] leading-tight">{step.title}</h3>
+                  <p className="mt-1 text-[15px] leading-6 text-ink-2">{step.text}</p>
+                  <p className="mt-2 font-mono text-[11px] leading-5 text-mute">{step.capabilities.join(" · ")}</p>
                 </div>
               </li>
             ))}

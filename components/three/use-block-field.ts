@@ -24,6 +24,7 @@ export function useBlockField(
 ) {
   const fieldRef = useRef<BlockField | null>(null);
   const [ready, setReady] = useState(false);
+  const [supported, setSupported] = useState(true);
   const optsRef = useRef(options);
 
   useEffect(() => {
@@ -33,7 +34,11 @@ export function useBlockField(
   useEffect(() => {
     const canvas = canvasRef.current;
     const watch = watchRef.current;
-    if (!canvas || !watch || !webglAvailable()) return;
+    if (!canvas || !watch) return;
+    if (!webglAvailable()) {
+      setSupported(false);
+      return;
+    }
 
     let disposed = false;
     let visible = false;
@@ -56,12 +61,17 @@ export function useBlockField(
     const boot = async () => {
       const { BlockField } = await import("@/components/three/block-field");
       if (disposed) return;
+      try {
       field = new BlockField(canvas, {
         ...optsRef.current,
         onFrame: (anchors) => optsRef.current.onFrame?.(anchors),
         compact: window.matchMedia("(max-width: 767px)").matches,
         reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
       });
+      } catch {
+        setSupported(false);
+        return;
+      }
       fieldRef.current = field;
       setReady(true);
       sync();
@@ -83,10 +93,8 @@ export function useBlockField(
     };
 
     // Let the text paint first; the model builds itself in right after.
-    // During the intro the model *is* the first frame, so boot immediately.
     const idle = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
-    if (document.documentElement.dataset.intro) void boot();
-    else if (idle) idle(() => void boot(), { timeout: 600 });
+    if (idle) idle(() => void boot(), { timeout: 600 });
     else window.setTimeout(() => void boot(), 120);
 
     return () => {
@@ -98,5 +106,5 @@ export function useBlockField(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { fieldRef, ready };
+  return { fieldRef, ready, supported };
 }

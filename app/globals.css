@@ -40,17 +40,6 @@ body {
   outline-offset: 3px;
 }
 
-/* Subtle paper grain — static, composited once. */
-.grain::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
 .hairline {
   border-color: var(--line);
 }
@@ -174,23 +163,6 @@ html.no-js [data-reveal] {
   border-color: var(--ink);
 }
 
-/* Marquee */
-.marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 48s linear infinite;
-}
-
-.marquee:hover {
-  animation-play-state: paused;
-}
-
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 .live-dot {
   width: 8px;
   height: 8px;
@@ -217,20 +189,6 @@ html.no-js [data-reveal] {
   50% {
     opacity: 0;
   }
-}
-
-/* Project preview that follows the cursor */
-.cursor-preview {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 40;
-  pointer-events: none;
-  width: 360px;
-  transform: translate3d(var(--x, -999px), var(--y, -999px), 0) rotate(var(--r, 0deg));
-  transition:
-    opacity 250ms var(--ease-out),
-    scale 350ms var(--ease-out);
 }
 
 /* ==========================================================================
@@ -263,108 +221,6 @@ html.no-js [data-reveal] {
     opacity: 1;
     transform: none;
   }
-}
-
-/* While rotating the hero model, don't select text. */
-html.is-dragging,
-html.is-dragging * {
-  user-select: none;
-  cursor: grabbing !important;
-}
-
-/* ==========================================================================
-   Custom cursor (fine pointers only; the component never mounts otherwise)
-   ========================================================================== */
-
-html.has-cursor,
-html.has-cursor * {
-  cursor: none !important;
-}
-
-html.has-cursor input,
-html.has-cursor textarea,
-html.has-cursor [contenteditable="true"] {
-  cursor: text !important;
-}
-
-.cursor-layer {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  pointer-events: none;
-  mix-blend-mode: difference;
-  opacity: 0;
-  transition: opacity 200ms linear;
-}
-
-html[data-cursor-shown] .cursor-layer {
-  opacity: 1;
-}
-
-.cursor-dot {
-  position: absolute;
-  left: -3px;
-  top: -3px;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: #fff;
-}
-
-.cursor-ring {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
-.cursor-ring::before {
-  content: "";
-  position: absolute;
-  left: -18px;
-  top: -18px;
-  width: 36px;
-  height: 36px;
-  border: 1.5px solid #fff;
-  border-radius: 999px;
-  transition:
-    transform 260ms var(--ease-out),
-    background-color 200ms linear,
-    opacity 200ms linear;
-}
-
-.cursor-ring[data-state="hover"]::before {
-  transform: scale(1.5);
-  background: #fff;
-}
-
-.cursor-ring[data-state="label"]::before {
-  transform: scale(2.1);
-  background: #fff;
-}
-
-.cursor-ring[data-state="text"]::before {
-  transform: scale(0.3);
-  opacity: 0;
-}
-
-.cursor-ring[data-pressed]::before {
-  transform: scale(0.8);
-}
-
-.cursor-label {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #000;
-  opacity: 0;
-  transition: opacity 150ms linear;
-}
-
-.cursor-ring[data-state="label"] .cursor-label {
-  opacity: 1;
 }
 
 /* ==========================================================================
@@ -401,46 +257,5 @@ html[data-cursor-shown] .cursor-layer {
   from {
     opacity: 0;
     transform: translateY(40px);
-  }
-}
-
-/* ==========================================================================
-   Motion intro — html[data-intro] is set before first paint (once per visit)
-   ========================================================================== */
-
-.intro-ui {
-  display: none;
-}
-
-html[data-intro] .intro-ui {
-  display: flex;
-}
-
-html[data-intro] .hero-copy,
-html[data-intro] header {
-  opacity: 0;
-  pointer-events: none;
-}
-
-html[data-intro] .hero-copy *,
-html[data-intro] .hero-copy {
-  animation-play-state: paused !important;
-}
-
-.hero-copy,
-header {
-  transition: opacity 500ms var(--ease-out);
-}
-
-.intro-bar {
-  animation: intro-bar 1.6s cubic-bezier(0.65, 0, 0.35, 1) both;
-}
-
-@keyframes intro-bar {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
   }
 }

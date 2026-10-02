@@ -4,20 +4,19 @@ import { useEffect, useState } from "react";
 import { ArrowUpRight, Command, Menu, X } from "lucide-react";
 import { profile } from "@/lib/data";
 import { CommandPalette } from "@/components/site/command-palette";
-import { SoundToggle } from "@/components/site/sound-toggle";
+import { AskPanel } from "@/components/site/assistant";
 
 export const sections = [
-  { id: "impact", label: "Impact", n: "01" },
-  { id: "work", label: "Work", n: "02" },
-  { id: "projects", label: "Projects", n: "03" },
-  { id: "skills", label: "Skills", n: "04" },
-  { id: "ask", label: "Ask", n: "05" },
-  { id: "contact", label: "Contact", n: "07" },
+  { id: "approach", label: "How I work", n: "00" },
+  { id: "work", label: "Work", n: "01" },
+  { id: "projects", label: "Projects", n: "02" },
+  { id: "contact", label: "Contact", n: "03" },
 ];
 
 export function Nav() {
   const [open, setOpen] = useState(false);
   const [palette, setPalette] = useState(false);
+  const [ask, setAsk] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState("");
   const [dark, setDark] = useState(false);
@@ -100,7 +99,9 @@ export function Nav() {
           >
             <Command className="size-3" aria-hidden /> K
           </button>
-          <SoundToggle className="hidden size-9 justify-center rounded-full opacity-80 transition-opacity hover:opacity-100 md:flex" />
+          <button type="button" onClick={() => setAsk(true)} className="hidden h-9 items-center rounded-full px-3 text-[13px] transition-opacity hover:opacity-60 md:flex">
+            Ask
+          </button>
           <a href={profile.resume} target="_blank" rel="noreferrer" className="hidden items-center gap-1 text-[13px] lg:flex">
             <span className="link-draw">Résumé</span> <ArrowUpRight className="size-3.5" aria-hidden />
           </a>
@@ -133,7 +134,16 @@ export function Nav() {
               </a>
             ))}
           </nav>
-          <SoundToggle withLabel className="mt-6 h-11 text-[15px]" />
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              setAsk(true);
+            }}
+            className="mt-6 h-11 text-left text-[15px] underline decoration-ink/30 underline-offset-4"
+          >
+            Ask about my work
+          </button>
           <div className="mt-auto flex flex-wrap gap-3">
             <a href={profile.resume} target="_blank" rel="noreferrer" className="btn btn-ink">
               Résumé <ArrowUpRight className="size-4" aria-hidden />
@@ -145,7 +155,16 @@ export function Nav() {
         </div>
       ) : null}
 
-      {palette ? <CommandPalette onClose={() => setPalette(false)} /> : null}
+      {palette ? (
+        <CommandPalette
+          onClose={() => setPalette(false)}
+          onAsk={() => {
+            setPalette(false);
+            setAsk(true);
+          }}
+        />
+      ) : null}
+      {ask ? <AskPanel onClose={() => setAsk(false)} /> : null}
     </>
   );
 }
