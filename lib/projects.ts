@@ -22,12 +22,19 @@ export type Project = {
   solution: string;
   built: string[];
   decisions: string[];
-  metrics: { value: string; label: string }[];
+  /** Verifiable facts only — no invented impact or usage figures. */
+  facts: { value: string; label: string }[];
+  /** Real screenshots, shown at their own proportions. */
+  screens?: { src: string; alt: string; caption: string; kind: "desktop" | "phone"; width: number; height: number }[];
+  /** Honest note about what the screenshots show. */
+  screenNote?: string;
+  /** Which sandbox demo the case study embeds. */
+  demo?: "memory-router" | "ridecompare" | "lifepilot" | "crm-workflow";
   features: string[];
   stack: string[];
   architecture: string[];
   flows: string[];
-  image?: string;
+
   repo?: string;
   live?: { label: string; href: string };
   caseStudy?: string;
@@ -47,7 +54,7 @@ export const projects: Project[] = [
     status: "Local-first AI infrastructure",
     featured: true,
     categories: ["AI", "Infra"],
-    tagline: "A local-first memory and model-routing layer that cuts LLM input tokens by 80–90%.",
+    tagline: "A local-first memory and model-routing layer that sends models only the context they need.",
     description:
       "I built a local-first context optimisation layer: it stores structured memory on your machine, retrieves only what matters, assembles a compact prompt and routes it to the best available model.",
     role: "Solo builder: product definition, architecture, Python implementation, CLI + MCP surface, test suite.",
@@ -67,17 +74,15 @@ export const projects: Project[] = [
       "MCP support so it plugs into agent tooling instead of living as a script",
       "API keys live in the OS keychain; there is no cloud component to opt out of",
     ],
-    metrics: [
-      { value: "80–90%", label: "input tokens saved" },
-      { value: "4", label: "LLM providers routed" },
-      { value: "368+", label: "automated tests" },
-      { value: "0", label: "cloud components" },
+    facts: [
+      { value: "80–90%", label: "fewer input tokens in the README's worked examples (estimate)" },
+      { value: "4", label: "LLM providers supported" },
+      { value: "368+", label: "automated tests in the repo" },
     ],
     features: ["Local memory storage", "Vector retrieval", "Context optimisation", "Hybrid model routing", "MCP support", "CLI interface"],
     stack: ["Python", "SQLite / FTS5", "Vector retrieval", "MCP", "Ollama", "OpenAI", "Anthropic", "Gemini"],
     architecture: ["CLI + MCP Server", "Classifier", "Context Builder", "Memory Palace + FTS5", "Vector Store", "Router + Providers", "Security + Health"],
     flows: ["Capture memory", "Score relevance", "Assemble context", "Route provider", "Stream answer", "Record outcome"],
-    image: "/projects/memory-router.png",
     repo: "https://github.com/zucc12309/memory-router",
     live: { label: "Try playground", href: "/projects/memory-router/playground" },
     caseStudy: "/case-studies/memory-router.html",
@@ -93,6 +98,70 @@ export const projects: Project[] = [
     ],
     roadmap: ["Richer evaluation loops", "More MCP clients", "Visual memory inspection", "Sandboxed public demos"],
     accent: "cyan",
+    demo: "memory-router",
+    screenNote: "Memory Router is a CLI and MCP server. The screenshot shows the sandboxed playground I built for this site.",
+    screens: [{ src: "/projects/memory-router.png", alt: "Memory Router sandbox playground with mode selector and prompt", caption: "Sandbox playground — mode selector, prompt and generated build-context command", kind: "desktop", width: 1600, height: 900 }],
+  },
+  {
+    slug: "ridecompare",
+    title: "RideCompare",
+    file: "RIDECOMPARE.APP",
+    monogram: "RC",
+    type: "Private Project",
+    status: "Production-grade mobile MVP",
+    featured: true,
+    categories: ["Mobile", "Commerce"],
+    tagline: "Compare Uber, Ola, Rapido and Namma Yatri fares in one tap — and learn from what you actually paid.",
+    description:
+      "A Flutter app that estimates fares across four ride platforms, highlights the cheapest option, deep-links into the chosen app, and tracks shown-vs-paid fares to improve accuracy.",
+    role: "Product owner + full-stack builder: PRD, fare engine, API contracts, Flutter app, test suite, release.",
+    problem:
+      "Ride pricing is fragmented across apps, and users waste time checking providers manually without knowing which option is actually best.",
+    solution:
+      "A mobile comparison layer that estimates fares, ranks options, highlights savings, tracks estimate accuracy and deep-links into provider apps.",
+    built: [
+      "Flutter app (iOS & Android): route entry, ranked fares, one-tap deep-links",
+      "Node/Express fare engine with DB-driven slab pricing and surge/night multipliers",
+      "Google Maps / Places proxied through the backend for key safety and caching",
+      "Shown-vs-paid tracking with per-platform accuracy stats",
+      "Phone OTP + JWT auth; CI/CD via GitHub Actions to Railway",
+    ],
+    decisions: [
+      "Backend proxies protect map keys and centralise fare logic",
+      "Fare configuration is DB-driven — no hard-coded provider pricing",
+      "Booking history is recorded so estimate accuracy improves over time",
+    ],
+    facts: [
+      { value: "4", label: "ride platforms compared" },
+      { value: "160+", label: "automated tests" },
+      { value: "16", label: "database migrations" },
+    ],
+    features: ["Multi-provider comparison", "Route optimisation", "Fare estimation", "Accuracy tracking", "Maps integration", "Deep-link booking"],
+    stack: ["Flutter", "Dart", "Node.js", "Express", "PostgreSQL", "Google Maps API", "JWT", "Railway"],
+    architecture: ["Flutter Screens", "App Services + Session Store", "Node/Express API", "Fare Engine", "Google Maps Proxy", "PostgreSQL Migrations", "Bookings + Analytics"],
+    flows: ["Enter route", "Fetch places", "Estimate providers", "Rank options", "Recommend ride", "Track outcome"],
+    caseStudy: "/case-studies/ridecompare.html",
+    challenges: [
+      "Normalising provider estimates across inconsistent pricing models",
+      "Protecting maps and app credentials through backend proxies",
+      "Designing trust signals for price confidence and recommendation quality",
+    ],
+    learnings: [
+      "Consumer AI has to earn trust through clear comparisons",
+      "Pricing systems need feedback loops, not static formulas",
+      "Mobile UX improves when recommendations explain the trade-off",
+    ],
+    roadmap: ["Live provider integrations", "Personalised savings model", "City expansion", "Native booking handoff"],
+    accent: "mint",
+    demo: "ridecompare",
+    screens: [
+      { src: "/projects/ridecompare/phoneframe-3.png", alt: "RideCompare compare-fares screen listing Uber, Ola and Rapido with fares and ETAs", caption: "Compare fares — cheapest and fastest flagged", kind: "phone", width: 550, height: 1014 },
+      { src: "/projects/ridecompare/phoneframe-4.png", alt: "Log your booking sheet comparing shown fare with actual fare", caption: "Log the booking — shown vs actually paid", kind: "phone", width: 550, height: 1014 },
+      { src: "/projects/ridecompare/phoneframe-6.png", alt: "Accuracy screen with per-platform estimate accuracy", caption: "Accuracy — how close estimates were, per platform", kind: "phone", width: 550, height: 1014 },
+      { src: "/projects/ridecompare/phoneframe-5.png", alt: "Ride history screen", caption: "Ride history", kind: "phone", width: 550, height: 1014 },
+      { src: "/projects/ridecompare/phoneframe-1.png", alt: "Phone-number sign-in screen", caption: "Phone OTP sign-in", kind: "phone", width: 550, height: 1014 },
+    ],
+    screenNote: "App screens with mock data. Numbers inside the screens are not real usage.",
   },
   {
     slug: "lifepilot",
@@ -124,11 +193,9 @@ export const projects: Project[] = [
       "Guardrails scrub every LLM reply for URLs, tokens, secrets and false 'order placed' claims",
       "Per-user Real / Demo mode so the full loop can be shown without spending money",
     ],
-    metrics: [
+    facts: [
       { value: "7-step", label: "decision loop" },
-      { value: "2-stage", label: "spend-cap enforcement" },
-      { value: "500+", label: "automated tests" },
-      { value: "0", label: "purchases without approval" },
+      { value: "500+", label: "automated tests in the repo" },
     ],
     features: ["Telegram-first UX", "Long-term memory recall", "Calendar + weather context", "Budget caps", "Approval-gated checkout", "Web setup form"],
     stack: ["Python", "FastAPI", "aiogram", "SQLite / FTS5", "Embeddings", "Ollama / Claude / OpenAI", "Swiggy MCP", "React"],
@@ -143,60 +210,61 @@ export const projects: Project[] = [
     ],
     flows: ["Message arrives", "Recall memory", "Build context", "Reason + validate", "Request approval", "Execute + remember"],
     accent: "amber",
+    demo: "lifepilot",
+    screenNote: "LifePilot runs in Telegram from a private repo, so there are no public screenshots yet. The sandbox demo below reproduces its approval logic.",
   },
   {
-    slug: "ridecompare",
-    title: "RideCompare",
-    file: "RIDECOMPARE.APP",
-    monogram: "RC",
-    type: "Private Project",
-    status: "Production-grade mobile MVP",
+    slug: "crm-workflow-automation",
+    title: "CRM Workflow Automation",
+    file: "CRM_AUTOMATION.APP",
+    monogram: "CR",
+    type: "Open Source",
+    status: "CRM analytics automation",
     featured: true,
-    categories: ["Mobile", "Commerce"],
-    tagline: "Compare Uber, Ola, Rapido and Namma Yatri fares in one tap — and learn from what you actually paid.",
+    categories: ["Automation"],
+    tagline: "From raw CRM export in an inbox to a cleaned KPI briefing and refreshed Power BI dashboard — automatically.",
     description:
-      "A Flutter app that estimates fares across four ride platforms, highlights the cheapest option, deep-links into the chosen app, and tracks shown-vs-paid fares to improve accuracy.",
-    role: "Product owner + full-stack builder: PRD, fare engine, API contracts, Flutter app, test suite, release.",
+      "A workflow that streamlines CRM operations: email intake, data cleaning, KPI calculation, an AI briefing and dashboard refresh, with explicit success and error paths.",
+    role: "Builder: process mapping, n8n orchestration, Python preprocessing, reporting design.",
     problem:
-      "Ride pricing is fragmented across apps, and users waste time checking providers manually without knowing which option is actually best.",
+      "CRM teams lose time to manual exports, cleaning, status checks and reporting that should happen automatically.",
     solution:
-      "A mobile comparison layer that estimates fares, ranks options, highlights savings, tracks estimate accuracy and deep-links into provider apps.",
+      "A workflow layer that orchestrates the CRM reporting pipeline, tracks outcomes and gives operators visibility into exceptions.",
     built: [
-      "Flutter app (iOS & Android): route entry, ranked fares, one-tap deep-links",
-      "Node/Express fare engine with DB-driven slab pricing and surge/night multipliers",
-      "Google Maps / Places proxied through the backend for key safety and caching",
-      "Shown-vs-paid tracking with per-platform accuracy stats",
-      "Phone OTP + JWT auth; CI/CD via GitHub Actions to Railway",
+      "Gmail-triggered n8n workflow for CRM export intake",
+      "Python preprocessing: cleaning, formatting and KPI calculation",
+      "AI-generated briefing and Power BI refresh",
+      "Success / error email paths so exceptions stay visible",
     ],
     decisions: [
-      "Backend proxies protect map keys and centralise fare logic",
-      "Fare configuration is DB-driven — no hard-coded provider pricing",
-      "Booking history is recorded so estimate accuracy improves over time",
+      "n8n keeps orchestration visible for business-process review",
+      "Python scripts own cleaning, formatting, KPIs and Power BI export",
+      "Explicit success and error emails make operational exceptions obvious",
     ],
-    metrics: [
-      { value: "4", label: "platforms compared" },
-      { value: "163", label: "Jest tests" },
-      { value: "16", label: "DB migrations" },
-      { value: "2", label: "mobile platforms" },
+    facts: [
+      { value: "10", label: "workflow nodes" },
+      { value: "2", label: "branches: success and error" },
     ],
-    features: ["Multi-provider comparison", "Route optimisation", "Fare estimation", "Accuracy tracking", "Maps integration", "Deep-link booking"],
-    stack: ["Flutter", "Dart", "Node.js", "Express", "PostgreSQL", "Google Maps API", "JWT", "Railway"],
-    architecture: ["Flutter Screens", "App Services + Session Store", "Node/Express API", "Fare Engine", "Google Maps Proxy", "PostgreSQL Migrations", "Bookings + Analytics"],
-    flows: ["Enter route", "Fetch places", "Estimate providers", "Rank options", "Recommend ride", "Track outcome"],
-    image: "/projects/ridecompare.png",
-    caseStudy: "/case-studies/ridecompare.html",
+    features: ["Workflow orchestration", "Process automation", "Reporting", "Integrations", "Business process optimisation"],
+    stack: ["n8n", "Python", "Power BI", "Gmail", "LLM briefing"],
+    architecture: ["Gmail CRM Export Trigger", "n8n Workflow", "Python Preprocessing", "Formatting Script", "AI Briefing", "Power BI Refresh", "Success/Error Email"],
+    flows: ["Receive CRM export", "Clean dataset", "Calculate KPIs", "Generate briefing", "Refresh dashboard", "Email report"],
+    repo: "https://github.com/zucc12309/CRM-workflow-automation",
+    caseStudy: "/case-studies/crm-workflow-automation.html",
     challenges: [
-      "Normalising provider estimates across inconsistent pricing models",
-      "Protecting maps and app credentials through backend proxies",
-      "Designing trust signals for price confidence and recommendation quality",
+      "Mapping CRM export quality issues into deterministic preprocessing rules",
+      "Designing error paths for failed or low-quality inputs",
+      "Balancing automation speed with auditability",
     ],
     learnings: [
-      "Consumer AI has to earn trust through clear comparisons",
-      "Pricing systems need feedback loops, not static formulas",
-      "Mobile UX improves when recommendations explain the trade-off",
+      "Automation is only valuable when it fits the process owner's mental model",
+      "Reporting should explain bottlenecks, not just count activity",
+      "The best workflow products make handoffs visible",
     ],
-    roadmap: ["Live provider integrations", "Personalised savings model", "City expansion", "Native booking handoff"],
-    accent: "mint",
+    roadmap: ["Credential hardening", "More CRM export templates", "SLA monitoring"],
+    accent: "amber",
+    demo: "crm-workflow",
+    screens: [{ src: "/projects/crm-n8n-workflow.png", alt: "n8n workflow: Gmail trigger, preprocessing, error check, formatting, AI briefing and success or error email", caption: "The n8n workflow — 10 nodes, success and error branches", kind: "desktop", width: 1600, height: 900 }],
   },
   {
     slug: "ai-lifeadmin-os",
@@ -226,17 +294,14 @@ export const projects: Project[] = [
       "PII redaction and encryption treated as core product primitives",
       "Reused RideCompare's proven Flutter / Node / Postgres patterns to ship V0 fast",
     ],
-    metrics: [
-      { value: "V0", label: "live on my own iPhone" },
+    facts: [
+      { value: "V0", label: "running on my own iPhone" },
       { value: "19", label: "Postgres migrations" },
-      { value: "On-device", label: "OCR for privacy" },
-      { value: "2-tier", label: "LLM extraction" },
     ],
     features: ["Unified inbox", "Task management", "Document vault", "Subscription tracking", "AI extraction", "Review queue"],
     stack: ["Flutter", "Dart", "Node.js", "Express", "PostgreSQL", "Google ML Kit", "Claude API", "JWT"],
     architecture: ["Flutter iOS App", "Node/Express API", "Gmail + Upload Ingestion", "OCR + LLM Extraction", "Review Queue", "Postgres Schemas", "Digest + Reminder Jobs"],
     flows: ["Sync inbox", "Extract obligations", "Classify priority", "Request review", "Remind", "Automate follow-up"],
-    image: "/projects/lifeadmin-os.png",
     caseStudy: "/case-studies/lifeadmin-os.html",
     challenges: [
       "Designing around sensitive personal data with encryption and redaction",
@@ -250,6 +315,7 @@ export const projects: Project[] = [
     ],
     roadmap: ["Bank and wallet integrations", "Family workspace", "Public V1 on Railway (Mumbai)"],
     accent: "blue",
+    screens: [{ src: "/projects/lifeadmin-os.png", alt: "LifeAdmin AI onboarding screens on two iPhones", caption: "Onboarding — the Flutter iOS app", kind: "desktop", width: 1600, height: 900 }],
   },
   {
     slug: "lecrec",
@@ -279,11 +345,8 @@ export const projects: Project[] = [
       "Redis decides availability; Postgres settles disputes and only decrements at confirm",
       "Zero-dependency Postgres fallback keeps the full flow runnable locally",
     ],
-    metrics: [
-      { value: "100", label: "pieces per edition" },
-      { value: "1", label: "atomic op per reservation" },
-      { value: "0", label: "oversells by design" },
-      { value: "60s", label: "expiry sweep" },
+    facts: [
+      { value: "100", label: "pieces per edition (product rule)" },
     ],
     features: ["Waitlist + invites", "Timed reservations", "Atomic stock", "Admin drop console", "Accounts", "Policy pages"],
     stack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Redis + Lua", "Zod", "Vercel Cron", "Playwright"],
@@ -321,11 +384,9 @@ export const projects: Project[] = [
       "Internal API connector rejects absolute URLs, traversal and user-supplied headers",
       "Wrote seven structured reviews (architecture, backend, security, agent flows, frontend, DevOps)",
     ],
-    metrics: [
-      { value: "100%", label: "executions audited" },
+    facts: [
       { value: "4", label: "MCP tools exposed" },
-      { value: "7", label: "self-review audits" },
-      { value: "1 cmd", label: "Docker stack" },
+      { value: "7", label: "structured self-review documents" },
     ],
     features: ["Tool registry", "Per-agent permissions", "Approval gating", "Audit logs", "MCP endpoint", "Operator dashboard"],
     stack: ["Python", "FastAPI", "FastMCP", "PostgreSQL", "Pydantic", "Next.js", "Docker"],
@@ -364,11 +425,9 @@ export const projects: Project[] = [
       "MCP write tools are read-only unless the server starts with --allow-writes",
       "Financial memory layer inspired by Memory Router, kept standalone around financial schemas",
     ],
-    metrics: [
+    facts: [
       { value: "24", label: "MCP tools" },
-      { value: "3", label: "gates before a live order" },
-      { value: "Paper", label: "default mode" },
-      { value: "0", label: "LLM API keys required" },
+      { value: "Paper", label: "trading by default" },
     ],
     features: ["Financial memory", "Thesis tracking", "Bull/Bear/Judge review", "Pre-trade risk checks", "Paper trading", "Zerodha market data"],
     stack: ["Python", "MCP", "Next.js", "Zerodha Kite Connect", "Local-first storage"],
@@ -376,59 +435,6 @@ export const projects: Project[] = [
     flows: ["Ingest event", "Store belief", "Propose thesis", "Debate + review", "Pre-trade check", "Paper trade + record"],
     repo: "https://github.com/zucc12309/AI-HEDGE-FUND",
     accent: "mint",
-  },
-  {
-    slug: "crm-workflow-automation",
-    title: "CRM Workflow Automation",
-    file: "CRM_AUTOMATION.APP",
-    monogram: "CR",
-    type: "Open Source",
-    status: "CRM analytics automation",
-    categories: ["Automation"],
-    tagline: "From raw CRM export in an inbox to a cleaned KPI briefing and refreshed Power BI dashboard — automatically.",
-    description:
-      "A workflow that streamlines CRM operations: email intake, data cleaning, KPI calculation, an AI briefing and dashboard refresh, with explicit success and error paths.",
-    role: "Builder: process mapping, n8n orchestration, Python preprocessing, reporting design.",
-    problem:
-      "CRM teams lose time to manual exports, cleaning, status checks and reporting that should happen automatically.",
-    solution:
-      "A workflow layer that orchestrates the CRM reporting pipeline, tracks outcomes and gives operators visibility into exceptions.",
-    built: [
-      "Gmail-triggered n8n workflow for CRM export intake",
-      "Python preprocessing: cleaning, formatting and KPI calculation",
-      "AI-generated briefing and Power BI refresh",
-      "Success / error email paths so exceptions stay visible",
-    ],
-    decisions: [
-      "n8n keeps orchestration visible for business-process review",
-      "Python scripts own cleaning, formatting, KPIs and Power BI export",
-      "Explicit success and error emails make operational exceptions obvious",
-    ],
-    metrics: [
-      { value: "7", label: "pipeline stages" },
-      { value: "n8n + Py", label: "orchestration + scripts" },
-      { value: "2", label: "outcome paths (ok / error)" },
-      { value: "1", label: "refreshed dashboard" },
-    ],
-    features: ["Workflow orchestration", "Process automation", "Reporting", "Integrations", "Business process optimisation"],
-    stack: ["n8n", "Python", "Power BI", "Gmail", "LLM briefing"],
-    architecture: ["Gmail CRM Export Trigger", "n8n Workflow", "Python Preprocessing", "Formatting Script", "AI Briefing", "Power BI Refresh", "Success/Error Email"],
-    flows: ["Receive CRM export", "Clean dataset", "Calculate KPIs", "Generate briefing", "Refresh dashboard", "Email report"],
-    image: "/projects/crm-workflow.png",
-    repo: "https://github.com/zucc12309/CRM-workflow-automation",
-    caseStudy: "/case-studies/crm-workflow-automation.html",
-    challenges: [
-      "Mapping CRM export quality issues into deterministic preprocessing rules",
-      "Designing error paths for failed or low-quality inputs",
-      "Balancing automation speed with auditability",
-    ],
-    learnings: [
-      "Automation is only valuable when it fits the process owner's mental model",
-      "Reporting should explain bottlenecks, not just count activity",
-      "The best workflow products make handoffs visible",
-    ],
-    roadmap: ["Credential hardening", "More CRM export templates", "SLA monitoring"],
-    accent: "amber",
   },
 ];
 

@@ -11,8 +11,9 @@ export const profile = {
   github: "https://github.com/zucc12309",
   linkedin: "https://www.linkedin.com/in/priyanshu-patel-069331200/",
   resume: "/cv/priyanshu-patel-business-analyst-cv.pdf",
+  positioning: "Business Analyst · AI Product Builder",
   intro:
-    "I turn business requirements into shipped features on large-scale insurance systems — and design and ship my own AI products using AI-assisted development.",
+    "I'm a Business Analyst at Digit Life Insurance, moving into product management. I turn messy business inputs into clear requirements and working systems — and I design and ship my own AI products, using AI-assisted development, to sharpen my product judgement.",
 };
 
 export const impact = [
@@ -49,18 +50,30 @@ export const timeline = [
   { year: "2025 —", title: "Business Analyst, Digit Life Insurance", note: "Group Life products · Tech Titan Award" },
   { year: "2025", title: "MBA (Finance) + B.Tech (CSE), MPSTME Mumbai", note: "3.56 / 4.00" },
   { year: "2024", title: "Finance & Accounting Intern, BHEL", note: "Oracle ERP billing & reconciliation · MIS dashboards, ~15% better reporting accuracy" },
-  { year: "2024", title: "Finalist, EY Young Leaders Business Case Competition", note: "" },
   { year: "2023", title: "Deep Learning Intern, MANIT Bhopal", note: "CNN cancer-diagnosis classifier, ~89% accuracy" },
 ];
 
-export const skills = [
-  { group: "Business analysis", items: ["Requirements & BRD / SRS", "GAP analysis", "User stories", "UAT & test design", "Process improvement", "RCA"] },
-  { group: "Product & delivery", items: ["Agile / Scrum", "Stakeholder management", "Sprint planning", "Product discovery", "Cross-functional execution"] },
-  { group: "Data & technical", items: ["SQL & data analysis", "API integration & contracts", "PostgreSQL", "Python", "Workflow automation"] },
-  { group: "AI building", items: ["LLM integration", "MCP servers", "Agents & guardrails", "Embeddings & retrieval", "Model routing"] },
+/** How I work — the three districts of the sculpture, left to right. */
+export const approach = [
+  {
+    id: "analysis",
+    title: "Analysis",
+    text: "I start with the data and the people. SQL investigations into failure patterns, GAP analysis of existing systems, and conversations with the 10–12 stakeholders who own the process.",
+    capabilities: ["SQL & data analysis", "GAP analysis", "Root-cause analysis", "Stakeholder discovery"],
+  },
+  {
+    id: "requirements",
+    title: "Requirements",
+    text: "I turn findings into things engineers can build and testers can verify: BRDs, SRS, user stories, API contracts, business rules — and the UAT that proves them.",
+    capabilities: ["BRD / SRS & user stories", "API contracts", "Business rules", "UAT & release"],
+  },
+  {
+    id: "products",
+    title: "AI products",
+    text: "Outside work I build AI products end to end to practise product judgement by shipping: memory and model routing, approval-gated agents, commerce and fintech experiments.",
+    capabilities: ["LLMs & MCP", "Agents with guardrails", "Prototyping to release", "Product decisions"],
+  },
 ];
-
-export const tools = ["Jira", "Confluence", "Postman", "SQL", "DBeaver", "Camunda", "Power BI", "Figma", "n8n", "Python", "Git", "Excel", "Flutter", "Node.js", "Next.js", "PostgreSQL"];
 
 export const recognition = [
   { title: "Tech Titan Award", org: "Digit Life Insurance", note: "Recognised for contribution to technology and product delivery." },
@@ -123,14 +136,14 @@ export const assistantKB: { match: RegExp; answer: string[]; source: string }[] 
     source: "Projects",
   },
   {
-    match: /skill|sql|api|python|technical|tool|stack/i,
+    match: /skill|sql|api|python|technical|tool|stack|how .*work/i,
     answer: [
-      "• Business analysis: requirements & BRD / SRS, GAP analysis, user stories, UAT",
-      "• Product & delivery: Agile / Scrum, stakeholder management, cross-functional execution",
-      "• Data & technical: SQL, API contracts, PostgreSQL, Python, workflow automation",
-      "• Tools: Jira, Confluence, Postman, DBeaver, Camunda, Power BI, n8n",
+      "• Analysis: SQL investigations, GAP analysis, root-cause analysis, stakeholder discovery",
+      "• Requirements: BRD / SRS, user stories, API contracts, business rules, UAT",
+      "• AI products: LLMs and MCP, agents with guardrails, prototyping to release",
+      "• Day-to-day tools at Digit: Jira, Confluence, Postman, DBeaver, Camunda",
     ],
-    source: "Skills",
+    source: "How I work · Work",
   },
   {
     match: /contact|email|hire|reach|linkedin|github|available|open to/i,

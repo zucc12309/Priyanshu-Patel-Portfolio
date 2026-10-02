@@ -211,3 +211,32 @@ function estimateOriginalTokens(prompt: string) {
 function estimateTokens(text: string) {
   return Math.max(8, Math.ceil(text.length / 4));
 }
+
+/** Simulated baseline the savings are measured against (for honest labelling in the UI). */
+export const simulatedBaseline = { chatHistoryTokens: 1180, workingMemoryTokens: 360 };
+
+/**
+ * Explains retrieval for the demo UI: every sandbox memory with its relevance,
+ * which prompt words it matched, and whether it cleared the selection threshold.
+ * Uses the same scoring as runMemoryRouterDemo.
+ */
+export function explainRetrieval(prompt: string) {
+  const normalized = prompt.trim().replace(/\s+/g, " ");
+  const words = tokenize(normalized);
+  const ranked = rankMemories(normalized);
+  const selectedIds = new Set(ranked.slice(0, 3).map((m) => m.id));
+  return {
+    promptWords: Array.from(words),
+    candidates: sandboxMemories
+      .map((memory) => {
+        const scored = ranked.find((r) => r.id === memory.id);
+        return {
+          ...memory,
+          relevance: scored?.relevance ?? 0,
+          matched: memory.concepts.filter((c) => words.has(c)),
+          selected: selectedIds.has(memory.id),
+        };
+      })
+      .sort((a, b) => b.relevance - a.relevance),
+  };
+}

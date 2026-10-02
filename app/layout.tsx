@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { Experience } from "@/components/site/experience";
+import { RouteTransitions } from "@/components/site/route-transitions";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -37,19 +37,12 @@ export const viewport: Viewport = {
   themeColor: "#EEEAE2",
 };
 
-// Before first paint: play the intro once per visit on the home page (never with
-// reduced motion), with a failsafe that always reveals the page.
-const preIntro = `try{var d=document.documentElement;if(location.pathname==='/'&&!sessionStorage.getItem('pp-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.dataset.intro='1';setTimeout(function(){delete d.dataset.intro},3000)}}catch(e){}`;
-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: preIntro }} />
-      </head>
+    <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${serif.variable} font-sans antialiased`}>
         {children}
-        <Experience />
+        <RouteTransitions />
         <Analytics />
       </body>
     </html>
